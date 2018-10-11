@@ -1,0 +1,282 @@
+@import url('https://fonts.googleapis.com/css?family=Montserrat');
+
+body {
+    font-family: 'Montserrat', sans-serif;
+    width: 100%;
+}
+
+table {
+    table-layout: fixed;
+    empty-cells: show;
+}
+
+thead {
+    text-align: center;
+}
+
+table th {
+    background-color: #ddd;
+    padding: 0;
+}
+
+.login-container {
+    min-height: 750px;
+}
+
+.login-content {
+    padding-top: 60px;
+}
+
+.login-content img {
+    width: 80%;
+}
+
+.footer {
+    border-top: 1px solid #ccc;
+    opacity: 0.9;
+    color: white;
+}
+
+/* STUDENT - Calendar */
+
+.main-container {
+    width: 100%;
+    padding-top: 4rem;
+    padding-bottom: 4rem;
+}
+
+.main-container-inner {
+    margin-top: 0px;
+    padding: 16px;
+}
+
+.student-calendar {
+    margin-bottom: 24px;
+}
+
+.student-calendar .button {
+    display: block;
+    background-color: white;
+    width: 100%;
+    height: 100%;
+    border-style: none;
+    border-color: white;
+    padding: 16px 0;
+}
+
+.student-calendar .button:disabled:hover {
+    background-color: #fff;
+}
+
+.student-calendar .button:hover {
+    background-color: #fff176;
+}
+
+.student-calendar .title {
+    vertical-align: middle;
+}
+
+.student-day tbody {
+    text-align: center;
+}
+
+.student-calendar th {
+    text-align: center;
+    padding: 0rem;
+}
+
+.student-calendar td {
+    text-align: center;
+    padding: 0rem;
+}
+
+.student-calendar .selected {
+    background-color: #fff9c4;
+}
+
+.student-calendar .today {
+    background-color: #eee;
+}
+
+.student-calendar .weekend {
+    background-color: #ffebee;
+}
+
+.student-day th:first-of-type {
+    background-color: #fff9c4;
+}
+
+/* .save-button {
+    clear: both;
+    margin: 24px;
+    padding-bottom: 32px;
+} */
+
+.btn-primary {
+    background-color: #0288d1;
+}
+
+/* ADMIN - Students */
+
+.spinner {
+    margin-bottom: 2rem;
+}
+
+.pagination {
+    margin: 16px;
+}
+
+.pagination .active .page-link {
+    background-color: #2196f3;
+    border-color: #2196f3;
+}
+
+.page-item:last-child .page-link {
+    border-radius: 0;
+}
+
+.top-buffer {
+    margin-top: 32px;
+}
+
+.table-selectable td {
+    padding: 0;
+    text-align: center;
+    vertical-align: middle;
+}
+
+.table-selectable input {
+    padding: .75rem;
+    text-align: left;
+}
+
+.table-selectable input:hover {
+    background-color: #fff176;
+}
+
+.table-selectable .empty {
+    padding: .75rem;
+    visibility: hidden;
+}
+
+.submit-clean {
+    display: block;
+    background-color: white;
+    width: 100%;
+    height: 100%;
+    border-style: none;
+    border-color: white;
+    padding: 0;
+}
+
+.submit-clean:hover {
+    background-color: #fff176;
+}
+
+.table-selectable form {
+    margin: 0;
+}
+
+.table-selectable .selected {
+    background-color: #fff9c4;
+}
+
+.adminStudentsA.hide {
+    display: none;
+    visibility: hidden;
+}
+
+.adminStudentsB.hide {
+    display: none;
+    visibility: hidden;
+}
+
+.hidden {
+    display: none;
+    visibility: hidden;
+}
+
+/* ADMIN - Planning */
+.admin-calendar .button {
+    display: block;
+    background-color: white;
+    width: 100%;
+    height: 100%;
+    border-style: none;
+    border-color: white;
+    padding: 16px 0;
+}
+
+.admin-calendar .button:hover {
+    background-color: #fff176;
+}
+
+.admin-calendar .title {
+    vertical-align: middle;
+}
+
+.admin-day tbody {
+    text-align: center;
+}
+
+.admin-calendar th {
+    text-align: center;
+    padding: 0rem;
+}
+
+.admin-calendar td {
+    text-align: center;
+    padding: 0rem;
+}
+
+.admin-calendar .selected {
+    background-color: #fff9c4;
+}
+
+.admin-calendar .student-color {
+    background-color: #ce93d8;    /* purple */
+}
+
+.admin-calendar .admin-color {
+    background-color: #81c784;
+}
+
+.admin-calendar .disabled {
+    background-color: #fff;
+}
+
+.admin-calendar .disabled:hover {
+    background-color: #fff;
+}
+
+* {
+    font-size: 10px;
+}
+
+/* Small devices (landscape phones, 576px and up) */
+@media (min-width: 576px) {
+    * {
+        font-size: 12px;
+    }
+}
+
+/* Medium devices (tablets, 768px and up) */
+@media (min-width: 768px) {
+    * {
+        font-size: 14px;
+    }
+}
+
+/* Large devices (desktops, 992px and up) */
+@media (min-width: 992px) {
+    * {
+        font-size: 16px;
+    }
+}
+
+/* Extra large devices (large desktops, 1200px and up) */
+@media (min-width: 1200px) {
+    * {
+        font-size: 18px;
+    }
+}
