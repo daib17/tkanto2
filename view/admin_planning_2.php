@@ -17,15 +17,20 @@
         <div class="spinner">
             <?= $spinner ?>
         </div>
-        hourSelected: <?= $hourSelected ?>
-
         <div class="admin-calendar">
             <form class="calendar-form" method="GET">
                 <input type="hidden" name="route" value="admin_planning_2">
-                <input type="hidden" name="dateSelected" value="<?= $dateSelected ?>">
+                <input type="hidden" name="date" value="<?= $date ?>">
                 <table class="table table-bordered">
                     <thead>
                         <tr>
+                            <th scope="col" colspan="1">
+                                <input type="submit" class="arrow" name="changeDate" value="<<">
+                            </th>
+                            <th scope="col" colspan="2" class="title"><?= $date ?></th>
+                            <th scope="col" colspan="1">
+                                <input type="submit" class="arrow" name="changeDate" value=">>">
+                            </th>
                         </tr>
                     </thead>
                     <tbody>
@@ -35,8 +40,8 @@
             </form>
         </div>
         <form class="save-button" method="get">
-            <input type="hidden" name="route" value="admin_planning_2">
-            <button class="btn btn-lg btn-primary btn-block font-weight-bold" type="submit">Save</button>
+            <input type="hidden" name="route" value="admin_planning_1">
+            <button class="btn btn-lg btn-primary btn-block font-weight-bold" type="submit">Back</button>
         </form>
 
     </div>

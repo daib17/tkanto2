@@ -221,7 +221,6 @@ table th {
 
 .admin-calendar th {
     text-align: center;
-    padding: 0rem;
 }
 
 .admin-calendar td {
@@ -245,8 +244,24 @@ table th {
     background-color: #fff;
 }
 
-.admin-calendar .disabled:hover {
+/* .admin-calendar .disabled:hover {
     background-color: #fff;
+} */
+
+.button.disabled-student {
+    background-color: #ce93d8;
+}
+
+.button.disabled-student:hover {
+    background-color: #ce93d8;
+}
+
+.button.disabled-admin {
+    background-color: #81c784;
+}
+
+.button.disabled-admin:hover {
+    background-color: #81c784;
 }
 
 * {

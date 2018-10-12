@@ -18,7 +18,7 @@
             <div class="admin-calendar">
                 <form class="calendar-form" method="GET">
                     <input type="hidden" name="route" value="admin_planning_1">
-                    <input type="hidden" name="dateSelected" value=<?= $dateSelected ?>>
+                    <input type="hidden" name="date" value=<?= $date ?>>
                     <input type="hidden" name="month" value=<?= $month ?>>
                     <input type="hidden" name="year" value=<?= $year ?>>
                     <table class="table table-bordered">
@@ -38,12 +38,11 @@
                         </tbody>
                     </table>
                 </form>
-                <!-- <?php var_dump($dateSelected); ?> -->
             </div>
         </div>
         <form class="edit-button" method="get">
             <input type="hidden" name="route" value="admin_planning_2">
-            <input type="hidden" name="dateSelected" value="<?= $dateSelected ?>">
+            <input type="hidden" name="date" value="<?= $date ?>">
             <button class="btn btn-lg btn-primary btn-block font-weight-bold" type="submit">Edit</button>
         </form>
     </div>

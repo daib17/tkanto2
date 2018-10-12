@@ -32,23 +32,23 @@ if (isset($_GET['changeMonth'])) {
 // New day selected?
 if (isset($_GET['day'])) {
     $day = $_GET['day'];
-    $dateSelected = date('Y-m-d', strtotime($year . "-" . $month . "-" . $day));
+    $date = date('Y-m-d', strtotime($year . "-" . $month . "-" . $day));
 } else {
     // Restore selected day
-    if (isset($_GET['dateSelected'])) {
-        $dateSelected = $_GET['dateSelected'];
+    if (isset($_GET['date'])) {
+        $date = $_GET['date'];
     } else {
-        $dateSelected = date('Y-m-d');   // today
+        $date = date('Y-m-d');   // today
     }
 }
 
 // Get month name for number
 $monthName = date("F", mktime(0, 0, 0, $month, 1, 2018));
 // $calendar = new Calendar($db);
-$calendarTable = getCalendarAsTable($dateSelected, $month, $year);
-$dayTable = getDayTable($db, $dateSelected);
+$calendarTable = getCalendarAsTable($date, $month, $year);
+$dayTable = getDayTable($db, $date);
 
 // Extract day, month and year from selected day for day table header
-$daySel = date("j", strtotime($dateSelected));
-$monthSel = date("M", strtotime($dateSelected));
-$yearSel = date("Y", strtotime($dateSelected));
+$daySel = date("j", strtotime($date));
+$monthSel = date("M", strtotime($date));
+$yearSel = date("Y", strtotime($date));
