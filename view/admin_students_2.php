@@ -7,7 +7,7 @@
             <a class="nav-link" href="?route=admin_bookings">Bookings</a>
         </li>
         <li class="nav-item">
-            <a class="nav-link" href="?route=admin_planning">Planning</a>
+            <a class="nav-link" href="?route=admin_planning_1">Planning</a>
         </li>
         <li class="nav-item">
             <a class="nav-link" href="?route=admin_stats">Statistics</a>

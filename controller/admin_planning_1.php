@@ -1,5 +1,5 @@
 <?php
-require_once("src/student_functions.php");
+require_once("src/admin_functions.php");
 
 // Get month and year shown in calendar
 if (isset($_GET['month']) && isset($_GET['year'])) {
@@ -45,8 +45,7 @@ if (isset($_GET['day'])) {
 // Get month name for number
 $monthName = date("F", mktime(0, 0, 0, $month, 1, 2018));
 // $calendar = new Calendar($db);
-$calendarTable = getCalendarAsTable($date, $month, $year);
-$dayTable = getDayTable($db, $date);
+$calendarTable = getAdminCalendarAsTable($db, $date, $month, $year);
 
 // Extract day, month and year from selected day for day table header
 $daySel = date("j", strtotime($date));

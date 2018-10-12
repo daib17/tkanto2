@@ -14,7 +14,6 @@
         </li>
     </ul>
     <div class="container main-container-inner">
-        <div class="row">
             <div class="admin-calendar">
                 <form class="calendar-form" method="GET">
                     <input type="hidden" name="route" value="admin_planning_1">
@@ -39,7 +38,6 @@
                     </table>
                 </form>
             </div>
-        </div>
         <form class="edit-button" method="get">
             <input type="hidden" name="route" value="admin_planning_2">
             <input type="hidden" name="date" value="<?= $date ?>">

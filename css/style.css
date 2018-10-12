@@ -15,7 +15,7 @@ thead {
 }
 
 table th {
-    background-color: #ddd;
+    background-color: #b0bec5;
     padding: 0;
 }
 
@@ -113,7 +113,7 @@ table th {
 } */
 
 .btn-primary {
-    background-color: #0288d1;
+    background-color: #039be5;
 }
 
 /* ADMIN - Students */
@@ -197,6 +197,7 @@ table th {
 }
 
 /* ADMIN - Planning */
+
 .admin-calendar .button {
     display: block;
     background-color: white;
@@ -204,11 +205,12 @@ table th {
     height: 100%;
     border-style: none;
     border-color: white;
-    padding: 16px 0;
+    padding: 8px 0;
 }
 
-.admin-calendar .button:hover {
-    background-color: #fff176;
+.admin-calendar
+.button:hover {
+    background-color: #ffee58;
 }
 
 .admin-calendar .title {
@@ -229,7 +231,15 @@ table th {
 }
 
 .admin-calendar .selected {
-    background-color: #fff9c4;
+    background-color: #fdd835;
+}
+
+.admin-calendar .today {
+    background-color: #ddd;
+}
+
+.admin-calendar .weekend {
+    background-color: #ffebee;
 }
 
 .admin-calendar .student-color {
@@ -243,10 +253,6 @@ table th {
 .admin-calendar .disabled {
     background-color: #fff;
 }
-
-/* .admin-calendar .disabled:hover {
-    background-color: #fff;
-} */
 
 .button.disabled-student {
     background-color: #ce93d8;
@@ -262,6 +268,28 @@ table th {
 
 .button.disabled-admin:hover {
     background-color: #81c784;
+}
+
+.admin-calendar .day-label .left {
+    background-color: #81c784;
+    /* color: #fff; */
+    padding: 0;
+    vertical-align: middle;
+}
+
+.admin-calendar .day-label .right {
+    background-color: #e57373;
+    /* color: #fff; */
+    padding: 0;
+    vertical-align: middle;
+}
+
+.admin-calendar .freeToggle {
+    visibility: hidden;
+}
+
+.admin-calendar .takenToggle {
+    visibility: hidden;
 }
 
 * {

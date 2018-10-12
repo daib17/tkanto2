@@ -27,7 +27,7 @@
                             <th scope="col" colspan="1">
                                 <input type="submit" class="arrow" name="changeDate" value="<<">
                             </th>
-                            <th scope="col" colspan="2" class="title"><?= $date ?></th>
+                            <th scope="col" colspan="2" class="title"><?= $dayOfWeek ?> / <?= $date ?></th>
                             <th scope="col" colspan="1">
                                 <input type="submit" class="arrow" name="changeDate" value=">>">
                             </th>
@@ -37,13 +37,17 @@
                         <?= $hoursTable ?>
                     </tbody>
                 </table>
+                <div class="top-buffer">
+                    <input type="hidden" name="route" value="admin_planning_2">
+                    <button class="btn btn-lg btn-danger btn-block font-weight-bold mt-3 mb-4" type="submit" name="button" value="copy">Copy to next day</button>
+                </div>
+            </form>
+            <form method="get">
+                <input type="hidden" name="route" value="admin_planning_1">
+                <input type="hidden" name="date" value="<?= $date ?>">
+                <button class="btn btn-lg btn-primary btn-block font-weight-bold" type="submit">Back</button>
             </form>
         </div>
-        <form class="save-button" method="get">
-            <input type="hidden" name="route" value="admin_planning_1">
-            <button class="btn btn-lg btn-primary btn-block font-weight-bold" type="submit">Back</button>
-        </form>
-
     </div>
 </div>
 <script type="text/javascript" src="js/admin.js"></script>

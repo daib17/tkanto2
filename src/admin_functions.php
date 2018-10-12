@@ -1,7 +1,96 @@
 <?php
-// require();
-
 const ITEMS_PAGE = 5;   // Number of students per page
+
+/**
+* @param date day selected (Y-m-d)
+* @param int $month
+* @param int $year
+*/
+function getAdminCalendarAsTable($db, string $date, int $month, int $year)
+{
+    $daySel = date("j", strtotime($date));
+    $monthSel = date("n", strtotime($date));
+    $yearSel = date("Y", strtotime($date));
+
+    // Today
+    $dayToday = date("j");
+    $monthToday = date("n");
+    $yearToday = date("Y");
+
+    // Get number of days in month
+    $numDays = cal_days_in_month(CAL_GREGORIAN, $month, $year);
+    $table = "";
+    // Get day of the week for the 1st of month/year
+    $dayOne = date('w', strtotime($year . "-" . $month . "-" . "1"));
+
+    // Get all entry for given month
+    $dateFrom = $year . "-" . $month . "-01";
+    $dateTo = $year . "-" . $month . "-" . $numDays;
+    $sql = "SELECT * FROM calendar WHERE date BETWEEN ? AND ?;";
+    $res = $db->executeFetchAll($sql, [$dateFrom, $dateTo]);
+
+    // Get free/taken hours for each day
+    $free = [];
+    $taken = [];
+    for ($i = 0; $i < $numDays + 1; $i++) {
+        $free[] = 0;
+        $taken[] = 0;
+    }
+
+    foreach ($res as $aDay) {
+        $dayNum = (int)substr($aDay->date, -2);
+        if ($aDay->student == "admin" && $aDay->duration != 0) {
+            $free[$dayNum]++;
+        } elseif ($aDay->student != "admin" && $aDay->duration != 0) {
+            $taken[$dayNum]++;
+        }
+    }
+
+    // Empty cells before day one
+    $emptyCells = $dayOne == 0 ? 6 : $dayOne - 1;
+    for ($i = 1; $i < $emptyCells + 1; $i++) {
+        if ($i == 1) {
+            $table .= "<tr>";
+        }
+        $table .= "<td><input type='submit' class='button' name='day' value='' disabled /></td>";
+    }
+
+    // Cells for every day of the month
+    for ($day = 1; $day < $numDays + 1; $day++) {
+        $weekDay = date('w', strtotime($year . "-" . $month . "-" . $day));
+        if ($weekDay == 1) {
+            $table .= "<tr>";
+        }
+        if ($day == $daySel && $month == $monthSel
+        && $year == $yearSel) {
+            $selector = "selected";
+        } elseif ($day == $dayToday && $month == $monthToday
+        && $year = $yearToday) {
+            $selector = "today";
+        } elseif ($weekDay == 6 || $weekDay == 0) {
+            $selector = "weekend";
+        } else {
+            $selector = "";
+        }
+        $freeToggle = ($free[$day] == 0) ? "freeToggle" : "";
+        $takenToggle = ($taken[$day] == 0) ? "takenToggle" : "";
+        $table .= "<td><div class='day-label'><input type='submit' class='button {$selector}' name='day' value={$day}><div class='left {$freeToggle}'>{$free[$day]}</div><div class='right {$takenToggle}'>{$taken[$day]}</div></div></td>";
+        if ($weekDay == 0) {
+            $table .= "</tr>";
+        }
+    }
+
+    // Empty cells after last day of the month
+    $weekDay = date('w', strtotime($year . "-" . $month . "-" . $numDays));
+    if ($weekDay != 0) {
+        for ($day = $weekDay; $day < 7; $day++) {
+            $table .= "<td><input type='submit' class='button' name='day' value='' disabled /></td>";
+        }
+    }
+
+    $table .= "</tr>";
+    return $table;
+}
 
 /**
 *   Get students from database
@@ -269,7 +358,8 @@ function getHoursTable($db, $date, $hourArr, $hourLabel) {
 *
 * @return array updated $hoursArray
 */
-function updateDatabaseCalendar($db, $arr, $date, $student, $hourStr, $spin) {
+function updateDatabaseCalendar($db, $arr, $date, $student, $hourStr, $spin)
+{
     // Convert hour "11:30" to integer 1130
     $val = explode(":", $hourStr);
     $time = $val[0] * 100 + $val[1];
@@ -280,13 +370,12 @@ function updateDatabaseCalendar($db, $arr, $date, $student, $hourStr, $spin) {
         $id++;
     }
 
-    // New spin value same as old OR spin zero on available hour?
-    if ($arr[$id]->getDuration() == $spin || (
-        $arr[$id]->getDuration() == -1 && $spin == 0)) {
+    // New value same as old OR trying zero an already zero?
+    if ($arr[$id]->getDuration() == $spin || ($arr[$id]->getDuration() == -1 && $spin == 0)) {
         return;
     }
 
-    // Insert if hour not in database
+    // From 0 to 30 or 60 (New entry in database)
     if ($arr[$id]->getStudent() == "") {
         $sql = "INSERT INTO calendar (date, student, time, duration) VALUES (?, ?, ?, ?);";
         $db->execute($sql, [$date, $student, $time, $spin]);
@@ -307,36 +396,76 @@ function updateDatabaseCalendar($db, $arr, $date, $student, $hourStr, $spin) {
         exit;
     }
 
-    // Delete hours from db
+    // From 30/60 to 0 (update existing entry)
     if ($spin == 0) {
-        // Delete first slot
-        $sql = "DELETE FROM calendar WHERE date = ? AND time = ?;";
-        $db->execute($sql, [$date, $time]);
-        // Delete second if exists
+        // Previously 30
+        if ($arr[$id]->getDuration() == 30) {
+            $sql = "DELETE FROM calendar WHERE date = ? AND time = ?;";
+            $db->execute($sql, [$date, $time]);
+        }
+        // Previously 60
         if ($arr[$id]->getDuration() == 60) {
+            // Delete first slot
+            $sql = "DELETE FROM calendar WHERE date = ? AND time = ?;";
+            $db->execute($sql, [$date, $time]);
             // Delete second slot
             $time2 = ($time % 100 == 0) ? $time += 30 : $time += 70;
             $sql = "DELETE FROM calendar WHERE date = ? AND time = ?;";
             $db->execute($sql, [$date, $time2]);
         }
-        
-    } elseif ($spin == 30) {
-        // Update first
-        $sql = "UPDATE calendar SET duration = ? WHERE date = ? AND time = ?;";
-        $db->execute($sql, [30, $date, $time]);
-        // Delete second slot
-        $time2 = ($time % 100 == 0) ? $time += 30 : $time += 70;
-        $sql = "DELETE FROM calendar WHERE date = ? AND time = ?;";
-        $db->execute($sql, [$date, $time2]);
+    }
 
-    } elseif ($spin == 60) {
-        // Update first
+    // From 60 to 30 (update existing entry)
+    if ($spin == 30) {
+        // Previously 60
+        if ($arr[$id]->getDuration() == 60) {
+            // Update first slot
+            $sql = "UPDATE calendar SET duration = ? WHERE date = ? AND time = ?;";
+            $db->execute($sql, [30, $date, $time]);
+            // Delete second slot
+            $time2 = ($time % 100 == 0) ? $time += 30 : $time += 70;
+            $sql = "DELETE FROM calendar WHERE date = ? AND time = ?;";
+            $db->execute($sql, [$date, $time2]);
+        }
+    }
+
+    // From 30 to 60 (update existing entry)
+    if ($spin == 60) {
+        // Update first slot
         $sql = "UPDATE calendar SET duration = ? WHERE date = ? AND time = ?;";
         $db->execute($sql, [60, $date, $time]);
-        // Insert second
+        // Insert second slot
         $time2 = ($time % 100 == 0) ? $time += 30 : $time += 70;
         $sql = "INSERT INTO calendar (date, student, time, duration) VALUES (?, ?, ?, ?);";
         $db->execute($sql, [$date, $student, $time2, 0]);
+    }
+
+    // Redirect
+    header("Location: ?route=admin_planning_2&date=$date");
+}
+
+
+/**
+* Copy hours template
+*/
+function copyTemplate($db, $date, $arr)
+{
+    // Calculate date for one day later
+    $nextDate = new DateTime($date);
+    $nextDate->modify("+1 day");
+    $nextDate = $nextDate->format("Y-m-d");
+    // Copy
+    foreach ($arr as $hour) {
+        if ($hour->getStudent() == "admin") {
+            // Check if hour already exists next day
+            $sql = "SELECT * FROM calendar WHERE date = ? AND time = ?;";
+            $res = $db->executeFetch($sql, [$nextDate, $hour->getTime()]);
+            if (!$res) {
+                $sql = "INSERT INTO calendar (date, student, time, duration) VALUES (?, ?, ?, ?);";
+                $db->execute($sql, [$nextDate, $hour->getStudent(),
+                $hour->getTime(), $hour->getDuration()]);
+            }
+        }
     }
 
     // Redirect

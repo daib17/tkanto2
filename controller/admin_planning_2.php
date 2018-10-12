@@ -1,10 +1,18 @@
 <?php
-require_once("src/student_functions.php");
+// require_once("src/student_functions.php");
 require_once("src/admin_functions.php");
 
 if (isset($_GET['date'])) {
     $date = $_GET['date'];
 }
+
+// Copy template to next day?
+if (isset($_GET['copy'])) {
+    copyTemplate($db, $date);
+}
+
+// Day of the week
+$dayOfWeek = date("l", strtotime($date));
 
 // Prev and Next arrow buttons on header
 if (isset($_GET['changeDate'])) {
@@ -27,6 +35,11 @@ if (isset($_GET['hourLabel'])) {
 
 // Generate array (0 to 27) of Hour objects for selected date from DB
 $hourArr = generateHourArrayFromDB($db, $date);
+
+// Copy template to next day?
+if (isset($_GET['button']) && $_GET['button'] == "copy") {
+    copyTemplate($db, $date, $hourArr);
+}
 
 // Parameter sent by admin.js via URL parameters means spinner changed
 if (isset($_GET['spinTime'])) {
