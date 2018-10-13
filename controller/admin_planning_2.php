@@ -1,18 +1,14 @@
 <?php
-// require_once("src/student_functions.php");
 require_once("src/admin_functions.php");
 
-if (isset($_GET['date'])) {
-    $date = $_GET['date'];
+if (isset($_GET['selDate'])) {
+    $date = $_GET['selDate'];
 }
 
 // Copy template to next day?
 if (isset($_GET['copy'])) {
     copyTemplate($db, $date);
 }
-
-// Day of the week
-$dayOfWeek = date("l", strtotime($date));
 
 // Prev and Next arrow buttons on header
 if (isset($_GET['changeDate'])) {
@@ -24,6 +20,9 @@ if (isset($_GET['changeDate'])) {
     }
     $date = $date->format("Y-m-d");
 }
+
+// Day of the week
+$dayOfWeek = date("l", strtotime($date));
 
 // Selected hour label from table
 if (isset($_GET['hourLabel'])) {
@@ -45,7 +44,7 @@ if (isset($_GET['button']) && $_GET['button'] == "copy") {
 if (isset($_GET['spinTime'])) {
     $spin = $_GET['spinTime'];
     $student = "admin";
-    $hoursArray = updateDatabaseCalendar($db, $hourArr, $date, $student, $hourStr, $spin);
+    updateCalendarDB($db, $hourArr, $date, $student, $hourStr, $spin);
 }
 
 // Get spinner for the selected hour

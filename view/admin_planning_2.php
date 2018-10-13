@@ -20,16 +20,16 @@
         <div class="admin-calendar">
             <form class="calendar-form" method="GET">
                 <input type="hidden" name="route" value="admin_planning_2">
-                <input type="hidden" name="date" value="<?= $date ?>">
+                <input type="hidden" name="selDate" value="<?= $date ?>">
                 <table class="table table-bordered">
                     <thead>
                         <tr>
                             <th scope="col" colspan="1">
-                                <input type="submit" class="arrow" name="changeDate" value="<<">
+                                <input type="submit" class="btn btn-arrow btn-block font-weight-bold" name="changeDate" value="<<">
                             </th>
                             <th scope="col" colspan="2" class="title"><?= $dayOfWeek ?> / <?= $date ?></th>
                             <th scope="col" colspan="1">
-                                <input type="submit" class="arrow" name="changeDate" value=">>">
+                                <input type="submit" class="btn btn-arrow btn-block font-weight-bold" name="changeDate" value=">>">
                             </th>
                         </tr>
                     </thead>
@@ -39,13 +39,13 @@
                 </table>
                 <div class="top-buffer">
                     <input type="hidden" name="route" value="admin_planning_2">
-                    <button class="btn btn-lg btn-danger btn-block font-weight-bold mt-3 mb-4" type="submit" name="button" value="copy">Copy to next day</button>
+                    <button class="btn btn-lg btn-info btn-block font-weight-bold mt-3 mb-4" type="submit" name="button" value="copy">Copy open hours to next day</button>
                 </div>
             </form>
             <form method="get">
                 <input type="hidden" name="route" value="admin_planning_1">
-                <input type="hidden" name="date" value="<?= $date ?>">
-                <button class="btn btn-lg btn-primary btn-block font-weight-bold" type="submit">Back</button>
+                <input type="hidden" name="selDate" value="<?= $date ?>">
+                <button class="btn btn-lg btn-secondary btn-block font-weight-bold" type="submit">Back</button>
             </form>
         </div>
     </div>

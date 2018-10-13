@@ -3,14 +3,20 @@ const ITEMS_PAGE = 5;   // Number of students per page
 
 /**
 * @param date day selected (Y-m-d)
-* @param int $month
-* @param int $year
+* @param string $date (day)/month/year to be show in the calendar
+* @param string $selDate previously selected date
 */
-function getAdminCalendarAsTable($db, string $date, int $month, int $year)
+function getAdminMonthlyCalendar($db, $date, $selDate)
 {
-    $daySel = date("j", strtotime($date));
-    $monthSel = date("n", strtotime($date));
-    $yearSel = date("Y", strtotime($date));
+    // This is the month/year to be show in the calendar
+    // $day = date("j", strtotime($date));
+    $month = date("n", strtotime($date));
+    $year = date("Y", strtotime($date));
+
+    // Day, month and year from a previously selected date
+    $selDay = date("j", strtotime($selDate));
+    $selMonth = date("n", strtotime($selDate));
+    $selYear = date("Y", strtotime($selDate));
 
     // Today
     $dayToday = date("j");
@@ -56,25 +62,29 @@ function getAdminCalendarAsTable($db, string $date, int $month, int $year)
     }
 
     // Cells for every day of the month
-    for ($day = 1; $day < $numDays + 1; $day++) {
-        $weekDay = date('w', strtotime($year . "-" . $month . "-" . $day));
+    for ($i = 1; $i < $numDays + 1; $i++) {
+        $weekDay = date('w', strtotime($year . "-" . $month . "-" . $i));
         if ($weekDay == 1) {
             $table .= "<tr>";
         }
-        if ($day == $daySel && $month == $monthSel
-        && $year == $yearSel) {
+        if ($i == $selDay && $month == $selMonth && $year == $selYear) {
             $selector = "selected";
-        } elseif ($day == $dayToday && $month == $monthToday
-        && $year = $yearToday) {
-            $selector = "today";
         } elseif ($weekDay == 6 || $weekDay == 0) {
             $selector = "weekend";
         } else {
             $selector = "";
         }
-        $freeToggle = ($free[$day] == 0) ? "freeToggle" : "";
-        $takenToggle = ($taken[$day] == 0) ? "takenToggle" : "";
-        $table .= "<td><div class='day-label'><input type='submit' class='button {$selector}' name='day' value={$day}><div class='left {$freeToggle}'>{$free[$day]}</div><div class='right {$takenToggle}'>{$taken[$day]}</div></div></td>";
+
+        if ($i == $dayToday && $month == $monthToday
+            && $year = $yearToday) {
+            $selector .= " bold";
+        }
+        $date = date('Y-m-d', strtotime($year . "-" . $month . "-" . $i));
+        $freeEmpty = ($free[$i] == 0) ? "free-empty" : "";
+        $takenEmpty = ($taken[$i] == 0) ? "taken-empty" : "";
+
+        $table .= "<td><form method='get'><div class='day-label'><input type='hidden' name='route' value='admin_planning_2'>
+        <input type='hidden' name='selDate' value={$date}><input type='submit' class='button {$selector}' name='day' value={$i}><div class='free-mini {$freeEmpty}'>{$free[$i]}</div><div class='taken {$takenEmpty}'>{$taken[$i]}</div></div></form></td>";
         if ($weekDay == 0) {
             $table .= "</tr>";
         }
@@ -83,7 +93,7 @@ function getAdminCalendarAsTable($db, string $date, int $month, int $year)
     // Empty cells after last day of the month
     $weekDay = date('w', strtotime($year . "-" . $month . "-" . $numDays));
     if ($weekDay != 0) {
-        for ($day = $weekDay; $day < 7; $day++) {
+        for ($i = $weekDay; $i < 7; $i++) {
             $table .= "<td><input type='submit' class='button' name='day' value='' disabled /></td>";
         }
     }
@@ -321,7 +331,6 @@ function getHoursTable($db, $date, $hourArr, $hourLabel) {
         for ($id = $row * 4; $id < ($row * 4) + 4; $id++) {
             // Booked by label
             $bookedBy = $hourArr[$id]->getStudent();
-            // $bookedBy = $hourArr[$id] ? "($hourArr[$id])": "";
             $color = "";
             // Time label
             $hour = (int)($id / 2) + 8;
@@ -331,18 +340,18 @@ function getHoursTable($db, $date, $hourArr, $hourLabel) {
             if ($hourArr[$id]->getDuration() == 0) {
                 // Second 30 min slot for 60 min booking
                 if ($hourArr[$id - 1]->getStudent() == "admin") {
-                    $disabled = "disabled-admin";
+                    $disabled = "free-disabled";
                 } else {
-                    $disabled = "disabled-student";
+                    $disabled = "taken-disabled";
                 }
                 $table .= "<td><input id='h{$id}' type='submit' class='button {$disabled}' name='hourLabel' value='' /></td>";
             } else {
                 if ($time == $hourLabel) {
                     $color = "selected";
                 } elseif ($bookedBy == "admin") {
-                    $color = "admin-color";
+                    $color = "free";
                 } elseif ($bookedBy != "") {
-                    $color = "student-color";
+                    $color = "taken";
                 }
                 $table .= "<td><input id='h{$id}' type='submit' class='button {$color}' name='hourLabel' value='{$time} {$bookedBy}' /></td>";
             }
@@ -358,7 +367,7 @@ function getHoursTable($db, $date, $hourArr, $hourLabel) {
 *
 * @return array updated $hoursArray
 */
-function updateDatabaseCalendar($db, $arr, $date, $student, $hourStr, $spin)
+function updateCalendarDB($db, $arr, $date, $student, $hourStr, $spin)
 {
     // Convert hour "11:30" to integer 1130
     $val = explode(":", $hourStr);
@@ -392,7 +401,7 @@ function updateDatabaseCalendar($db, $arr, $date, $student, $hourStr, $spin)
             }
         }
         // Redirect
-        header("Location: ?route=admin_planning_2&date=$date");
+        header("Location: ?route=admin_planning_2&selDate=$date");
         exit;
     }
 
@@ -441,7 +450,7 @@ function updateDatabaseCalendar($db, $arr, $date, $student, $hourStr, $spin)
     }
 
     // Redirect
-    header("Location: ?route=admin_planning_2&date=$date");
+    header("Location: ?route=admin_planning_2&selDate=$date");
 }
 
 
@@ -469,5 +478,5 @@ function copyTemplate($db, $date, $arr)
     }
 
     // Redirect
-    header("Location: ?route=admin_planning_2&date=$date");
+    header("Location: ?route=admin_planning_2&selDate=$date");
 }

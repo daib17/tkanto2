@@ -6,7 +6,7 @@
     */
     var showFilter = document.getElementById("showFilter");
     if (showFilter != null) {
-        showFilter.addEventListener("click", function () {
+        showFilter.addEventListener("change", function () {
             var value = showFilter.options[showFilter.selectedIndex].value;
             // Redirect with parameter
             var url = window.location.href;

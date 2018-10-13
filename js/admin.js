@@ -6,7 +6,7 @@
     */
     var spinner = document.getElementById("spinner");
     if (spinner != null) {
-        spinner.addEventListener("click", function () {
+        spinner.addEventListener("change", function () {
             var value = spinner.options[spinner.selectedIndex].value;
             for (var i = 0; i < 28 ; i++) {
                 if (document.getElementById("h" + i)
@@ -23,13 +23,6 @@
             } else {
                 window.location.href = url + "&spinTime=" + length;
             }
-
-            // var index = url.indexOf("&hourId");
-            // if (index > 0) {
-            //     window.location.href = url.substr(0, index) + "&hourId=" + hour + "&length=" + length;
-            // } else {
-            //     window.location.href = url + ("&hours=") + hour + "&length=" + length;
-            // }
         });
     }
 })();
