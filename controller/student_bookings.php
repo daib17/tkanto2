@@ -1,57 +1,32 @@
 <?php
 require_once("src/student_functions.php");
 
-// Get month and year shown in calendar
-if (isset($_SESSION['month']) && isset($_SESSION['year'])) {
-    $month = $_SESSION['month'];
-    $year = $_SESSION['year'];
-} else {
-    $month = date('n');
-    $year = date('Y');
+// Get login name from session
+$student = (isset($_SESSION['login'])) ? $_SESSION['login'] : "ninas";
+
+// Actual page
+$page = isset($_GET['page']) ? $_GET['page'] : 1;
+
+// Date and time from selected item
+$selDate = isset($_GET['selDate']) ? $_GET['selDate'] : "";
+$selTime = isset($_GET['selTime']) ? $_GET['selTime'] : "";
+
+// Default UI
+$infoMsg = "";
+$cancelButton = "hidden";
+
+// Cancel booking?
+if (isset($_GET['button']) && $_GET['button'] == "cancel") {
+    updateBooking($db, $selDate, $selTime, $student, "admin");
+    $selDate = "";
+    $selTime = "";
+} elseif (isset($_GET['selDate'])) {
+    $infoMsg = "hidden";
+    $cancelButton = "";
 }
 
-// Prev/Next month clicked?
-if (isset($_GET['changeMonth'])) {
-    if ($_GET['changeMonth'] == ">>") {
-        if ($month == 12) {
-            $month = 1;
-            $year++;
-        } else {
-            $month++;
-        }
-    } else {
-        if ($month == 1) {
-            $month = 12;
-            $year--;
-        } else {
-            $month--;
-        }
-    }
-}
+// Generate student table
+$bookingsTable = getBookingsList($db, $student, $page, $selDate, $selTime);
 
-// New day selected?
-if (isset($_GET['day'])) {
-    $day = $_GET['day'];
-    $daySelected = date('Y-m-d', strtotime($year . "-" . $month . "-" . $day));
-} else {
-    // Restore selected day
-    if (isset($_SESSION['daySelected'])) {
-        $daySelected = $_SESSION['daySelected'];
-    } else {
-        $daySelected = date('Y-m-d');   // today
-    }
-}
-
-// Get month name for number
-$monthName = date("F", mktime(0, 0, 0, $month, 1, 2018));
-$calendarTable = getCalendarAsTable($daySelected, $month, $year);
-$dayTable = getDayTable($db, $daySelected);
-
-$_SESSION['month'] = $month;
-$_SESSION['year'] = $year;
-$_SESSION['daySelected'] = $daySelected;
-
-// Extract day, month and year from selected day for day table header
-$daySel = date("j", strtotime($daySelected));
-$monthSel = date("M", strtotime($daySelected));
-$yearSel = date("Y", strtotime($daySelected));
+// Page navigation
+$pagination = createPageNavigation($db, $student, $page);

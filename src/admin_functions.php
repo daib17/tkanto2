@@ -2,9 +2,13 @@
 const ITEMS_PAGE = 5;   // Number of students per page
 
 /**
-* @param date day selected (Y-m-d)
-* @param string $date (day)/month/year to be show in the calendar
-* @param string $selDate previously selected date
+* Generate monthly calendar for admin.
+*
+* @param object $db database
+* @param string $date actual (day)/month/year to show (day irrelevant here)
+* @param string $selDate previously selected day
+*
+* @return string table
 */
 function getAdminMonthlyCalendar($db, $date, $selDate)
 {
@@ -107,7 +111,8 @@ function getAdminMonthlyCalendar($db, $date, $selDate)
 *
 *   @param int $status (0)disabled, (1)pending, (2)active, (3)all
 */
-function getStudentsByStatus($db, $status = 2) {
+function getStudentsByStatus($db, $status = 2)
+{
     $sql = "SELECT * FROM student";
     if ($status < 3) {
         $sql .= " WHERE status = ?";
@@ -116,21 +121,38 @@ function getStudentsByStatus($db, $status = 2) {
     return $res;
 }
 
-function getStudentByID($db, $id) {
+function getStudentByID($db, $id)
+{
     $sql = "SELECT * FROM student WHERE id = ?";
     $res = $db->executeFetch($sql, [$id]);
     return $res;
 }
 
-function getStudentListAsTable($db, $filterId = 3, $page, $selectedID) {
+function doSearch($db, $search)
+{
+    $search = "%" . $search . "%";
+    $sql = "SELECT * FROM student WHERE firstname LIKE ? OR lastname LIKE ?";
+    $res = $db->executeFetchAll($sql, [$search, $search]);
+    return $res;
+}
+
+function getStudentListAsTable($db, $filterId = 3, $page, $selectedID, $search)
+{
     $statusStr = ["Disabled", "Pending", "Active"];
-    $res = getStudentsByStatus($db, $filterId);
+    if ($search != "") {
+        $res = doSearch($db, $search);
+        $searchInput = "<input type='hidden' name='search' value={$search} />";
+    } else {
+        $res = getStudentsByStatus($db, $filterId);
+        $searchInput = "";
+    }
+
     $table = "";
     if ($res != null && count($res) > 0) {
         $firstID = ($page - 1) * ITEMS_PAGE; // id for first element to draw
         $lastID = $firstID + ITEMS_PAGE;
         for ($id = $firstID; $id < $lastID; $id++) {
-            $table .= "<tr class='selectable'>";
+            $table .= "<tr>";
             if ($id < count($res)) {
                 $name = $res[$id]->firstname . "&nbsp;" . $res[$id]->lastname;
                 $studentID = $res[$id]->id;
@@ -140,7 +162,7 @@ function getStudentListAsTable($db, $filterId = 3, $page, $selectedID) {
                     $selected = "";
                 }
 
-                $table .= "<td colspan=2><form method='GET'><input type='hidden' name='route' value='admin_students_1'><input type='submit' class='submit-clean" . $selected ."' name='name' value=" . $name . "><input type='hidden' name='studentID' value=" . $studentID . " /><input type='hidden' name='filter' value=" . $filterId . " /><input type='hidden' name='page' value=" . $page . " /></form></td>";
+                $table .= "<td colspan=2><form method='GET'><input type='hidden' name='route' value='admin_students_1'>{$searchInput}<input type='submit' class='{$selected}' name='name' value={$name}><input type='hidden' name='studentID' value={$studentID} /><input type='hidden' name='filter' value={$filterId} /><input type='hidden' name='page' value={$page} /></form></td>";
                 $table .= "<td>" . $statusStr[$res[$id]->status] . "</td>";
             } else {
                 $table .= "<td colspan=2>&nbsp;</td>";
@@ -151,7 +173,7 @@ function getStudentListAsTable($db, $filterId = 3, $page, $selectedID) {
     } else {
         $table = "";
         $table .= "<tr>";
-        $table .= "<td colspan=4>" . "No students found." . "</td>";
+        $table .= "<td colspan=3 class='no-found-text'>" . "No students found in database." . "</td>";
         $table .= "</tr>";
     }
 
@@ -159,8 +181,16 @@ function getStudentListAsTable($db, $filterId = 3, $page, $selectedID) {
 }
 
 
-function getPagination($db, $filterId, $actualPage) {
-    $res = getStudentsByStatus($db, $filterId);
+function getPagination($db, $filterId, $actualPage, $search)
+{
+    if ($search != "") {
+        $res = doSearch($db, $search);
+        $searchInput = "<input type='hidden' name='search' value={$search} />";
+    } else {
+        $res = getStudentsByStatus($db, $filterId);
+        $searchInput = "";
+    }
+
     if ($res == null || count($res) < ITEMS_PAGE + 1) {
         return "";
     }
@@ -173,7 +203,7 @@ function getPagination($db, $filterId, $actualPage) {
 
     for ($id = 1; $id < $pages + 1; $id++) {
         $active = $id == $actualPage ? "active" : "";
-        $table .= "<form method='GET'><input type='hidden' name='route' value='admin_students_1'><input type='hidden' name='filter' value=" . $filterId . " /><li class='page-item " . $active . "'><input type='submit' class='page-link' name='page' value=" . $id . "></li></form>";
+        $table .= "<form method='GET'><input type='hidden' name='route' value='admin_students_1'>{$searchInput}<input type='hidden' name='filter' value=" . $filterId . " /><li class='page-item " . $active . "'><input type='submit' class='page-link' name='page' value=" . $id . "></li></form>";
     }
 
     $table .= "</ul>";
@@ -184,7 +214,7 @@ function getPagination($db, $filterId, $actualPage) {
 function getSpinnerFilter($status) {
     $filterType = ["Disabled", "Pending", "Active", "All"];
     // Generate select spinner
-    $select = "<select id='showFilter' class='form-control w-50'>";
+    $select = "<select id='showFilter' class='form-control w-25'>";
     foreach ($filterType as $key => $value) {
         if ($key == $status) {
             $select .= "<option value='" . $key . "'selected='selected'>" . $value . "</option>";

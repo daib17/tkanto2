@@ -1,8 +1,9 @@
 <?php
 require_once("src/admin_functions.php");
 
-$filterId = isset($_GET['filter']) ? $_GET['filter'] : 2;
+$filter = isset($_GET['filter']) ? $_GET['filter'] : 2;
 $page = isset($_GET['page']) ? $_GET['page'] : 1;
+
 if (isset($_GET['studentID'])) {
     $studentID = $_GET['studentID'];
     $infoMsg = "hidden";
@@ -11,11 +12,17 @@ if (isset($_GET['studentID'])) {
     $editButton = "hidden";
 }
 
+if (isset($_GET['search'])) {
+    $search = (strlen($_GET['search']) > 2) ? $_GET['search'] : "";
+} else {
+    $search = "";
+}
+
 // Spinner
-$select = getSpinnerFilter($filterId);
+$select = getSpinnerFilter($filter);
 
 // Generate student table
-$studentTable = getStudentListAsTable($db, $filterId, $page, $studentID);
+$studentTable = getStudentListAsTable($db, $filter, $page, $studentID, $search);
 
 // pagination
-$pagination = getPagination($db, $filterId, $page);
+$pagination = getPagination($db, $filter, $page, $search);

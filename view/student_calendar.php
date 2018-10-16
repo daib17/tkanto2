@@ -9,46 +9,68 @@
     </ul>
 
     <div class="container main-container-inner">
-        <div class="row">
-            <div class="col-md-6 student-calendar">
+        <div class="student-calendar <?= $hidePanelA ?>">
+            <table class="table table-only-header table-bordered">
                 <form class="calendar-form" method="GET">
                     <input type="hidden" name="route" value="student_calendar">
-                    <table class="table table-bordered">
-                        <thead>
-                            <tr>
-                                <th scope="col" colspan="1">
-                                    <input type="submit" class="arrow" name="changeMonth" value="<<">
-                                </th>
-                                <th scope="col" colspan="5" class="title"><?= $monthName ?> <?= $year ?></th>
-                                <th scope="col" colspan="1">
-                                    <input type="submit" class="arrow" name="changeMonth" value=">>">
-                                </th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <?= $calendarTable ?>
-                        </tbody>
-                    </table>
-                </form>
-                <!-- <?php var_dump($daySelected); ?> -->
-            </div>
-
-            <div class="col-md-6 student-day">
-                <table class="table table-bordered">
+                    <input type="hidden" name="date" value=<?= $date ?>>
                     <thead>
                         <tr>
-                            <th scope="col"><?= $daySel ?> <?= $monthSel ?> <?= $yearSel ?></th>
-                            <th scope="col">Select</th>
+                            <th scope="col" colspan="1">
+                                <input type="submit" class="btn btn-arrow btn-block font-weight-bold" name="changeMonth" value="<<">
+                            </th>
+                            <th scope="col" colspan="5" class="title"><?= $monthName ?> <?= $year ?></th>
+                            <th scope="col" colspan="1">
+                                <input type="submit" class="btn btn-arrow btn-block font-weight-bold" name="changeMonth" value=">>">
+                            </th>
                         </tr>
-                    </thead>
-                    <tbody>
-                        <?= $dayTable ?>
-                    </tbody>
-                </table>
+                    </form>
+                </thead>
+            </table>
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th class="day-label">Mon</th>
+                        <th class="day-label">Tue</th>
+                        <th class="day-label">Wed</th>
+                        <th class="day-label">Thu</th>
+                        <th class="day-label">Fri</th>
+                        <th class="day-label">Sat</th>
+                        <th class="day-label">Sun</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?= $calendarTable ?>
+                </tbody>
+            </table>
+            <div>
+                <div class="alert alert-info" role="alert">
+                    (*) Days with available times.
+                </div>
             </div>
         </div>
-        <form class="save-button" action="#" method="POST">
-            <button class="btn btn-lg btn-primary btn-block font-weight-bold" type="submit">Save</button>
+        <div class="student-day <?= $hidePanelB ?>">
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th scope="col" colspan="2"><?= $daySel ?> <?= $monthSel ?> <?= $yearSel ?></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?= $dayTable ?>
+                </tbody>
+            </table>
+            <div class="alert alert-info" role="alert">
+                (<span class="asterisk">*</span>) 30 min classes.
+            </div>
+        </div>
+
+        <form class="<?= $hidePanelB ?>" method="get">
+            <input type="hidden" name="route" value="student_calendar">
+            <input type="hidden" name="selDate" value="<?= $selDate ?>">
+            <input type="hidden" name="selHour" value="<?= $selHour ?>">
+            <button class="btn btn-lg <?= $buttonType ?> btn-block font-weight-bold mt-4" type="submit" name="button" value="<?= $buttonLabel ?>"><?= $buttonLabel ?></button>
+            <button class="btn btn-lg btn-secondary btn-block font-weight-bold mt-4" type="submit" name="button" value="back">Back</button>
         </form>
     </div>
 </div>

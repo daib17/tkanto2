@@ -23,8 +23,14 @@ switch ($route) {
         // TODO
         // Validate username and password
         // If login ok view/student_cal.php or view/admin_students.php
+        $controller = ["controller/login.php"];
         $view = ["incl/header.php", "view/login.php"];
         break;
+    case "logout":
+        $title = "Tk | Login";
+        $controller = ["controller/login.php"];
+        $view = ["incl/header.php", "view/login.php"];
+    break;
     case "register":
         $title = "Tk | Register";
         $view = ["incl/header_login.php", "view/register.php"];
@@ -34,42 +40,42 @@ switch ($route) {
         $view = ["incl/header_logout.php", "view/logout.php"];
         break;
     case "student_calendar":
-        $title = "Student | Calendar";
+        $title = "Tk | Student";
         $controller = ["controller/student_calendar.php"];
         $view = ["incl/header_logout.php", "view/student_calendar.php"];
         break;
     case "student_bookings":
-        $title = "Student | Calendar";
+        $title = "Tk | Student";
         $controller = ["controller/student_bookings.php"];
         $view = ["incl/header_logout.php", "view/student_bookings.php"];
         break;
     case "admin_students_1":
-        $title = "Admin | Students";
+        $title = "Tk | Admin";
         $controller = ["controller/admin_students_1.php"];
         $view = ["incl/header_logout.php", "view/admin_students_1.php"];
         break;
     case "admin_students_2":
-        $title = "Admin | Students";
+        $title = "Tk | Admin";
         $controller = ["controller/admin_students_2.php"];
         $view = ["incl/header_logout.php", "view/admin_students_2.php"];
         break;
     case "admin_bookings":
-        $title = "Admin | Bookings";
+        $title = "Tk | Admin";
         $controller = ["controller/admin_bookings.php"];
         $view = ["incl/header_logout.php", "view/admin_bookings.php"];
         break;
     case "admin_planning_1":
-        $title = "Admin | Planning";
+        $title = "Tk | Admin";
         $controller = ["controller/admin_planning_1.php"];
         $view = ["incl/header_logout.php", "view/admin_planning_1.php"];
         break;
     case "admin_planning_2":
-        $title = "Admin | Planning";
+        $title = "Tk | Admin";
         $controller = ["controller/admin_planning_2.php"];
         $view = ["incl/header_logout.php", "view/admin_planning_2.php"];
         break;
     case "admin_stats":
-        $title = "Admin | Stats";
+        $title = "Tk | Admin";
         $controller = ["controller/admin_stats.php"];
         $view = ["incl/header_logout.php", "view/admin_stats.php"];
         break;

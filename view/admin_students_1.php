@@ -14,9 +14,21 @@
         </li>
     </ul>
     <div class="container main-container-inner">
+        <form>
+            <div class="float-right input-group w-50 mb-3">
+                <input class="form-control" type="text" placeholder="Search" name="search">
+                <div class="input-group-append">
+                    <input type="hidden" name="route" value="admin_students_1">
+                    <button type="submit" class="btn btn-info">
+                        <i class="fa fa-search" aria-hidden="true"></i>
+                    </button>
+                </div>
+            </div>
+        </form>
         <div class="spinner">
             <?= $select ?>
         </div>
+
         <table class="table table-bordered table-selectable">
             <thead>
                 <tr>
@@ -29,7 +41,6 @@
             </tbody>
         </table>
         <?= $pagination ?>
-        <!-- Debug: <?= $studentID ?> -->
         <div class="<?= $infoMsg ?>">
             <div class="alert alert-info" role="alert">
                 Select student to edit details.
@@ -38,7 +49,7 @@
         <form class="top-buffer" method="get">
             <input type='hidden' name='route' value='admin_students_2'>
             <input type="hidden" name="studentID" value="<?= $studentID ?>">
-            <button class="btn btn-lg btn-primary btn-block font-weight-bold <?= $editButton ?>" type="submit" name="button" value="edit">Edit</button>
+            <button class="btn btn-lg btn-info btn-block font-weight-bold <?= $editButton ?>" type="submit" name="button" value="edit">Edit</button>
         </form>
     </div>
 </div>

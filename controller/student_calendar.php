@@ -1,58 +1,94 @@
 <?php
 require_once("src/student_functions.php");
 
-// Get month and year shown in calendar
-if (isset($_SESSION['month']) && isset($_SESSION['year'])) {
-    $month = $_SESSION['month'];
-    $year = $_SESSION['year'];
-} else {
-    $month = date('n');
-    $year = date('Y');
+// Get login name from session
+$student = (isset($_SESSION['login'])) ? $_SESSION['login'] : "ninas";
+
+// Toggle between panels A and B
+$hidePanelA = "";
+$hidePanelB = "hidden";
+if (isset($_GET["hidePanel"])) {
+    if ($_GET["hidePanel"] == "A") {
+        $hidePanelA = "hidden";
+        $hidePanelB = "";
+    }
 }
 
-// Prev/Next month clicked?
+// selDate is the selected date in the calendar
+// date is the month/year being show (day is irrelevant here)
+$selHour = "";
+$selDate = "";
+$buttonLabel = "";
+$buttonType = "hidden";
+if (isset($_GET['selDate'])) {
+    $selDate = $_GET['selDate'];
+    $date = $selDate;
+    if (isset($_GET['selHour'])) {
+        $selHour = $_GET['selHour'];
+        if (isset($_GET['statusLabel'])) {
+            if ($_GET['statusLabel'] == "booked") {
+                $buttonLabel = "Cancel";
+                $buttonType = "btn-danger";
+            } else {
+                $buttonLabel = "Book";
+                $buttonType = "btn-info";
+            }
+        }
+    }
+    $selHour = (isset($_GET['selHour'])) ? $_GET['selHour'] : "";
+} elseif (isset($_GET['date'])) {
+    $date = $_GET['date'];
+} else {
+    $date = date('Y-m-d');   // today
+    $selDate = $date;
+}
+
+// Book selected time?
+if (isset($_GET['button']) && $_GET['button'] == "Book") {
+    updateBooking($db, $selDate, $selHour, "admin", $student);
+}
+
+// Cancel a booking?
+if (isset($_GET['button']) && $_GET['button'] == "Cancel") {
+    updateBooking($db, $selDate, $selHour, $student, "admin");
+}
+
+// Calendar header
+$headMonth = date("n", strtotime($date));
+$headYear = date("Y", strtotime($date));
+
+// Calendar header
+$headMonth = date("n", strtotime($date));
+$headYear = date("Y", strtotime($date));
+
 if (isset($_GET['changeMonth'])) {
     if ($_GET['changeMonth'] == ">>") {
-        if ($month == 12) {
-            $month = 1;
-            $year++;
+        if ($headMonth == 12) {
+            $headMonth = 1;
+            $headYear++;
         } else {
-            $month++;
+            $headMonth++;
         }
     } else {
-        if ($month == 1) {
-            $month = 12;
-            $year--;
+        if ($headMonth == 1) {
+            $headMonth = 12;
+            $headYear--;
         } else {
-            $month--;
+            $headMonth--;
         }
     }
+    // Update month and year to show
+    $date = $headYear . "-" . $headMonth . "-" . "01";
 }
 
-// New day selected?
-if (isset($_GET['day'])) {
-    $day = $_GET['day'];
-    $daySelected = date('Y-m-d', strtotime($year . "-" . $month . "-" . $day));
-} else {
-    // Restore selected day
-    if (isset($_SESSION['daySelected'])) {
-        $daySelected = $_SESSION['daySelected'];
-    } else {
-        $daySelected = date('Y-m-d');   // today
-    }
-}
+// Month name and year for table header
+$monthName = date("F", strtotime($date));
+$year = date("Y", strtotime($date));
 
-// Get month name for number
-$monthName = date("F", mktime(0, 0, 0, $month, 1, 2018));
-// $calendar = new Calendar($db);
-$calendarTable = getCalendarAsTable($daySelected, $month, $year);
-$dayTable = getDayTable($db, $daySelected);
-
-$_SESSION['month'] = $month;
-$_SESSION['year'] = $year;
-$_SESSION['daySelected'] = $daySelected;
+$calendarTable = getMonthCalendar($db, $date, $selDate, $student);
+$dayTable = getDayCalendar($db, $student, $selDate, $selHour);
 
 // Extract day, month and year from selected day for day table header
-$daySel = date("j", strtotime($daySelected));
-$monthSel = date("M", strtotime($daySelected));
-$yearSel = date("Y", strtotime($daySelected));
+$daySel = date("j", strtotime($selDate));
+$monthSel = date("M", strtotime($selDate));
+$yearSel = date("Y", strtotime($selDate));

@@ -9,6 +9,33 @@
     </ul>
 
     <div class="container main-container-inner">
-        BOOKINGS HERE.
+        <table class="table table-bordered table-selectable">
+            <thead>
+                <tr>
+                    <th scope="col" colspan="2">Date</th>
+                    <th scope="col">Time</th>
+                    <th scope="col">Duration</th>
+                </tr>
+            </thead>
+            <tbody>
+                <?= $bookingsTable ?>
+            </tbody>
+        </table>
+        <?= $pagination ?>
+        <div class="<?= $infoMsg ?>">
+            <div class="alert alert-info" role="alert">
+                Select date to cancel.
+            </div>
+        </div>
+        <form class="top-buffer" method="get">
+            <input type='hidden' name='route' value='student_bookings'>
+            <input type="hidden" name="selDate" value="<?= $selDate ?>">
+            <input type="hidden" name="selTime" value="<?= $selTime ?>">
+            <button class="btn btn-lg btn-danger btn-block font-weight-bold <?= $cancelButton ?>" type="submit" name="button" value="cancel">Cancel</button>
+        </form>
+        <form method="get">
+            <input type='hidden' name='route' value='student_calendar'>
+            <button class="btn btn-lg btn-secondary btn-block font-weight-bold mt-4" type="submit">Back to calendar</button>
+        </form>
     </div>
 </div>

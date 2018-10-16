@@ -15,7 +15,7 @@
     </ul>
     <div class="container main-container-inner">
         <div class="admin-calendar">
-            <table class="table table-bordered">
+            <table class="table table-only-header table-bordered">
                 <thead>
                     <form class="calendar-form" method="GET">
                         <input type="hidden" name="route" value="admin_planning_1">
@@ -30,6 +30,19 @@
                             </th>
                         </tr>
                     </form>
+                </thead>
+            </table>
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th class="day-label">Mon</th>
+                        <th class="day-label">Tue</th>
+                        <th class="day-label">Wed</th>
+                        <th class="day-label">Thu</th>
+                        <th class="day-label">Fri</th>
+                        <th class="day-label">Sat</th>
+                        <th class="day-label">Sun</th>
+                    </tr>
                 </thead>
                 <tbody>
                     <?= $calendarTable ?>

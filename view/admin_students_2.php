@@ -36,9 +36,9 @@
                 <?= $select ?>
             </div>
             <div class="top-buffer">
-                <button class="btn btn-lg btn-success btn-block mt-3 font-weight-bold mb-3" type="submit" name="button" value="save">Save</button>
+                <button class="btn btn-lg btn-info btn-block mt-3 font-weight-bold mb-3" type="submit" name="button" value="save">Save</button>
 
-                <button class="btn btn-lg btn-danger btn-block font-weight-bold" type="submit" name="button" value="cancel">Cancel</button>
+                <button class="btn btn-lg btn-secondary btn-block font-weight-bold" type="submit" name="button" value="cancel">Cancel</button>
             </div>
         </form>
     </div>

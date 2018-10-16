@@ -10,39 +10,44 @@ table {
     empty-cells: show;
 }
 
+.table-only-header {
+    margin-bottom: 0;
+}
+
+.table .empty-cell {
+    padding: 16px 0;
+}
+
 thead {
     text-align: center;
 }
 
+thead .day-label {
+    font-weight: normal;
+    font-size: 12px;
+}
+
+a {
+    color: #17a2b8;
+}
+
+.hidden {
+    display: none;
+    visibility: hidden;
+}
+
+.bold {
+    font-weight: bold;
+    font-style: italic;
+}
+
 .table th {
     background-color: #b0bec5;
-    padding: 0;
+    padding: 0.5;
 }
 
 .btn-arrow {
     background-color: #b0bec5;
-}
-
-/* .table .arrow {
-    height: 100%;
-    width: 100%;
-}
-
-.table th.title {
-    padding-top: .5rem;
-    padding-bottom: .5rem;
-} */
-
-.login-container {
-    min-height: 750px;
-}
-
-.login-content {
-    padding-top: 60px;
-}
-
-.login-content img {
-    width: 80%;
 }
 
 .footer {
@@ -51,7 +56,27 @@ thead {
     color: white;
 }
 
-/* STUDENT - Calendar */
+.asterisk {
+    vertical-align: sub;
+}
+
+/* STUDENT - Login -------------------------------------------- */
+
+.login-content {
+    min-height: 750px;
+    /* padding: 30px 0; */
+}
+
+.register-content {
+    padding: 30px 0;
+}
+
+.login-content img,
+.register-content img {
+    width: 75%;
+}
+
+/* STUDENT - Calendar -------------------------------------------- */
 
 .main-container {
     width: 100%;
@@ -60,7 +85,7 @@ thead {
 }
 
 .main-container-inner {
-    margin-top: 0px;
+    margin-top: 16px;
     padding: 16px;
 }
 
@@ -83,6 +108,7 @@ thead {
 }
 
 .student-calendar .button:hover {
+    border: 1px solid  #fff176;
     background-color: #fff176;
 }
 
@@ -104,8 +130,34 @@ thead {
     padding: 0rem;
 }
 
-.student-calendar .selected {
-    background-color: #fff9c4;
+.student-calendar .selected-empty {
+    border: 1px solid black;
+    background-color: white;
+}
+
+.student-calendar .selected-booked {
+    border: 1px solid black;
+    background-color: #81c784;
+}
+
+.student-calendar .selected-weekend {
+    border: 1px solid black;
+    background-color: #ffebee;
+}
+
+.student-calendar .normal {
+    border: 1px solid white;
+    background-color: white;
+}
+
+.student-calendar .booked {
+    border: 1px solid #81c784;
+    background-color: #81c784;
+}
+
+.student-calendar .weekend {
+    border: 1px solid #ffebee;
+    background-color: #ffebee;
 }
 
 .student-calendar .today {
@@ -116,33 +168,40 @@ thead {
     background-color: #ffebee;
 }
 
-.student-day th:first-of-type {
-    background-color: #fff9c4;
+.student-calendar .booked,
+.student-day .booked {
+    background-color: #81c784;
 }
 
-/* .save-button {
-    clear: both;
-    margin: 24px;
-    padding-bottom: 32px;
-} */
-
-/* .btn-primary {
-    background-color: #039be5;
+.student-day .available,
+.student-day .non-selected {
+    background-color: #fff;
 }
 
-.btn-danger {
-    background-color: #01579b;
+.student-day td {
+    text-align: center;
+    vertical-align: middle;
+    padding: 0rem;
 }
 
-.btn-danger {
-    background-color: #546e7a;
+.student-day .button {
+    display: block;
+    width: 100%;
+    height: 100%;
+    border-style: none;
+    border-color: white;
+    padding: 16px 0;
 }
 
-.btn-danger:hover {
-    background-color: white;
-} */
+.student-day .button:hover {
+    background-color: #fff176;
+}
 
-/* ADMIN - Students */
+.student-day .selected {
+    background-color: #fdd835;
+}
+
+/* ADMIN - Students -------------------------------------------- */
 
 .spinner {
     margin-bottom: 2rem;
@@ -152,9 +211,13 @@ thead {
     margin: 16px;
 }
 
+.pagination .page-link {
+    color: #17a2b8;
+}
+
 .pagination .active .page-link {
-    background-color: #2196f3;
-    border-color: #2196f3;
+    background-color: #17a2b8;
+    border-color: #17a2b8;
 }
 
 .page-item:last-child .page-link {
@@ -172,7 +235,13 @@ thead {
 }
 
 .table-selectable input {
-    padding: .75rem;
+    display: block;
+    background-color: white;
+    width: 100%;
+    height: 100%;
+    border-style: none;
+    border-color: white;
+    padding: 1rem;
     text-align: left;
 }
 
@@ -181,11 +250,23 @@ thead {
 }
 
 .table-selectable .empty {
-    padding: .75rem;
+    padding: 1rem;
     visibility: hidden;
 }
 
-.submit-clean {
+.table-selectable .no-found-text {
+    padding: .75rem;
+}
+
+.table-selectable form {
+    margin: 0;
+}
+
+.table-selectable .selected {
+    background-color: #fdd835;
+}
+
+/* .submit-clean {
     display: block;
     background-color: white;
     width: 100%;
@@ -197,32 +278,11 @@ thead {
 
 .submit-clean:hover {
     background-color: #fff176;
-}
+} */
 
-.table-selectable form {
-    margin: 0;
-}
 
-.table-selectable .selected {
-    background-color: #fff9c4;
-}
 
-.adminStudentsA.hide {
-    display: none;
-    visibility: hidden;
-}
-
-.adminStudentsB.hide {
-    display: none;
-    visibility: hidden;
-}
-
-.hidden {
-    display: none;
-    visibility: hidden;
-}
-
-/* ADMIN - Planning */
+/* ADMIN - Planning -------------------------------------------- */
 
 .admin-calendar .button {
     display: block;
@@ -252,6 +312,7 @@ thead {
 
 .admin-calendar th {
     text-align: center;
+    padding: 0rem;
 }
 
 .admin-calendar td {
@@ -271,11 +332,6 @@ thead {
     background-color: #ffebee;
 }
 
-.admin-calendar .bold {
-    font-weight: bold;
-    font-style: italic;
-}
-
 .admin-calendar .student-color {
     background-color: #ce93d8;    /* purple */
 }
@@ -287,23 +343,6 @@ thead {
 .admin-calendar .disabled {
     background-color: #fff;
 }
-
-/* .button.disabled-student {
-    background-color: #ce93d8;
-} */
-
-/* .button.disabled-admin {
-    background-color: #81c784;
-}
-
-.button.disabled-admin:hover {
-    background-color: #81c784;
-} */
-
-/* .admin-calendar .day-label .free, .taken {
-    background-color: #81c784;
-    padding: 0;
-} */
 
 .admin-calendar .free,
 .admin-calendar .free-disabled,
@@ -336,9 +375,10 @@ thead {
     border-bottom: 1px solid #e0e0e0;
 }
 
+/* MEDIA QUERIES --------------------------------------------- */
 
 * {
-    font-size: 10px;
+    font-size: 11px;
 }
 
 /* Small devices (landscape phones, 576px and up) */
