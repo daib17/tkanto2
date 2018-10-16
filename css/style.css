@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css?family=Montserrat');
+/* @import url('https://fonts.googleapis.com/css?family=Montserrat'); */
 
 body {
     font-family: 'Montserrat', sans-serif;
@@ -283,6 +283,11 @@ a {
 
 
 /* ADMIN - Planning -------------------------------------------- */
+
+/* .row.spinner {
+    margin-right: 0;
+    margin-left: 0;
+} */
 
 .admin-calendar .button {
     display: block;

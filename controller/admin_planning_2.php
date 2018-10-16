@@ -25,11 +25,28 @@ if (isset($_GET['changeDate'])) {
 $dayOfWeek = date("l", strtotime($date));
 
 // Selected hour label from table
-if (isset($_GET['hourLabel'])) {
-    // Remove (admin) from  "13.30 (admin)"
-    $hourStr = explode(" ", $_GET['hourLabel'])[0];
+if (isset($_GET['hourLabel']) && $_GET['hourLabel'] != "") {
+    $hourStr = explode(" ", $_GET['hourLabel'])[0];     // hour
+    $bookedBy = explode(" ", $_GET['hourLabel'])[1];    // name
 } else {
     $hourStr = "";
+    $bookedBy = "";
+}
+
+// Cancel appointment button
+if ($bookedBy != "" && $bookedBy !="admin") {
+    $cancelBtn = "";
+} else {
+    $cancelBtn = "hidden";
+}
+
+// Show spinner with list of students
+if ($bookedBy == "admin") {
+    $studentSpinner = getStudentSpinner();
+    $hideSpinner = "";
+} else {
+    $studentSpinner = "";
+    $hideSpinner = "hidden";
 }
 
 // Generate array (0 to 27) of Hour objects for selected date from DB
@@ -42,6 +59,13 @@ if (isset($_GET['button']) && $_GET['button'] == "copy") {
 
 // Parameter sent by admin.js via URL parameters means spinner changed
 if (isset($_GET['spinTime'])) {
+    $spin = $_GET['spinTime'];
+    $student = "admin";
+    updateCalendarDB($db, $hourArr, $date, $student, $hourStr, $spin);
+}
+
+// Cancel booking
+if (isset($_GET['cancel'])) {
     $spin = $_GET['spinTime'];
     $student = "admin";
     updateCalendarDB($db, $hourArr, $date, $student, $hourStr, $spin);

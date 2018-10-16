@@ -15,7 +15,16 @@
     </ul>
     <div class="container main-container-inner">
         <div class="spinner">
-            <?= $spinner ?>
+            <div class="float-left w-50 mb-4">
+                <?= $spinner ?>
+            </div>
+            <div class="float-right w-50 mb-4 <?= $hideSpinner ?>">
+                <?= $studentSpinner ?>
+            </div>
+            <form class="float-right mb-4" method="get">
+                <input type="hidden" name="route" value="admin_planning_2">
+                <button class="btn btn-md btn-danger font-weight-bold <?= $cancelBtn ?>" type="submit" name="button" value="cancel">Cancel booking</button>
+            </form>
         </div>
         <div class="admin-calendar">
             <form class="calendar-form" method="GET">
@@ -37,15 +46,19 @@
                         <?= $hoursTable ?>
                     </tbody>
                 </table>
-                <div class="top-buffer">
+                <!-- <div>
                     <input type="hidden" name="route" value="admin_planning_2">
-                    <button class="btn btn-lg btn-info btn-block font-weight-bold mt-3 mb-4" type="submit" name="button" value="copy">Copy open hours to next day</button>
+                    <button class="btn btn-lg btn-danger btn-block font-weight-bold mt-4 <?= $cancelBtn ?>" type="submit" name="button" value="copy">Cancel booking</button>
+                </div> -->
+                <div>
+                    <input type="hidden" name="route" value="admin_planning_2">
+                    <button class="btn btn-lg btn-info btn-block font-weight-bold mt-5" type="submit" name="button" value="copy">Copy open hours to next day</button>
                 </div>
             </form>
             <form method="get">
                 <input type="hidden" name="route" value="admin_planning_1">
                 <input type="hidden" name="selDate" value="<?= $date ?>">
-                <button class="btn btn-lg btn-secondary btn-block font-weight-bold" type="submit">Back</button>
+                <button class="btn btn-lg btn-secondary btn-block font-weight-bold my-3" type="submit">Back</button>
             </form>
         </div>
     </div>

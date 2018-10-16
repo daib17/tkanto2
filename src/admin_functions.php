@@ -180,7 +180,6 @@ function getStudentListAsTable($db, $filterId = 3, $page, $selectedID, $search)
     return $table;
 }
 
-
 function getPagination($db, $filterId, $actualPage, $search)
 {
     if ($search != "") {
@@ -344,6 +343,18 @@ function getSpinnerForSelectedHour($db, $arr, $hourStr) {
         }
     }
 
+    $spinHTML .= "</select>";
+    return $spinHTML;
+}
+
+/**
+*
+*/
+function getStudentSpinner() {
+    $spinHTML = "<select id='spinner' class='form-control'>";
+    for ($i = 0; $i < 25; $i++) {
+        $spinHTML .= "<option value='Student#{$i}'>Student{$i}</option>";
+    }
     $spinHTML .= "</select>";
     return $spinHTML;
 }

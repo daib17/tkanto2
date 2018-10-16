@@ -10,6 +10,10 @@
 
     <div class="container main-container-inner">
         <div class="student-calendar <?= $hidePanelA ?>">
+            <h5>
+                Select a date to book a class
+            </h5>
+            <br>
             <table class="table table-only-header table-bordered">
                 <form class="calendar-form" method="GET">
                     <input type="hidden" name="route" value="student_calendar">
@@ -44,9 +48,7 @@
                 </tbody>
             </table>
             <div>
-                <div class="alert alert-info" role="alert">
-                    (*) Days with available times.
-                </div>
+                (*) Dates with available times
             </div>
         </div>
         <div class="student-day <?= $hidePanelB ?>">
@@ -60,8 +62,8 @@
                     <?= $dayTable ?>
                 </tbody>
             </table>
-            <div class="alert alert-info" role="alert">
-                (<span class="asterisk">*</span>) 30 min classes.
+            <div>
+                (*) 30 min classes
             </div>
         </div>
 
