@@ -29,7 +29,7 @@ if (isset($_GET['selDate'])) {
             if ($_GET['statusLabel'] == "booked") {
                 $buttonLabel = "Cancel";
                 $buttonType = "btn-danger";
-            } else {
+            } elseif ($_GET['statusLabel'] == "available") {
                 $buttonLabel = "Book";
                 $buttonType = "btn-info";
             }
@@ -45,12 +45,12 @@ if (isset($_GET['selDate'])) {
 
 // Book selected time?
 if (isset($_GET['button']) && $_GET['button'] == "Book") {
-    updateBooking($db, $selDate, $selHour, "admin", $student);
+    doBooking($db, $selDate, $selHour, $student);
 }
 
 // Cancel a booking?
 if (isset($_GET['button']) && $_GET['button'] == "Cancel") {
-    updateBooking($db, $selDate, $selHour, $student, "admin");
+    cancelBooking($db, $selDate, $selHour, $student);
 }
 
 // Calendar header

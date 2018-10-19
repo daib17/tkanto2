@@ -2,16 +2,16 @@
 require "config/autoload.php";
 require "config/config.php";
 require "src/helper_functions.php";
-require "src/classes/Database.php";
+// require "src/classes/Database.php";
 
 // Global variables
-$headerAction = "Log out";
+// $headerAction = "Log out";
 $controller = [];
 $view = [];
 $db = new Database();
 $db->connect($databaseConfig);
-$sql = null;
-$resultset = null;
+// $sql = null;
+// $resultset = null;
 
 // Route
 $route = getGet("route", "");

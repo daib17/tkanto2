@@ -36,15 +36,15 @@ function getAdminMonthlyCalendar($db, $date, $selDate)
     // Get all entry for given month
     $dateFrom = $year . "-" . $month . "-01";
     $dateTo = $year . "-" . $month . "-" . $numDays;
-    $sql = "SELECT * FROM calendar WHERE date BETWEEN ? AND ?;";
+    $sql = "SELECT * FROM calendar WHERE date BETWEEN ? AND ? AND cancelby IS NULL;";
     $res = $db->executeFetchAll($sql, [$dateFrom, $dateTo]);
 
-    // Get free/taken hours for each day
+    // Get free/booked hours for each day
     $free = [];
-    $taken = [];
+    $booked = [];
     for ($i = 0; $i < $numDays + 1; $i++) {
         $free[] = 0;
-        $taken[] = 0;
+        $booked[] = 0;
     }
 
     foreach ($res as $aDay) {
@@ -52,7 +52,7 @@ function getAdminMonthlyCalendar($db, $date, $selDate)
         if ($aDay->student == "admin" && $aDay->duration != 0) {
             $free[$dayNum]++;
         } elseif ($aDay->student != "admin" && $aDay->duration != 0) {
-            $taken[$dayNum]++;
+            $booked[$dayNum]++;
         }
     }
 
@@ -85,10 +85,10 @@ function getAdminMonthlyCalendar($db, $date, $selDate)
         }
         $date = date('Y-m-d', strtotime($year . "-" . $month . "-" . $i));
         $freeEmpty = ($free[$i] == 0) ? "free-empty" : "";
-        $takenEmpty = ($taken[$i] == 0) ? "taken-empty" : "";
+        $bookedEmpty = ($booked[$i] == 0) ? "booked-empty" : "";
 
         $table .= "<td><form method='get'><div class='day-label'><input type='hidden' name='route' value='admin_planning_2'>
-        <input type='hidden' name='selDate' value={$date}><input type='submit' class='button {$selector}' name='day' value={$i}><div class='free-mini {$freeEmpty}'>{$free[$i]}</div><div class='taken {$takenEmpty}'>{$taken[$i]}</div></div></form></td>";
+        <input type='hidden' name='selDate' value={$date}><input type='submit' class='button {$selector}' name='day' value={$i}><div class='free-mini {$freeEmpty}'>{$free[$i]}</div><div class='booked {$bookedEmpty}'>{$booked[$i]}</div></div></form></td>";
         if ($weekDay == 0) {
             $table .= "</tr>";
         }
@@ -254,8 +254,8 @@ function generateHourArrayFromDB($db, $date) {
     for ($i = 0; $i < 28; $i++) {
         $hourArr[] = new Hour();
     }
-    $sql = "SELECT * FROM calendar WHERE date = ?";
-    $res = $db->executeFetchAll($sql, [$date]);
+    $sql = "SELECT * FROM calendar WHERE date = ? AND (cancelby IS NULL OR flag = ?);";
+    $res = $db->executeFetchAll($sql, [$date, 1]);
     foreach ($res as $row) {
         // Calculate id in array for time in db (800 is 0, 2130 is 27)
         $id = (((int)($row->time / 100)) - 8) * 2;
@@ -265,6 +265,9 @@ function generateHourArrayFromDB($db, $date) {
         $hourArr[$id]->setStudent($row->student);
         $hourArr[$id]->setTime($row->time);
         $hourArr[$id]->setDuration($row->duration);
+        $hourArr[$id]->setUpdated($row->updated);
+        $hourArr[$id]->setFlag($row->flag);
+        $hourArr[$id]->setCancelBy($row->cancelby);
     }
     return $hourArr;
 }
@@ -370,29 +373,40 @@ function getHoursTable($db, $date, $hourArr, $hourLabel) {
     for ($row = 0; $row < 7; $row++) {
         $table .= "<tr>";
         for ($id = $row * 4; $id < ($row * 4) + 4; $id++) {
-            // Booked by label
-            $bookedBy = $hourArr[$id]->getStudent();
-            $color = "";
+            // Booked label showing only for bookings and canceled with flag
+            $bookedBy = "";
+            if (!$hourArr[$id]->getCancelBy() || $hourArr[$id]->getFlag() == 1) {
+                $bookedBy = $hourArr[$id]->getStudent();
+            }
             // Time label
             $hour = (int)($id / 2) + 8;
             $half = ($id % 2 == 1) ? ":30" : ":00";
             $time = $hour . $half;
             // Background color for cell
+            $color = "";
             if ($hourArr[$id]->getDuration() == 0) {
                 // Second 30 min slot for 60 min booking
-                if ($hourArr[$id - 1]->getStudent() == "admin") {
+                if ($hourArr[$id]->getFlag() == 1) {
+                    $disabled = "flag-disabled";
+                } elseif ($hourArr[$id - 1]->getStudent() == "admin") {
                     $disabled = "free-disabled";
                 } else {
-                    $disabled = "taken-disabled";
+                    $disabled = "booked-disabled";
                 }
                 $table .= "<td><input id='h{$id}' type='submit' class='button {$disabled}' name='hourLabel' value='' /></td>";
             } else {
                 if ($time == $hourLabel) {
-                    $color = "selected";
-                } elseif ($bookedBy == "admin") {
-                    $color = "free";
-                } elseif ($bookedBy != "") {
-                    $color = "taken";
+                    $color = "selected ";
+                }
+                if ($bookedBy == "admin") {
+                    $color .= "free";
+                } elseif ($bookedBy != "" && $hourArr[$id]->getFlag() == 1) {
+                    $bookedBy .= "*";
+                    $color .= "flag";
+                } elseif ($bookedBy != "" && $hourArr[$id]->getFlag() == 0) {
+                    $color .= "booked";
+                } else {
+                    $color .= "empty";
                 }
                 $table .= "<td><input id='h{$id}' type='submit' class='button {$color}' name='hourLabel' value='{$time} {$bookedBy}' /></td>";
             }
@@ -494,6 +508,53 @@ function updateCalendarDB($db, $arr, $date, $student, $hourStr, $spin)
     header("Location: ?route=admin_planning_2&selDate=$date");
 }
 
+/**
+* Cancel booking.
+*
+* @param string $orderedBy admin or student
+*/
+function cancelBooking($db, $date, $hourStr, $cancelBy) {
+    // Convert hour "11:30" to integer 1130
+    $val = explode(":", $hourStr);
+    $time = $val[0] * 100 + $val[1];
+    // Get booking from database
+    $sql = "SELECT * FROM calendar WHERE date = ? AND time = ?;";
+    $res = $db->executeFetch($sql, [$date, $time]);
+    $cancelBy = ($cancelBy != "admin") ? $res->student : "admin";
+    // Update first 30 min slot
+    $sql = "UPDATE calendar SET canceldate = NOW(), cancelby = ? WHERE date = ? AND time = ? AND cancelby IS NULL;";
+    $db->execute($sql, [$cancelBy, $date, $time]);
+    // Update second 30 min slot
+    if ($res->duration == 60) {
+        $time = ($time % 100 == 0) ? $time += 30 : $time += 70;
+        $sql = "UPDATE calendar SET canceldate = NOW(), cancelby = ? WHERE date = ? AND time = ?;";
+        $db->execute($sql, [$cancelBy, $date, $time]);
+    }
+    // Redirect
+    header("Location: ?route=admin_planning_2&selDate=$date");
+}
+
+/**
+* Student already canceled, clear flag.
+*/
+function clearFlag($db, $date, $hourStr) {
+    // Convert hour "11:30" to integer 1130
+    $val = explode(":", $hourStr);
+    $time = $val[0] * 100 + $val[1];
+    // Get booking from database
+    $sql = "SELECT * FROM calendar WHERE date = ? AND time = ? AND flag = ?;";
+    $res = $db->executeFetch($sql, [$date, $time, 1]);
+    // 60 or 30 min?
+    $sql = "UPDATE calendar SET flag = ? WHERE date = ? AND time = ? AND flag = ?;";
+    $db->execute($sql, [0, $date, $time, 1]);
+    // Second slot
+    if ($res->duration == 60) {
+        $time = ($time % 100 == 0) ? $time += 30 : $time += 70;
+        $db->execute($sql, [0, $date, $time, 1]);
+    }
+    // Redirect
+    header("Location: ?route=admin_planning_2&selDate=$date");
+}
 
 /**
 * Copy hours template

@@ -11,7 +11,7 @@
     <div class="container main-container-inner">
         <div class="student-calendar <?= $hidePanelA ?>">
             <h5>
-                Select a date to book a class
+                Select a date to see available time
             </h5>
             <br>
             <table class="table table-only-header table-bordered">

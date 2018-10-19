@@ -142,18 +142,41 @@ function getDayCalendar($db, $student, $date, $selHour)
             if ($row->duration == 30) {
                 $timeLabel .= " *";
             }
-            $statusLabel = ($row->student == $student) ? "booked" : "available";
+            // Show canceled only by admin and when no open alternative
+            if ($row->cancelby == $student) {
+                // print_r($row);
+                // exit();
+                $statusLabel = "canceled by " . $row->cancelby;
+                $color = "canceled";
+                $sql = "SELECT * FROM calendar WHERE date = ? AND time ? AND duration = ? AND canceldate IS NULL;";
+                $query = $db->executeFetch($sql, [$date, $row->time, $row->duration]);
+                if ($query) {
+                    continue;
+                }
+            } elseif ($row->cancelby == "admin") {
+                $statusLabel = "canceled by " . $row->cancelby;
+                $color = "canceled";
+            } else {
+                $statusLabel = ($row->student == $student) ? "booked" : "available";
+                $color = ($row->student == $student) ? "booked" : "available";
+            }
+
             // Selected?
-            $selected = ($row->time == $selHour) ? "selected" : "non-selected";
+            // $selected = "non-selected";
+            // if ($row->time == $selHour && ($statusLabel == "booked" || $statusLabel == "available")) {
+            //     $selected = "selected";
+            // }
+            $selected = ($row->time == $selHour && $statusLabel != "canceled by") ? "selected" : "non-selected";
             // Time td
             $table .= "<td><form method='get'><input type='hidden' name='route' value='student_calendar'><input type='hidden' name='hidePanel' value='A'><input type='hidden' name='selDate' value={$date}><input type='hidden' name='selHour' value={$row->time}><input type='hidden' name='statusLabel' value={$statusLabel}><input type='submit' class='button {$selected}' name='' value='{$timeLabel}'></form></td>";
             // Status td
-            $color = ($row->student == $student) ? "booked" : "available";
             $table .= "<td class='{$color}'>{$statusLabel}</td>";
             $table .= "</tr>";
         }
-    } else {
-        $table = "";
+    }
+
+    // Empty res or only canceled bookings?
+    if ($table == "") {
         $table .= "<tr>";
         $table .= "<td colspan=2 class='empty-cell'>There are not available times today.</td>";
         $table .= "</tr>";
@@ -163,28 +186,52 @@ function getDayCalendar($db, $student, $date, $selHour)
 }
 
 /**
-* Insert booked hour in database.
+* Make reservation for student at date/time.
 */
-function updateBooking($db, $date, $time, $oldStudent, $newStudent) {
+function doBooking($db, $date, $time, $student) {
     // Get details for available hour from database
     $sql = "SELECT * FROM calendar WHERE date = ? AND time = ? AND student = ?;";
-    $res = $db->executeFetch($sql, [$date, $time, $oldStudent]);
+    $res = $db->executeFetch($sql, [$date, $time, "admin"]);
 
-    // Make sure still available
-    if (!$res) {
-        // TODO: throw exception so message can be shown to user
-        return;
-    }
-
-    // Update available hour with booking details
-    $sql = "UPDATE calendar SET student = ? WHERE date = ? AND time = ?;";
-    $db->execute($sql, [$newStudent, $date, $time]);
+    // Update first slot
+    $now = date("Y-m-d H:i:s");
+    $sql = "UPDATE calendar SET student = ?, bookdate = ? WHERE date = ? AND time = ? AND student = ?;";
+    $db->execute($sql, [$student, $now, $date, $time, "admin"]);
     // Update second slot
     if ($res->duration == 60) {
-        $time = ($time % 100 == 0) ? $time += 30 : $time += 70;
-        $sql = "UPDATE calendar SET student = ? WHERE date = ? AND time = ?;";
-        $db->execute($sql, [$newStudent, $date, $time]);
+        $time2 = ($time % 100 == 0) ? $time + 30 : $time + 70;
+        $db->execute($sql, [$student, $now, $date, $time2, "admin"]);
     }
+}
+
+/**
+* Cancel booking.
+*/
+function cancelBooking($db, $date, $time, $student) {
+    // Get booking from db
+    $sql = "SELECT * FROM calendar WHERE date = ? AND time = ? AND student = ? AND canceldate IS NULL;";
+    $res = $db->executeFetch($sql, [$date, $time, $student]);
+    // Update first slot
+    $now = date("Y-m-d H:i:s");
+    $sql = "UPDATE calendar SET canceldate = ?, cancelby = ?, flag = ? WHERE date = ? AND time = ? AND student = ? AND canceldate IS NULL;";
+    $db->execute($sql, [$now, $student, 1, $date, $time, $student]);
+    // Update second slot
+    if ($res->duration == 60) {
+        $time2 = ($time % 100 == 0) ? $time + 30 : $time + 70;
+        $db->execute($sql, [$now, $student, 1, $date, $time2, $student]);
+    }
+
+    // Create a new open hour for date/time
+    // $sql = "INSERT INTO calendar (student, date, time, duration, bookdate) VALUES (?, ?, ?, ?, ?);";
+    // if ($res->duration == 60) {
+    //     // First slot
+    //     $db->execute($sql, ["admin", $date, $time, 60, $now]);
+    //     // Second slot
+    //     $time2 = ($time % 100 == 0) ? $time + 30 : $time + 70;
+    //     $db->execute($sql, ["admin", $date, $time2, 0, $now]);
+    // } else {
+    //     $db->execute($sql, ["admin", $date, $time, 30, $now]);
+    // }
 }
 
 /**

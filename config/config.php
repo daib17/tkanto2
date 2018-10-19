@@ -16,6 +16,11 @@ error_reporting(E_ALL);           // Report all type of errors
 ini_set("display_errors", 1);     // Display all errors
 
 /**
+* Default timezone
+*/
+date_default_timezone_set('Europe/Lisbon');
+
+/**
  * Default exception handler.
  */
 set_exception_handler(function ($e) {

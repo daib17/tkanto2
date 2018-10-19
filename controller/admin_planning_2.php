@@ -33,11 +33,16 @@ if (isset($_GET['hourLabel']) && $_GET['hourLabel'] != "") {
     $bookedBy = "";
 }
 
-// Cancel appointment button
-if ($bookedBy != "" && $bookedBy !="admin") {
-    $cancelBtn = "";
+// Clear flag button UI
+$cancelBtn = "hidden";
+if (substr($bookedBy, -1) == "*") {
+    $clearFlagBtn = "";
 } else {
-    $cancelBtn = "hidden";
+    $clearFlagBtn = "hidden";
+    // Cancel button UI
+    if ($bookedBy != "" && $bookedBy !="admin") {
+        $cancelBtn = "";
+    }
 }
 
 // Show spinner with list of students
@@ -65,10 +70,13 @@ if (isset($_GET['spinTime'])) {
 }
 
 // Cancel booking
-if (isset($_GET['cancel'])) {
-    $spin = $_GET['spinTime'];
-    $student = "admin";
-    updateCalendarDB($db, $hourArr, $date, $student, $hourStr, $spin);
+if (isset($_GET['cancelBtn'])) {
+    cancelBooking($db, $date, $_GET['hourStr'], $_GET['cancelBtn']);
+}
+
+// Clear flag
+if (isset($_GET['clearBtn'])) {
+    clearFlag($db, $date, $_GET['hourStr']);
 }
 
 // Get spinner for the selected hour

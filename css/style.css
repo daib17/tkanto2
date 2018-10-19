@@ -130,7 +130,7 @@ a {
     padding: 0rem;
 }
 
-.student-calendar .selected-empty {
+.student-calendar .selected-normal {
     border: 1px solid black;
     background-color: white;
 }
@@ -176,6 +176,10 @@ a {
 .student-day .available,
 .student-day .non-selected {
     background-color: #fff;
+}
+
+.student-day .canceled {
+    background-color: #e57373;
 }
 
 .student-day td {
@@ -282,30 +286,7 @@ a {
 
 
 
-/* ADMIN - Planning -------------------------------------------- */
-
-/* .row.spinner {
-    margin-right: 0;
-    margin-left: 0;
-} */
-
-.admin-calendar .button {
-    display: block;
-    background-color: white;
-    width: 100%;
-    height: 100%;
-    border-style: none;
-    border-color: white;
-    padding: 8px 0;
-}
-
-.admin-calendar .button:hover {
-    background-color: #ffee58;
-}
-
-.admin-calendar .button:disabled:hover {
-    background-color: #fff;
-}
+/* ADMIN - Planning 1 -------------------------------------------- */
 
 .admin-calendar .title {
     vertical-align: middle;
@@ -325,27 +306,29 @@ a {
     padding: 0rem;
 }
 
-.admin-calendar .selected {
+.admin-calendar .button {
+    display: block;
+    background-color: white;
+    width: 100%;
+    height: 100%;
+    border-style: none;
+    border-color: white;
+    padding: 8px 0;
+}
+
+.admin-calendar .button.selected {
     background-color: #fdd835;
 }
 
-.admin-calendar .today {
-    background-color: #ddd;
-}
-
-.admin-calendar .weekend {
+.admin-calendar .button.weekend {
     background-color: #ffebee;
 }
 
-.admin-calendar .student-color {
-    background-color: #ce93d8;    /* purple */
+.admin-calendar .button:hover {
+    background-color: #ffee58;
 }
 
-.admin-calendar .admin-color {
-    background-color: #81c784;
-}
-
-.admin-calendar .disabled {
+.admin-calendar .button:disabled:hover {
     background-color: #fff;
 }
 
@@ -355,10 +338,44 @@ a {
     background-color: #81c784;
 }
 
-.admin-calendar .taken,
-.admin-calendar .taken-disabled,
-.admin-calendar .taken-mini {
+.admin-calendar .booked,
+.admin-calendar .booked-disabled,
+.admin-calendar .booked-mini {
     background-color: #e57373;
+}
+
+.admin-calendar .free-empty,
+.admin-calendar .booked-empty {
+    background-color: #f5f5f5;
+    color: #f5f5f5;
+}
+
+.admin-calendar .free-empty,
+.admin-calendar .free-mini {
+    border-bottom: 1px solid #e0e0e0;
+}
+
+
+/* .admin-calendar .student-color {
+    background-color: #ce93d8;
+}
+
+.admin-calendar .admin-color {
+    background-color: #81c784;
+} */
+
+/* .admin-calendar .disabled {
+    background-color: #fff;
+} */
+
+/* .admin-calendar .flag,
+.admin-calendar .flag-disabled,
+.admin-calendar .flag-mini {
+    background-color: blue;
+}
+
+.admin-calendar .flag-disabled:hover {
+    background-color: blue;
 }
 
 .admin-calendar .free-disabled:hover {
@@ -369,16 +386,59 @@ a {
     background-color: #e57373;
 }
 
-.admin-calendar .free-empty,
-.admin-calendar .taken-empty {
-    background-color: #f5f5f5;
-    color: #f5f5f5;
+
+/* ADMIN - Planning 2 -------------------------------------------- */
+
+.admin-calendar .selected.empty,
+.admin-calendar .empty:hover {
+    border: 1px solid #000;
+    background: #fff;
 }
 
-.admin-calendar .free-empty,
-.admin-calendar .free-mini {
-    border-bottom: 1px solid #e0e0e0;
+.admin-calendar .empty,
+.admin-calendar .empty-disabled {
+    border: 1px solid #fff;
+    background: #fff;
 }
+
+.admin-calendar .button.selected.free,
+.admin-calendar .button.free:hover {
+    border: 1px solid #000;
+    background: #81c784;
+}
+
+.admin-calendar .button.free,
+.admin-calendar .button.free-disabled {
+    border: 1px solid #81c784;
+    background: #81c784;
+}
+
+.admin-calendar .button.selected.booked,
+.admin-calendar .button.booked:hover {
+    border: 1px solid #000;
+    background: #e57373;
+}
+
+.admin-calendar .button.booked,
+.admin-calendar .button.booked-disabled {
+    border: 1px solid #e57373;
+    background: #e57373;
+}
+
+.admin-calendar .button.selected.flag,
+.admin-calendar .button.flag:hover {
+    border: 1px solid #000;
+    background: #fff176;
+}
+
+.admin-calendar .button.flag,
+.admin-calendar .button.flag-disabled {
+    border: 1px solid #fff176;
+    background: #fff176;
+}
+
+
+
 
 /* MEDIA QUERIES --------------------------------------------- */
 
