@@ -12,16 +12,14 @@ $selDate = isset($_GET['selDate']) ? $_GET['selDate'] : "";
 $selTime = isset($_GET['selTime']) ? $_GET['selTime'] : "";
 
 // Default UI
-$infoMsg = "";
 $cancelButton = "hidden";
 
 // Cancel booking?
 if (isset($_GET['button']) && $_GET['button'] == "cancel") {
-    updateBooking($db, $selDate, $selTime, $student, "admin");
+    cancelBooking($db, $selDate, $selTime, $student);
     $selDate = "";
     $selTime = "";
-} elseif (isset($_GET['selDate'])) {
-    $infoMsg = "hidden";
+} elseif (isset($_GET['selDate']) && !isset($_GET['isCanceled'])) {
     $cancelButton = "";
 }
 

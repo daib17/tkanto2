@@ -9,6 +9,10 @@
     </ul>
 
     <div class="container main-container-inner">
+        <h5>
+            Select a date to cancel
+        </h5>
+        <br>
         <table class="table table-bordered table-selectable">
             <thead>
                 <tr>
@@ -22,11 +26,7 @@
             </tbody>
         </table>
         <?= $pagination ?>
-        <div class="<?= $infoMsg ?>">
-            <div class="alert alert-info" role="alert">
-                Select date to cancel.
-            </div>
-        </div>
+
         <form class="top-buffer" method="get">
             <input type='hidden' name='route' value='student_bookings'>
             <input type="hidden" name="selDate" value="<?= $selDate ?>">

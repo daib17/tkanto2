@@ -16,7 +16,7 @@
             <button class="btn btn-lg btn-link btn-link mt-3 font-weight-bold" type="submit">New student? Register here</button>
         </form>
         <form method="get">
-            <input type="hidden" name="route" value="admin_students_1">
+            <input type="hidden" name="route" value="admin_calendar_1">
             <!-- DEBUG -->
             <?php $_SESSION['login'] = "admin"; ?>
             <button class="btn btn-lg btn-link btn-link mt-3 font-weight-bold mb-3" type="submit">Forgot password?</button>

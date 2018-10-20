@@ -11,7 +11,7 @@
     <div class="container main-container-inner">
         <div class="student-calendar <?= $hidePanelA ?>">
             <h5>
-                Select a date to see available time
+                Select a date to see available times
             </h5>
             <br>
             <table class="table table-only-header table-bordered">
@@ -69,9 +69,14 @@
 
         <form class="<?= $hidePanelB ?>" method="get">
             <input type="hidden" name="route" value="student_calendar">
+            <input type="hidden" name="hidePanel" value="A">
             <input type="hidden" name="selDate" value="<?= $selDate ?>">
             <input type="hidden" name="selHour" value="<?= $selHour ?>">
             <button class="btn btn-lg <?= $buttonType ?> btn-block font-weight-bold mt-4" type="submit" name="button" value="<?= $buttonLabel ?>"><?= $buttonLabel ?></button>
+        </form>
+        <form class="<?= $hidePanelB ?>" method="get">
+            <input type="hidden" name="route" value="student_calendar">
+            <input type="hidden" name="hidePanel" value="B">
             <button class="btn btn-lg btn-secondary btn-block font-weight-bold mt-4" type="submit" name="button" value="back">Back</button>
         </form>
     </div>

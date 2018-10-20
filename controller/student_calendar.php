@@ -16,6 +16,7 @@ if (isset($_GET["hidePanel"])) {
 
 // selDate is the selected date in the calendar
 // date is the month/year being show (day is irrelevant here)
+$today = date("Y-m-d");
 $selHour = "";
 $selDate = "";
 $buttonLabel = "";
@@ -25,7 +26,7 @@ if (isset($_GET['selDate'])) {
     $date = $selDate;
     if (isset($_GET['selHour'])) {
         $selHour = $_GET['selHour'];
-        if (isset($_GET['statusLabel'])) {
+        if (isset($_GET['statusLabel']) && $selDate >= $today) {
             if ($_GET['statusLabel'] == "booked") {
                 $buttonLabel = "Cancel";
                 $buttonType = "btn-danger";

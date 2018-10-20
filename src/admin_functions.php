@@ -89,7 +89,7 @@ function getAdminMonthlyCalendar($db, $date, $selDate)
         $freeEmpty = ($free[$i] == 0) ? "free-empty" : "";
         $bookedEmpty = ($booked[$i] == 0) ? "booked-empty" : "";
 
-        $table .= "<td><form method='get'><div class='day-label'><input type='hidden' name='route' value='admin_planning_2'>
+        $table .= "<td><form method='get'><div class='day-label'><input type='hidden' name='route' value='admin_calendar_2'>
         <input type='hidden' name='selDate' value={$date}><input type='submit' class='button {$selector}' name='day' value={$i}><div class='free-mini {$freeEmpty}'>{$free[$i]}</div><div class='booked {$bookedEmpty}'>{$booked[$i]}</div></div></form></td>";
         if ($weekDay == 0) {
             $table .= "</tr>";
@@ -108,6 +108,8 @@ function getAdminMonthlyCalendar($db, $date, $selDate)
     return $table;
 }
 
+
+
 /**
 *   Get students from database
 *
@@ -115,14 +117,20 @@ function getAdminMonthlyCalendar($db, $date, $selDate)
 */
 function getStudentsByStatus($db, $status = 2)
 {
-    $sql = "SELECT * FROM student";
-    if ($status < 3) {
-        $sql .= " WHERE status = ?";
+    if ($status == 3) {
+        $sql = "SELECT * FROM student WHERE username NOT LIKE 'admin';";
+        $res = $db->executeFetchAll($sql);
+    } else {
+        $sql = "SELECT * FROM student WHERE username NOT LIKE 'admin' AND status = ?;";
+        $res = $db->executeFetchAll($sql, [$status]);
     }
-    $res = $db->executeFetchAll($sql, [$status]);
     return $res;
 }
 
+
+/**
+*
+*/
 function getStudentByID($db, $id)
 {
     $sql = "SELECT * FROM student WHERE id = ?";
@@ -130,6 +138,10 @@ function getStudentByID($db, $id)
     return $res;
 }
 
+
+/**
+*
+*/
 function doSearch($db, $search)
 {
     $search = "%" . $search . "%";
@@ -138,6 +150,9 @@ function doSearch($db, $search)
     return $res;
 }
 
+/**
+*
+*/
 function getStudentListAsTable($db, $filterId = 3, $page, $selectedID, $search)
 {
     $statusStr = ["Disabled", "Pending", "Active"];
@@ -182,6 +197,11 @@ function getStudentListAsTable($db, $filterId = 3, $page, $selectedID, $search)
     return $table;
 }
 
+
+
+/**
+*
+*/
 function getPagination($db, $filterId, $actualPage, $search)
 {
     if ($search != "") {
@@ -212,6 +232,11 @@ function getPagination($db, $filterId, $actualPage, $search)
     return $table;
 }
 
+
+
+/**
+*
+*/
 function getSpinnerFilter($status) {
     $filterType = ["Disabled", "Pending", "Active", "All"];
     // Generate select spinner
@@ -227,6 +252,11 @@ function getSpinnerFilter($status) {
     return $select;
 }
 
+
+
+/**
+*
+*/
 function getSpinnerStatus($status) {
     $status;    // status 0 does not exist in panel B
     $filterType = ["Disabled", "Pending", "Active"];
@@ -242,6 +272,8 @@ function getSpinnerStatus($status) {
     $select .= "</select>";
     return $select;
 }
+
+
 
 /**
 * Get hours from database for date and convert to array.
@@ -274,6 +306,8 @@ function generateHourArrayFromDB($db, $date) {
     return $hourArr;
 }
 
+
+
 /**
 * ADMIN - Planning
 * Create dynamic spinner for selected date and hour
@@ -298,7 +332,7 @@ function getSpinnerForSelectedHour($db, $arr, $hourStr) {
 
     // Return if no hour has been selected yet or no admin time
     if ($hourStr == "") {
-        $spinHTML = "<select id='spinner' class='form-control w-50' disabled>";
+        $spinHTML = "<select id='timeSpinner' class='form-control w-50' disabled>";
         $spinHTML .= "<option value='0'>0</option>";
         $spinHTML .= "</select>";
         return $spinHTML;
@@ -315,13 +349,13 @@ function getSpinnerForSelectedHour($db, $arr, $hourStr) {
 
     // Only admin and available hours are changeable
     if ($student != "admin" && $student != "") {
-        $spinHTML = "<select id='spinner' class='form-control w-50' disabled>";
+        $spinHTML = "<select id='timeSpinner' class='form-control w-50' disabled>";
         $spinHTML .= "<option value=''>{$duration}</option>";
         $spinHTML .= "</select>";
         return $spinHTML;
     }
 
-    $spinHTML = "<select id='spinner' class='form-control w-50'>";
+    $spinHTML = "<select id='timeSpinner' class='form-control w-50'>";
     if ($duration == 0) {
         $spinHTML .= "<option value='0' selected>0</option>";
     } else {
@@ -352,17 +386,28 @@ function getSpinnerForSelectedHour($db, $arr, $hourStr) {
     return $spinHTML;
 }
 
+
+
 /**
-*
+* Create spinner with list of students.
+
 */
-function getStudentSpinner() {
-    $spinHTML = "<select id='spinner' class='form-control'>";
-    for ($i = 0; $i < 25; $i++) {
-        $spinHTML .= "<option value='Student#{$i}'>Student{$i}</option>";
+function getStudentSpinner($db) {
+    // Get all active students from database
+    $sql = "SELECT * FROM student WHERE status LIKE ?;";
+    $res = $db->executeFetchAll($sql, [2]);
+    // print_r($res);
+    // exit();
+    $spinHTML = "<select id='studentSpinner' class='form-control'>";
+    $spinHTML .= "<option value='noStudent'>Select student</option>";
+    foreach ($res as $row) {
+        $spinHTML .= "<option value='{$row->username}'>{$row->firstname} {$row->lastname}</option>";
     }
     $spinHTML .= "</select>";
     return $spinHTML;
 }
+
+
 
 /**
 * Generate table from timetable with hours for given date.
@@ -419,6 +464,8 @@ function getHoursTable($db, $date, $hourArr, $hourLabel) {
     return $table;
 }
 
+
+
 /**
 * Insert or update calendar database with new value from spinner.
 *
@@ -458,7 +505,7 @@ function updateCalendarDB($db, $arr, $date, $student, $hourStr, $spin)
             }
         }
         // Redirect
-        header("Location: ?route=admin_planning_2&selDate=$date");
+        header("Location: ?route=admin_calendar_2&selDate=$date");
         exit;
     }
 
@@ -507,8 +554,37 @@ function updateCalendarDB($db, $arr, $date, $student, $hourStr, $spin)
     }
 
     // Redirect
-    header("Location: ?route=admin_planning_2&selDate=$date");
+    header("Location: ?route=admin_calendar_2&selDate=$date");
 }
+
+
+
+/**
+* Make reservation for student at date/time.
+*/
+function doBooking($db, $date, $hourStr, $student) {
+    // Convert hour "11:30" to integer 1130
+    $val = explode(":", $hourStr);
+    $time = $val[0] * 100 + $val[1];
+
+    // Get details for available hour from database
+    $sql = "SELECT * FROM calendar WHERE date = ? AND time = ? AND student = ?;";
+    $res = $db->executeFetch($sql, [$date, $time, "admin"]);
+
+    // Update first slot
+    $now = date("Y-m-d H:i:s");
+    $sql = "UPDATE calendar SET student = ?, bookdate = ? WHERE date = ? AND time = ? AND student = ?;";
+    $db->execute($sql, [$student, $now, $date, $time, "admin"]);
+    // Update second slot
+    if ($res->duration == 60) {
+        $time2 = ($time % 100 == 0) ? $time + 30 : $time + 70;
+        $db->execute($sql, [$student, $now, $date, $time2, "admin"]);
+    }
+    // Redirect
+    header("Location: ?route=admin_calendar_2&selDate=$date");
+}
+
+
 
 /**
 * Cancel booking.
@@ -533,8 +609,10 @@ function cancelBooking($db, $date, $hourStr, $cancelBy) {
         $db->execute($sql, [$cancelBy, $date, $time]);
     }
     // Redirect
-    header("Location: ?route=admin_planning_2&selDate=$date");
+    header("Location: ?route=admin_calendar_2&selDate=$date");
 }
+
+
 
 /**
 * Student already canceled, clear flag.
@@ -555,8 +633,10 @@ function clearFlag($db, $date, $hourStr) {
         $db->execute($sql, [0, $date, $time, 1]);
     }
     // Redirect
-    header("Location: ?route=admin_planning_2&selDate=$date");
+    header("Location: ?route=admin_calendar_2&selDate=$date");
 }
+
+
 
 /**
 * Copy hours template
@@ -582,5 +662,5 @@ function copyTemplate($db, $date, $arr)
     }
 
     // Redirect
-    header("Location: ?route=admin_planning_2&selDate=$date");
+    header("Location: ?route=admin_calendar_2&selDate=$date");
 }

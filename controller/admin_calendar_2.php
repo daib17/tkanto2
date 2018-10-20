@@ -6,7 +6,7 @@ if (isset($_GET['selDate'])) {
 }
 
 // Copy template to next day?
-if (isset($_GET['copy'])) {
+if (isset($_GET['copyBtn'])) {
     copyTemplate($db, $date);
 }
 
@@ -45,9 +45,9 @@ if (substr($bookedBy, -1) == "*") {
     }
 }
 
-// Show spinner with list of students
+// Clicking on admin slot opens spinner with list of students
 if ($bookedBy == "admin") {
-    $studentSpinner = getStudentSpinner();
+    $studentSpinner = getStudentSpinner($db);
     $hideSpinner = "";
 } else {
     $studentSpinner = "";
@@ -69,6 +69,12 @@ if (isset($_GET['spinTime'])) {
     updateCalendarDB($db, $hourArr, $date, $student, $hourStr, $spin);
 }
 
+// Parameter sent by admin.js via URL parameters means spinner changed
+if (isset($_GET['spinStudent'])) {
+    $student = $_GET['spinStudent'];
+    doBooking($db, $date, $hourStr, $student);
+}
+
 // Cancel booking
 if (isset($_GET['cancelBtn'])) {
     cancelBooking($db, $date, $_GET['hourStr'], $_GET['cancelBtn']);
@@ -80,7 +86,7 @@ if (isset($_GET['clearBtn'])) {
 }
 
 // Get spinner for the selected hour
-$spinner = getSpinnerForSelectedHour($db, $hourArr, $hourStr);
+$timeSpinner = getSpinnerForSelectedHour($db, $hourArr, $hourStr);
 
 // Get table
 $hoursTable = getHoursTable($db, $date, $hourArr, $hourStr);

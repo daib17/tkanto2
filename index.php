@@ -64,15 +64,15 @@ switch ($route) {
         $controller = ["controller/admin_bookings.php"];
         $view = ["incl/header_logout.php", "view/admin_bookings.php"];
         break;
-    case "admin_planning_1":
+    case "admin_calendar_1":
         $title = "Tk | Admin";
-        $controller = ["controller/admin_planning_1.php"];
-        $view = ["incl/header_logout.php", "view/admin_planning_1.php"];
+        $controller = ["controller/admin_calendar_1.php"];
+        $view = ["incl/header_logout.php", "view/admin_calendar_1.php"];
         break;
-    case "admin_planning_2":
+    case "admin_calendar_2":
         $title = "Tk | Admin";
-        $controller = ["controller/admin_planning_2.php"];
-        $view = ["incl/header_logout.php", "view/admin_planning_2.php"];
+        $controller = ["controller/admin_calendar_2.php"];
+        $view = ["incl/header_logout.php", "view/admin_calendar_2.php"];
         break;
     case "admin_stats":
         $title = "Tk | Admin";

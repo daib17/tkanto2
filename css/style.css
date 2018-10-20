@@ -218,8 +218,9 @@ a {
 }
 
 .student-day .canceled {
-    border: 1px solid #dee2e6;
-    background-color: #e57373;
+    /* border: 1px solid #dee2e6; */
+    background-color: #fff;
+    color: red;
 }
 
 /* Tables (listing items tables) in student-bookings and admin-students */
@@ -261,6 +262,12 @@ a {
 
 .table-selectable .no-found-text {
     padding: .75rem;
+}
+
+.table-selectable .canceled {
+    /* border: 1px solid #dee2e6;
+    background-color: #e57373; */
+    color: red;
 }
 
 /* ADMIN - Students -------------------------------------------- */

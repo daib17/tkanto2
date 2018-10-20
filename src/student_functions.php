@@ -205,18 +205,6 @@ function cancelBooking($db, $date, $time, $student) {
         $time2 = ($time % 100 == 0) ? $time + 30 : $time + 70;
         $db->execute($sql, [$now, $student, 1, $date, $time2, $student]);
     }
-
-    // Create a new open hour for date/time
-    // $sql = "INSERT INTO calendar (student, date, time, duration, bookdate) VALUES (?, ?, ?, ?, ?);";
-    // if ($res->duration == 60) {
-    //     // First slot
-    //     $db->execute($sql, ["admin", $date, $time, 60, $now]);
-    //     // Second slot
-    //     $time2 = ($time % 100 == 0) ? $time + 30 : $time + 70;
-    //     $db->execute($sql, ["admin", $date, $time2, 0, $now]);
-    // } else {
-    //     $db->execute($sql, ["admin", $date, $time, 30, $now]);
-    // }
 }
 
 /**
@@ -245,14 +233,21 @@ function getBookingsList($db, $student, $page, $selDate, $selTime) {
             $duration = $res[$i]->duration;
 
             // Highlight selection
-            if ($date == $selDate && $time == $selTime) {
+            if ($date == $selDate && $time == $selTime && $res[$i]->cancelby == "") {
                 $selected = "selected";
             } else {
                 $selected = "";
             }
 
+            // Add cancelation note
+            $cancel = "";
+            if ($res[$i]->cancelby) {
+                $duration = "<span class='canceled'>Canceled</span>";
+                $cancel = "<input type='hidden' name='isCanceled' value='true'>";
+            }
+
             $table .= "<tr>";
-            $table .= "<td colspan=2><form method='GET'><input type='hidden' name='route' value='student_bookings'><input type='hidden' name='selTime' value={$time}><input type='submit' class='{$selected}' name='selDate' value={$date}></form></td>";
+            $table .= "<td colspan=2><form method='GET'><input type='hidden' name='route' value='student_bookings'>{$cancel}<input type='hidden' name='selTime' value={$time}><input type='hidden' name='page' value={$page} /><input type='submit' class='{$selected}' name='selDate' value={$date}></form></td>";
             $table .= "<td>{$timeLabel}</td>";
             $table .= "<td>{$duration}</td>";
             $table .= "</tr>";
@@ -265,7 +260,6 @@ function getBookingsList($db, $student, $page, $selDate, $selTime) {
             $table .= "</tr>";
         }
     }
-    //
     return $table;
 }
 
