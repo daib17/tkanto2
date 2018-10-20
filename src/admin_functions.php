@@ -71,12 +71,14 @@ function getAdminMonthlyCalendar($db, $date, $selDate)
         if ($weekDay == 1) {
             $table .= "<tr>";
         }
+        $selector = "";
         if ($i == $selDay && $month == $selMonth && $year == $selYear) {
-            $selector = "selected";
-        } elseif ($weekDay == 6 || $weekDay == 0) {
-            $selector = "weekend";
+            $selector .= "selected ";
+        }
+        if ($weekDay == 6 || $weekDay == 0) {
+            $selector .= "weekend";
         } else {
-            $selector = "";
+            $selector .= "empty";
         }
 
         if ($i == $dayToday && $month == $monthToday

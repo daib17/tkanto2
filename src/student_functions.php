@@ -68,7 +68,7 @@ function getMonthCalendar($db, $date, $selDate, $student)
         $date = date('Y-m-d', strtotime($year . "-" . $month . "-" . $i));
         $selector = "";
         if ($i == $selDay && $month == $selMonth && $year == $selYear) {
-            $selector = "selected-";
+            $selector = "selected ";
         }
 
         if (in_array($date, $bookedDates)) {
@@ -89,7 +89,7 @@ function getMonthCalendar($db, $date, $selDate, $student)
             $asterisk = "";
         }
 
-        $table .= "<td><form method='get'><input type='hidden' name='hidePanel' value='A'><input type='hidden' name='route' value='student_calendar'><input type='hidden' name='selDate' value={$date}><input type='submit' class='button {$selector}' name='day' value={$i}{$asterisk}></form></td>";
+        $table .= "<td><div><form method='get'><input type='hidden' name='hidePanel' value='A'><input type='hidden' name='route' value='student_calendar'><input type='hidden' name='selDate' value={$date}><input type='submit' class='button {$selector}' name='day' value={$i}{$asterisk}></form></div></td>";
         if ($weekDay == 0) {
             $table .= "</tr>";
         }
@@ -143,17 +143,7 @@ function getDayCalendar($db, $student, $date, $selHour)
                 $timeLabel .= " *";
             }
             // Show canceled only by admin and when no open alternative
-            if ($row->cancelby == $student) {
-                // print_r($row);
-                // exit();
-                $statusLabel = "canceled by " . $row->cancelby;
-                $color = "canceled";
-                $sql = "SELECT * FROM calendar WHERE date = ? AND time ? AND duration = ? AND canceldate IS NULL;";
-                $query = $db->executeFetch($sql, [$date, $row->time, $row->duration]);
-                if ($query) {
-                    continue;
-                }
-            } elseif ($row->cancelby == "admin") {
+            if ($row->cancelby != "") {
                 $statusLabel = "canceled by " . $row->cancelby;
                 $color = "canceled";
             } else {
@@ -161,12 +151,7 @@ function getDayCalendar($db, $student, $date, $selHour)
                 $color = ($row->student == $student) ? "booked" : "available";
             }
 
-            // Selected?
-            // $selected = "non-selected";
-            // if ($row->time == $selHour && ($statusLabel == "booked" || $statusLabel == "available")) {
-            //     $selected = "selected";
-            // }
-            $selected = ($row->time == $selHour && $statusLabel != "canceled by") ? "selected" : "non-selected";
+            $selected = ($row->time == $selHour && $row->cancelby == "") ? "selected" : "non-selected";
             // Time td
             $table .= "<td><form method='get'><input type='hidden' name='route' value='student_calendar'><input type='hidden' name='hidePanel' value='A'><input type='hidden' name='selDate' value={$date}><input type='hidden' name='selHour' value={$row->time}><input type='hidden' name='statusLabel' value={$statusLabel}><input type='submit' class='button {$selected}' name='' value='{$timeLabel}'></form></td>";
             // Status td
@@ -261,7 +246,7 @@ function getBookingsList($db, $student, $page, $selDate, $selTime) {
 
             // Highlight selection
             if ($date == $selDate && $time == $selTime) {
-                $selected = " selected";
+                $selected = "selected";
             } else {
                 $selected = "";
             }

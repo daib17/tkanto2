@@ -108,8 +108,8 @@ a {
 }
 
 .student-calendar .button:hover {
-    border: 1px solid  #fff176;
-    background-color: #fff176;
+    border: 1px solid #000;
+    background-color: #fff;
 }
 
 .student-calendar .title {
@@ -130,24 +130,27 @@ a {
     padding: 0rem;
 }
 
-.student-calendar .selected-normal {
-    border: 1px solid black;
-    background-color: white;
+.student-calendar .selected.normal,
+.student-calendar .normal:hover {
+    border: 1px solid #000;
+    background-color: #fff;
 }
 
-.student-calendar .selected-booked {
-    border: 1px solid black;
+.student-calendar .selected.booked,
+.student-calendar .booked:hover {
+    border: 1px solid #000;
     background-color: #81c784;
 }
 
-.student-calendar .selected-weekend {
-    border: 1px solid black;
+.student-calendar .selected.weekend,
+.student-calendar .weekend:hover {
+    border: 1px solid #000;
     background-color: #ffebee;
 }
 
 .student-calendar .normal {
-    border: 1px solid white;
-    background-color: white;
+    border: 1px solid #fff;
+    background-color: #fff;
 }
 
 .student-calendar .booked {
@@ -168,19 +171,11 @@ a {
     background-color: #ffebee;
 }
 
-.student-calendar .booked,
-.student-day .booked {
+.student-calendar .booked {
     background-color: #81c784;
 }
 
-.student-day .available,
-.student-day .non-selected {
-    background-color: #fff;
-}
-
-.student-day .canceled {
-    background-color: #e57373;
-}
+/* Student Day --------------------- */
 
 .student-day td {
     text-align: center;
@@ -198,11 +193,74 @@ a {
 }
 
 .student-day .button:hover {
-    background-color: #fff176;
+    border: 1px solid #000;
+    background-color: #fff;
 }
 
 .student-day .selected {
-    background-color: #fdd835;
+    border: 1px solid #000;
+    background-color: #fff;
+}
+
+.student-day .non-selected {
+    border: 1px solid #fff;
+    background-color: #fff;
+}
+
+.student-day .available {
+    border: 1px solid #dee2e6;
+    background-color: #fff;
+}
+
+.student-day .booked {
+    border: 1px solid #dee2e6;
+    background-color: #81c784;
+}
+
+.student-day .canceled {
+    border: 1px solid #dee2e6;
+    background-color: #e57373;
+}
+
+/* Tables (listing items tables) in student-bookings and admin-students */
+
+.table-selectable form {
+    margin: 0;
+}
+
+.table-selectable td {
+    padding: 0;
+    text-align: center;
+    vertical-align: middle;
+}
+
+.table-selectable input {
+    display: block;
+    background-color: white;
+    width: 100%;
+    height: 100%;
+    border: 1px solid #fff;
+    padding: 1rem;
+    text-align: left;
+}
+
+.table-selectable input:hover {
+    border: 1px solid #000;
+    background-color: #fff;
+}
+
+.table-selectable .empty {
+    padding: 1rem;
+    visibility: hidden;
+}
+
+.table-selectable .selected {
+    border: 1px solid #000;
+    background-color: #fff;
+}
+
+.table-selectable .no-found-text {
+    padding: .75rem;
 }
 
 /* ADMIN - Students -------------------------------------------- */
@@ -232,61 +290,9 @@ a {
     margin-top: 32px;
 }
 
-.table-selectable td {
-    padding: 0;
-    text-align: center;
-    vertical-align: middle;
-}
-
-.table-selectable input {
-    display: block;
-    background-color: white;
-    width: 100%;
-    height: 100%;
-    border-style: none;
-    border-color: white;
-    padding: 1rem;
-    text-align: left;
-}
-
-.table-selectable input:hover {
-    background-color: #fff176;
-}
-
-.table-selectable .empty {
-    padding: 1rem;
-    visibility: hidden;
-}
-
-.table-selectable .no-found-text {
-    padding: .75rem;
-}
-
-.table-selectable form {
-    margin: 0;
-}
-
-.table-selectable .selected {
-    background-color: #fdd835;
-}
-
-/* .submit-clean {
-    display: block;
-    background-color: white;
-    width: 100%;
-    height: 100%;
-    border-style: none;
-    border-color: white;
-    padding: 0;
-}
-
-.submit-clean:hover {
-    background-color: #fff176;
-} */
 
 
-
-/* ADMIN - Planning 1 -------------------------------------------- */
+/* ADMIN - Planning 1 Calendar (month) ------------------------------ */
 
 .admin-calendar .title {
     vertical-align: middle;
@@ -316,19 +322,29 @@ a {
     padding: 8px 0;
 }
 
-.admin-calendar .button.selected {
-    background-color: #fdd835;
+.admin-calendar .button.empty {
+    border: 1px solid #fff;
+    background-color: #fff;
 }
 
 .admin-calendar .button.weekend {
+    border: 1px solid #ffebee;
+    background: #ffebee;
+}
+
+.admin-calendar .button.selected.empty {
+    border: 1px solid #000;
+    background: #fff;
+}
+
+.admin-calendar .button.selected.weekend,
+.admin-calendar .button.weekend:hover {
+    border: 1px solid #000;
     background-color: #ffebee;
 }
 
-.admin-calendar .button:hover {
-    background-color: #ffee58;
-}
-
 .admin-calendar .button:disabled:hover {
+    border: 1px solid #fff;
     background-color: #fff;
 }
 
@@ -356,38 +372,8 @@ a {
 }
 
 
-/* .admin-calendar .student-color {
-    background-color: #ce93d8;
-}
 
-.admin-calendar .admin-color {
-    background-color: #81c784;
-} */
-
-/* .admin-calendar .disabled {
-    background-color: #fff;
-} */
-
-/* .admin-calendar .flag,
-.admin-calendar .flag-disabled,
-.admin-calendar .flag-mini {
-    background-color: blue;
-}
-
-.admin-calendar .flag-disabled:hover {
-    background-color: blue;
-}
-
-.admin-calendar .free-disabled:hover {
-    background-color: #81c784;
-}
-
-.admin-calendar .taken-disabled:hover {
-    background-color: #e57373;
-}
-
-
-/* ADMIN - Planning 2 -------------------------------------------- */
+/* ADMIN - Planning 2 Timetable day ----------------------------------- */
 
 .admin-calendar .selected.empty,
 .admin-calendar .empty:hover {
@@ -428,13 +414,19 @@ a {
 .admin-calendar .button.selected.flag,
 .admin-calendar .button.flag:hover {
     border: 1px solid #000;
-    background: #fff176;
+    background: #fdd835;
 }
 
 .admin-calendar .button.flag,
 .admin-calendar .button.flag-disabled {
-    border: 1px solid #fff176;
-    background: #fff176;
+    border: 1px solid #fdd835;
+    background: #fdd835;
+}
+
+.btn-warning {
+    /* color: #fff; */
+    border: 1px solid #fdd835;
+    background-color: #fdd835;
 }
 
 

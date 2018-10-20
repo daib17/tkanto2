@@ -26,7 +26,7 @@
                     <input type="hidden" name="route" value="admin_planning_2">
                     <input type="hidden" name="selDate" value="<?= $date ?>">
                     <input type="hidden" name="hourStr" value=<?= $hourStr ?>>
-                    <button class="btn btn-md btn-danger font-weight-bold  <?= $clearFlagBtn ?>" type="submit" name="clearBtn" value="admin">Clear flag</button>
+                    <button class="btn btn-md btn-warning font-weight-bold  <?= $clearFlagBtn ?>" type="submit" name="clearBtn" value="admin">Confirm cancelation</button>
                     <button class="btn btn-md btn-danger font-weight-bold  <?= $cancelBtn ?>" type="submit" name="cancelBtn" value="admin">Cancel by me</button>
                     <button class="btn btn-md btn-danger font-weight-bold <?= $cancelBtn ?>" type="submit" name="cancelBtn" value="student">Cancel by student</button>
                 </form>
