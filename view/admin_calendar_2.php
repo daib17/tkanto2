@@ -7,7 +7,7 @@
             <a class="nav-link" href="?route=admin_students_1">Students</a>
         </li>
         <li class="nav-item">
-            <a class="nav-link" href="?route=admin_bookings">Recent</a>
+            <a class="nav-link" href="?route=admin_recent">Recent</a>
         </li>
         <li class="nav-item">
             <a class="nav-link" href="?route=admin_stats">Statistics</a>
@@ -15,7 +15,7 @@
     </ul>
     <div class="container main-container-inner">
         <div class="spinner">
-            <div class="float-left w-50 mb-4">
+            <div class="float-left w-25 mb-4">
                 <?= $timeSpinner ?>
             </div>
             <div class="float-right w-50 mb-4 <?= $hideSpinner ?>">
@@ -27,7 +27,7 @@
                     <input type="hidden" name="selDate" value="<?= $date ?>">
                     <input type="hidden" name="hourStr" value=<?= $hourStr ?>>
                     <button class="btn btn-md btn-warning font-weight-bold  <?= $clearFlagBtn ?>" type="submit" name="clearBtn" value="admin">Confirm cancelation</button>
-                    <button class="btn btn-md btn-danger font-weight-bold  <?= $cancelBtn ?>" type="submit" name="cancelBtn" value="admin">Cancel by me</button>
+                    <button class="btn btn-md btn-danger font-weight-bold  <?= $cancelBtn ?>" type="submit" name="cancelBtn" value="admin">Cancel</button>
                     <button class="btn btn-md btn-danger font-weight-bold <?= $cancelBtn ?>" type="submit" name="cancelBtn" value="student">Cancel by student</button>
                 </form>
             </div>

@@ -49,6 +49,11 @@ switch ($route) {
         $controller = ["controller/student_bookings.php"];
         $view = ["incl/header_logout.php", "view/student_bookings.php"];
         break;
+    case "student_recent":
+        $title = "Tk | Student";
+        $controller = ["controller/student_recent.php"];
+        $view = ["incl/header_logout.php", "view/student_recent.php"];
+        break;
     case "admin_students_1":
         $title = "Tk | Admin";
         $controller = ["controller/admin_students_1.php"];
@@ -59,10 +64,10 @@ switch ($route) {
         $controller = ["controller/admin_students_2.php"];
         $view = ["incl/header_logout.php", "view/admin_students_2.php"];
         break;
-    case "admin_bookings":
+    case "admin_recent":
         $title = "Tk | Admin";
-        $controller = ["controller/admin_bookings.php"];
-        $view = ["incl/header_logout.php", "view/admin_bookings.php"];
+        $controller = ["controller/admin_recent.php"];
+        $view = ["incl/header_logout.php", "view/admin_recent.php"];
         break;
     case "admin_calendar_1":
         $title = "Tk | Admin";

@@ -6,6 +6,9 @@
         <li class="nav-item">
             <a class="nav-link" href="?route=student_bookings">Bookings</a>
         </li>
+        <li class="nav-item">
+            <a class="nav-link" href="?route=student_recent">Recent</a>
+        </li>
     </ul>
 
     <div class="container main-container-inner">

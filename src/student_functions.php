@@ -288,3 +288,48 @@ function createPageNavigation($db, $student, $actualPage) {
     $table .= "</nav>";
     return $table;
 }
+
+/**
+*
+*/
+function getRecentActivity($db, $student) {
+    $sql = "SELECT * FROM calendar WHERE student = ? AND duration > ? ORDER BY updated DESC LIMIT 10;";
+    $res = $db->executeFetchAll($sql, [$student, 0]);
+    $table = "";
+    foreach ($res as $row) {
+        $table .= "<tr>";
+        // From
+        $from = sprintf("%04d", $row->time);
+        $from = substr_replace($from, ":", 2, 0);
+        $from = ltrim($from, "0");
+        // // To
+        // $time = $row->time;
+        // if ($row->duration == 60) {
+        //     $time += 100;
+        // } else {
+        //     $time = ($time % 100 == 0) ? $time + 30 : $time + 70;
+        // }
+        // $to = sprintf("%04d", $time);
+        // $to = substr_replace($to, ":", 2, 0);
+        // $to = ltrim($to, "0");
+        // // Time (800 to 8:00)
+        $timeLabel = $from;
+        // Action
+        $action = ($row->cancelby == null) ? "book" : "cancel";
+        if ($row->cancelby) {
+            $action = "cancel";
+        }
+        // Format dates
+        $date = date('j M', strtotime($row->date));
+        $updated = date('j M H:i', strtotime($row->updated));
+
+        $table .= "<td class='text'>$row->student</td>";
+        $table .= "<td class='text'>$action</td>";
+        $table .= "<td class='text'>$date</td>";
+        $table .= "<td class='text'>$timeLabel</td>";
+        $table .= "<td class='text'>$updated</td>";
+        $table .= "</tr>";
+    }
+
+    return $table;
+}
