@@ -1,7 +1,7 @@
 <?php
-require "config/autoload.php";
-require "config/config.php";
-require "src/helper_functions.php";
+require_once("config/autoload.php");
+require_once("config/config.php");
+require_once("src/helper_functions.php");
 // require "src/classes/Database.php";
 
 // Global variables
@@ -30,56 +30,89 @@ switch ($route) {
         $title = "Tk | Login";
         $controller = ["controller/login.php"];
         $view = ["incl/header.php", "view/login.php"];
-    break;
+        break;
     case "register":
         $title = "Tk | Register";
+        $controller = ["controller/register.php"];
         $view = ["incl/header_login.php", "view/register.php"];
         break;
-    case "logout":
-        $title = "Tk | Logout";
-        $view = ["incl/header_logout.php", "view/logout.php"];
-        break;
     case "student_calendar":
+        if (!($_SESSION["user"] ?? null)) {
+            header("Location: ?route=login");
+            exit();
+        }
         $title = "Tk | Student";
         $controller = ["controller/student_calendar.php"];
         $view = ["incl/header_logout.php", "view/student_calendar.php"];
         break;
     case "student_bookings":
+        if (!($_SESSION["user"] ?? null)) {
+            header("Location: ?route=login");
+            exit();
+        }
         $title = "Tk | Student";
         $controller = ["controller/student_bookings.php"];
         $view = ["incl/header_logout.php", "view/student_bookings.php"];
         break;
     case "student_recent":
+        if (!($_SESSION["user"] ?? null)) {
+            header("Location: ?route=login");
+            exit();
+        }
         $title = "Tk | Student";
         $controller = ["controller/student_recent.php"];
         $view = ["incl/header_logout.php", "view/student_recent.php"];
         break;
     case "admin_students_1":
+        if (!($_SESSION["user"] ?? null)) {
+            header("Location: ?route=login");
+            exit();
+        }
         $title = "Tk | Admin";
         $controller = ["controller/admin_students_1.php"];
         $view = ["incl/header_logout.php", "view/admin_students_1.php"];
         break;
     case "admin_students_2":
+        if (!($_SESSION["user"] ?? null)) {
+            header("Location: ?route=login");
+            exit();
+        }
         $title = "Tk | Admin";
         $controller = ["controller/admin_students_2.php"];
         $view = ["incl/header_logout.php", "view/admin_students_2.php"];
         break;
     case "admin_recent":
+        if (!($_SESSION["user"] ?? null)) {
+            header("Location: ?route=login");
+            exit();
+        }
         $title = "Tk | Admin";
         $controller = ["controller/admin_recent.php"];
         $view = ["incl/header_logout.php", "view/admin_recent.php"];
         break;
     case "admin_calendar_1":
+        if (!($_SESSION["user"] ?? null)) {
+            header("Location: ?route=login");
+            exit();
+        }
         $title = "Tk | Admin";
         $controller = ["controller/admin_calendar_1.php"];
         $view = ["incl/header_logout.php", "view/admin_calendar_1.php"];
         break;
     case "admin_calendar_2":
+        if (!($_SESSION["user"] ?? null)) {
+            header("Location: ?route=login");
+            exit();
+        }
         $title = "Tk | Admin";
         $controller = ["controller/admin_calendar_2.php"];
         $view = ["incl/header_logout.php", "view/admin_calendar_2.php"];
         break;
     case "admin_stats":
+        if (!($_SESSION["user"] ?? null)) {
+            header("Location: ?route=login");
+            exit();
+        }
         $title = "Tk | Admin";
         $controller = ["controller/admin_stats.php"];
         $view = ["incl/header_logout.php", "view/admin_stats.php"];

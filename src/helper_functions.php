@@ -36,7 +36,20 @@ function getPost($key, $default = null)
  *
  * @return string beeing sanitized
  */
-function cleanOUT($value)
+function esc($value)
 {
     return htmlentities($value);
+}
+
+/**
+* Sanitize data
+*/
+function clean($data) {
+    if ($data && $data != "") {
+        $data = trim($data);
+        $data = stripslashes($data);
+        $data = htmlentities($data);
+    }
+
+    return $data;
 }

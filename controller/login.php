@@ -1,4 +1,5 @@
 <?php
+require_once("src/helper_functions.php");
 
 // Unset all of the session variables.
 $_SESSION = array();
@@ -22,14 +23,41 @@ $_SESSION = array();
 //     $started = "yes";
 // }
 
+// Username from login form?
+$user = (isset($_POST['user'])) ? esc($_POST['user']) : null;
+$pass = (isset($_POST['pass'])) ? esc($_POST['pass']) : null;
 
-if (isset($_GET['username'])) {
-    $_SESSION['login'] = $_GET['username'];
-    if ($_GET['username'] == "admin") {
-        header("Location: ?route=admin_students_1");
-        exit();
+// Username from registration form?
+if (!$user) {
+    $user = (isset($_GET['user'])) ? esc($_GET['user']) : null;
+}
+
+$msg = "";
+
+if ($user && $pass) {
+    $sql = "SELECT * FROM student WHERE username = ? OR email = ?;";
+    $res = $db->executeFetch($sql, [$user, $user]);
+    if ($res) {
+        if (password_verify($pass, $res->password)) {
+            $_SESSION["user"] = $user;
+            if ($user == "admin") {
+                header("Location: ?route=admin_calendar_1");
+                exit();
+            } else {
+                // Active account?
+                if ($res->status == 2) {
+                    header("Location: ?route=student_calendar");
+                    exit();
+                } elseif ($res->status == 1) {
+                    $msg = "Account is pending of activation";
+                } else {
+                    $msg = "Account has been disabled";
+                }
+            }
+        } else {
+            $msg = "The username/email or password you entered are incorrect";
+        }
+    } else {
+        $msg = "The username/email or password you entered are incorrect";
     }
-    // Redirect
-    header("Location: ?route=student_calendar");
-    exit();
 }

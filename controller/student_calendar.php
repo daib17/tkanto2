@@ -2,7 +2,7 @@
 require_once("src/student_functions.php");
 
 // Get login name from session
-$student = (isset($_SESSION['login'])) ? $_SESSION['login'] : "ninas";
+$student = (isset($_SESSION['user'])) ? $_SESSION['user'] : null;
 
 // Toggle between panels A and B
 $hidePanelA = "";

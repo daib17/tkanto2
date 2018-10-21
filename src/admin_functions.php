@@ -709,5 +709,12 @@ function getRecentActivity($db) {
         $table .= "</tr>";
     }
 
+    // Empty log
+    if (!$res) {
+        $table .= "<tr>";
+        $table .= "<td colspan=5 class='empty-cell'>Log is empty.</td>";
+        $table .= "</tr>";
+    }
+
     return $table;
 }
