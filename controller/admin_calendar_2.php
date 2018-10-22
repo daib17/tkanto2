@@ -1,13 +1,11 @@
 <?php
 require_once("src/admin_functions.php");
 
+// Exception messages
+$exception = "";
+
 if (isset($_GET['selDate'])) {
     $date = esc($_GET['selDate']);
-}
-
-// Copy template to next day?
-if (isset($_GET['copyBtn'])) {
-    copyTemplate($db, $date);
 }
 
 // Prev and Next arrow buttons on header
@@ -58,8 +56,12 @@ if ($bookedBy == "admin") {
 $hourArr = generateHourArrayFromDB($db, $date);
 
 // Copy template to next day?
-if (isset($_GET['button']) && $_GET['button'] == "copy") {
-    copyTemplate($db, $date, $hourArr);
+if (isset($_GET['copyBtn'])) {
+    try {
+        copyTemplate($db, $date, $hourArr);
+    } catch(Exception $ex) {
+        $exception = $ex->getMessage();
+    }
 }
 
 // Parameter sent by admin.js via URL parameters means spinner changed
@@ -67,24 +69,40 @@ if (isset($_GET['spinTime'])) {
     $spin = $_GET['spinTime'];
     if (is_numeric($spin) && in_array($spin, [0, 30, 60])) {
         $student = "admin";
-        updateCalendarDB($db, $hourArr, $date, $student, $hourStr, $spin);
+        try {
+            updateCalendarDB($db, $hourArr, $date, $student, $hourStr, $spin);
+        } catch(Exception $ex) {
+            $exception = "Database operation failed.";
+        }
     }
 }
 
 // Parameter sent by admin.js via URL parameters means spinner changed
 if (isset($_GET['spinStudent'])) {
     $student = $_GET['spinStudent'];
-    doBooking($db, $date, $hourStr, $student);
+    try {
+        doBooking($db, $date, $hourStr, $student);
+    } catch(Exception $ex) {
+        $exception = $ex->getMessage();
+    }
 }
 
 // Cancel booking
 if (isset($_GET['cancelBtn'])) {
-    cancelBooking($db, $date, $_GET['hourStr'], $_GET['cancelBtn']);
+    try {
+        cancelBooking($db, $date, $_GET['hourStr'], $_GET['cancelBtn']);
+    } catch(Exception $ex) {
+        $exception = $ex->getMessage();
+    }
 }
 
 // Clear flag
 if (isset($_GET['clearBtn'])) {
-    clearFlag($db, $date, $_GET['hourStr']);
+    try {
+        clearFlag($db, $date, $_GET['hourStr']);
+    } catch(Exception $ex) {
+        $exception = $ex->getMessage();
+    }
 }
 
 // Get spinner for the selected hour

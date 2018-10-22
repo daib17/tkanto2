@@ -511,18 +511,18 @@ function updateCalendarDB($db, $arr, $date, $student, $hourStr, $spin)
     if ($spin == 0) {
         // Previously 30
         if ($arr[$id]->getDuration() == 30) {
-            $sql = "DELETE FROM calendar WHERE date = ? AND time = ?;";
-            $db->execute($sql, [$date, $time]);
+            $sql = "DELETE FROM calendar WHERE date = ? AND time = ? AND student = ?;";
+            $db->execute($sql, [$date, $time, "admin"]);
         }
         // Previously 60
         if ($arr[$id]->getDuration() == 60) {
             // Delete first slot
-            $sql = "DELETE FROM calendar WHERE date = ? AND time = ?;";
-            $db->execute($sql, [$date, $time]);
+            $sql = "DELETE FROM calendar WHERE date = ? AND time = ? AND student = ? AND duration = ?;";
+            $db->execute($sql, [$date, $time, "admin", 60]);
             // Delete second slot
             $time2 = ($time % 100 == 0) ? $time += 30 : $time += 70;
-            $sql = "DELETE FROM calendar WHERE date = ? AND time = ?;";
-            $db->execute($sql, [$date, $time2]);
+            $sql = "DELETE FROM calendar WHERE date = ? AND time = ? AND student = ? AND duration = ?;";
+            $db->execute($sql, [$date, $time2, "admin", 0]);
         }
     }
 
@@ -531,20 +531,20 @@ function updateCalendarDB($db, $arr, $date, $student, $hourStr, $spin)
         // Previously 60
         if ($arr[$id]->getDuration() == 60) {
             // Update first slot
-            $sql = "UPDATE calendar SET duration = ? WHERE date = ? AND time = ?;";
-            $db->execute($sql, [30, $date, $time]);
+            $sql = "UPDATE calendar SET duration = ? WHERE date = ? AND time = ? AND student = ? AND duration = ?;";
+            $db->execute($sql, [30, $date, $time, "admin", 60]);
             // Delete second slot
             $time2 = ($time % 100 == 0) ? $time += 30 : $time += 70;
-            $sql = "DELETE FROM calendar WHERE date = ? AND time = ?;";
-            $db->execute($sql, [$date, $time2]);
+            $sql = "DELETE FROM calendar WHERE date = ? AND time = ? AND student = ? AND duration = ?;";
+            $db->execute($sql, [$date, $time2, "admin", 0]);
         }
     }
 
     // From 30 to 60 (update existing entry)
     if ($spin == 60) {
         // Update first slot
-        $sql = "UPDATE calendar SET duration = ? WHERE date = ? AND time = ?;";
-        $db->execute($sql, [60, $date, $time]);
+        $sql = "UPDATE calendar SET duration = ? WHERE date = ? AND time = ? AND student = ? AND duration = ?;";
+        $db->execute($sql, [60, $date, $time, "admin", 30]);
         // Insert second slot
         $time2 = ($time % 100 == 0) ? $time += 30 : $time += 70;
         $sql = "INSERT INTO calendar (date, student, time, duration) VALUES (?, ?, ?, ?);";
@@ -561,25 +561,35 @@ function updateCalendarDB($db, $arr, $date, $student, $hourStr, $spin)
 * Make reservation for student at date/time.
 */
 function doBooking($db, $date, $hourStr, $student) {
-    // Convert hour "11:30" to integer 1130
-    $val = explode(":", $hourStr);
-    $time = $val[0] * 100 + $val[1];
+    try {
+        $db->beginTransaction();
+        // Convert hour "11:30" to integer 1130
+        $val = explode(":", $hourStr);
+        $time = $val[0] * 100 + $val[1];
 
-    // Get details for available hour from database
-    $sql = "SELECT * FROM calendar WHERE date = ? AND time = ? AND student = ?;";
-    $res = $db->executeFetch($sql, [$date, $time, "admin"]);
+        // Get details for available hour from database
+        $sql = "SELECT * FROM calendar WHERE date = ? AND time = ? AND student = ?;";
+        $res = $db->executeFetch($sql, [$date, $time, "admin"]);
+        if (!$res) {
+            throw new Exception();
+        }
 
-    // Update first slot
-    $now = date("Y-m-d H:i:s");
-    $sql = "UPDATE calendar SET student = ?, bookdate = ? WHERE date = ? AND time = ? AND student = ?;";
-    $db->execute($sql, [$student, $now, $date, $time, "admin"]);
-    // Update second slot
-    if ($res->duration == 60) {
-        $time2 = ($time % 100 == 0) ? $time + 30 : $time + 70;
-        $db->execute($sql, [$student, $now, $date, $time2, "admin"]);
+        // Update first slot
+        $now = date("Y-m-d H:i:s");
+        $sql = "UPDATE calendar SET student = ?, bookdate = ? WHERE date = ? AND time = ? AND student = ?;";
+        $db->execute($sql, [$student, $now, $date, $time, "admin"]);
+        // Update second slot
+        if ($res->duration == 60) {
+            $time2 = ($time % 100 == 0) ? $time + 30 : $time + 70;
+            $db->execute($sql, [$student, $now, $date, $time2, "admin"]);
+        }
+        $db->commit();
+        // Redirect
+        header("Location: ?route=admin_calendar_2&selDate=$date");
+    } catch (Exception $ex) {
+        $db->rollBack();
+        throw new Exception("Booking failed: time no longer available.");
     }
-    // Redirect
-    header("Location: ?route=admin_calendar_2&selDate=$date");
 }
 
 
@@ -590,24 +600,35 @@ function doBooking($db, $date, $hourStr, $student) {
 * @param string $orderedBy admin or student
 */
 function cancelBooking($db, $date, $hourStr, $cancelBy) {
-    // Convert hour "11:30" to integer 1130
-    $val = explode(":", $hourStr);
-    $time = $val[0] * 100 + $val[1];
-    // Get booking from database
-    $sql = "SELECT * FROM calendar WHERE date = ? AND time = ?;";
-    $res = $db->executeFetch($sql, [$date, $time]);
-    $cancelBy = ($cancelBy != "admin") ? $res->student : "admin";
-    // Update first 30 min slot
-    $sql = "UPDATE calendar SET canceldate = NOW(), cancelby = ? WHERE date = ? AND time = ? AND cancelby IS NULL;";
-    $db->execute($sql, [$cancelBy, $date, $time]);
-    // Update second 30 min slot
-    if ($res->duration == 60) {
-        $time = ($time % 100 == 0) ? $time += 30 : $time += 70;
-        $sql = "UPDATE calendar SET canceldate = NOW(), cancelby = ? WHERE date = ? AND time = ?;";
+    try {
+        $db->beginTransaction();
+        // Convert hour "11:30" to integer 1130
+        $val = explode(":", $hourStr);
+        $time = $val[0] * 100 + $val[1];
+        // Get booking from database
+        $sql = "SELECT * FROM calendar WHERE date = ? AND time = ?;";
+        $res = $db->executeFetch($sql, [$date, $time]);
+        if (!$res) {
+            throw new Exception();
+        }
+
+        $cancelBy = ($cancelBy != "admin") ? $res->student : "admin";
+        // Update first 30 min slot
+        $sql = "UPDATE calendar SET canceldate = NOW(), cancelby = ? WHERE date = ? AND time = ? AND cancelby IS NULL;";
         $db->execute($sql, [$cancelBy, $date, $time]);
+        // Update second 30 min slot
+        if ($res->duration == 60) {
+            $time = ($time % 100 == 0) ? $time += 30 : $time += 70;
+            $sql = "UPDATE calendar SET canceldate = NOW(), cancelby = ? WHERE date = ? AND time = ?;";
+            $db->execute($sql, [$cancelBy, $date, $time]);
+        }
+        $db->commit();
+        // Redirect
+        header("Location: ?route=admin_calendar_2&selDate=$date");
+    } catch (Exception $ex) {
+        $db->rollBack();
+        throw new Exception("Cancel operation failed.");
     }
-    // Redirect
-    header("Location: ?route=admin_calendar_2&selDate=$date");
 }
 
 
@@ -616,22 +637,33 @@ function cancelBooking($db, $date, $hourStr, $cancelBy) {
 * Student already canceled, clear flag.
 */
 function clearFlag($db, $date, $hourStr) {
-    // Convert hour "11:30" to integer 1130
-    $val = explode(":", $hourStr);
-    $time = $val[0] * 100 + $val[1];
-    // Get booking from database
-    $sql = "SELECT * FROM calendar WHERE date = ? AND time = ? AND flag = ?;";
-    $res = $db->executeFetch($sql, [$date, $time, 1]);
-    // 60 or 30 min?
-    $sql = "UPDATE calendar SET flag = ? WHERE date = ? AND time = ? AND flag = ?;";
-    $db->execute($sql, [0, $date, $time, 1]);
-    // Second slot
-    if ($res->duration == 60) {
-        $time = ($time % 100 == 0) ? $time += 30 : $time += 70;
+    try {
+        $db->beginTransaction();
+        // Convert hour "11:30" to integer 1130
+        $val = explode(":", $hourStr);
+        $time = $val[0] * 100 + $val[1];
+        // Get booking from database
+        $sql = "SELECT * FROM calendar WHERE date = ? AND time = ? AND flag = ?;";
+        $res = $db->executeFetch($sql, [$date, $time, 1]);
+        if (!$res) {
+            throw new Exception();
+        }
+
+        // 60 or 30 min?
+        $sql = "UPDATE calendar SET flag = ? WHERE date = ? AND time = ? AND flag = ?;";
         $db->execute($sql, [0, $date, $time, 1]);
+        // Second slot
+        if ($res->duration == 60) {
+            $time = ($time % 100 == 0) ? $time += 30 : $time += 70;
+            $db->execute($sql, [0, $date, $time, 1]);
+        }
+        $db->commit();
+        // Redirect
+        header("Location: ?route=admin_calendar_2&selDate=$date");
+    } catch (Exception $ex) {
+        $db->rollBack();
+        throw new Exception("Confirm operation failed.");
     }
-    // Redirect
-    header("Location: ?route=admin_calendar_2&selDate=$date");
 }
 
 
@@ -641,26 +673,50 @@ function clearFlag($db, $date, $hourStr) {
 */
 function copyTemplate($db, $date, $arr)
 {
-    // Calculate date for one day later
-    $nextDate = new DateTime($date);
-    $nextDate->modify("+1 day");
-    $nextDate = $nextDate->format("Y-m-d");
-    // Copy
-    foreach ($arr as $hour) {
-        if ($hour->getStudent() == "admin") {
-            // Check if hour already exists next day
-            $sql = "SELECT * FROM calendar WHERE date = ? AND time = ?;";
-            $res = $db->executeFetch($sql, [$nextDate, $hour->getTime()]);
-            if (!$res) {
-                $sql = "INSERT INTO calendar (date, student, time, duration) VALUES (?, ?, ?, ?);";
-                $db->execute($sql, [$nextDate, $hour->getStudent(),
-                $hour->getTime(), $hour->getDuration()]);
+    try {
+        $db->beginTransaction();
+        // Calculate date for one day later
+        $nextDate = new DateTime($date);
+        $nextDate->modify("+1 day");
+        $nextDate = $nextDate->format("Y-m-d");
+        // Copy
+        foreach ($arr as $hour) {
+            if ($hour->getStudent() == "admin") {
+                if ($hour->getDuration() == 0) {
+                    continue;
+                }
+                // 60?
+                if ($hour->getDuration() == 60) {
+                    $sql = "SELECT * FROM calendar WHERE date = ? AND time = ?;";
+                    $time = $hour->getTime();
+                    $res = $db->executeFetch($sql, [$nextDate, $time]);
+                    $time2 = ($time % 100 == 0) ? $time + 30 : $time + 70;
+                    $res2 = $db->executeFetch($sql, [$nextDate, $time2]);
+
+                    if (!$res && !$res2) {
+                        $sql = "INSERT INTO calendar (date, student, time, duration) VALUES (?, ?, ?, ?);";
+                        $db->execute($sql, [$nextDate, "admin", $time, 60]);
+                        $sql = "INSERT INTO calendar (date, student, time, duration) VALUES (?, ?, ?, ?);";
+                        $db->execute($sql, [$nextDate, "admin", $time2, 0]);
+                    }
+                } else {
+                    $sql = "SELECT * FROM calendar WHERE date = ? AND time = ?;";
+                    $time = $hour->getTime();
+                    $res = $db->executeFetch($sql, [$nextDate, $time]);
+                    if (!$res) {
+                        $sql = "INSERT INTO calendar (date, student, time, duration) VALUES (?, ?, ?, ?);";
+                        $db->execute($sql, [$nextDate, "admin", $time, 30]);
+                    }
+                }
             }
         }
+        $db->commit();
+        // Redirect
+        header("Location: ?route=admin_calendar_2&selDate=$date");
+    } catch (Exception $ex) {
+        $db->rollBack();
+        throw new Exception("Copy template operation failed.");
     }
-
-    // Redirect
-    header("Location: ?route=admin_calendar_2&selDate=$date");
 }
 
 
@@ -672,6 +728,14 @@ function getRecentActivity($db) {
     $sql = "(SELECT *, bookdate AS d, 'book' AS action FROM calendar WHERE student != 'admin' AND duration > ?) UNION ALL (SELECT *, canceldate AS d, 'cancel' AS action FROM calendar WHERE student != 'admin' AND duration > ?) ORDER BY d DESC LIMIT 15;";
     $res = $db->executeFetchAll($sql, [0, 0]);
     $table = "";
+    // Empty log
+    if (!$res) {
+        $table .= "<tr>";
+        $table .= "<td colspan=4 class='empty-cell'>Log is empty.</td>";
+        $table .= "</tr>";
+        return $table;
+    }
+
     foreach ($res as $row) {
         $table .= "<tr>";
         // From
@@ -694,13 +758,6 @@ function getRecentActivity($db) {
         $table .= "<td class='text'>$action</td>";
         $table .= "<td class='text'>$booking</td>";
         $table .= "<td class='text'>$log</td>";
-        $table .= "</tr>";
-    }
-
-    // Empty log
-    if (!$res) {
-        $table .= "<tr>";
-        $table .= "<td colspan=5 class='empty-cell'>Log is empty.</td>";
         $table .= "</tr>";
     }
 

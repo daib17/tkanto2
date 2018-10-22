@@ -1,6 +1,9 @@
 <?php
 require_once("src/student_functions.php");
 
+// Exception messages
+$exception = "";
+
 // Get login name from session
 $student = (isset($_SESSION['user'])) ? $_SESSION['user'] : null;
 
@@ -46,12 +49,20 @@ if (isset($_POST['selDate'])) {
 
 // Book selected time?
 if (isset($_POST['button']) && $_POST['button'] == "Book") {
-    doBooking($db, $selDate, $selHour, $student);
+    try {
+        doBooking($db, $selDate, $selHour, $student);
+    } catch(Exception $ex) {
+        $exception = $ex->getMessage();
+    }
 }
 
 // Cancel a booking?
 if (isset($_POST['button']) && $_POST['button'] == "Cancel") {
-    cancelBooking($db, $selDate, $selHour, $student);
+    try {
+        cancelBooking($db, $selDate, $selHour, $student);
+    } catch(Exception $ex) {
+        $exception = $ex->getMessage();
+    }
 }
 
 // Calendar header

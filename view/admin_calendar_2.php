@@ -14,6 +14,11 @@
         </li>
     </ul>
     <div class="container main-container-inner">
+        <?php if ($exception != ""): ?>
+            <div class="alert alert-info" role="alert">
+                <?= $exception ?>
+            </div>
+        <?php endif; ?>
         <div class="spinner">
             <div class="float-left w-25 mb-4">
                 <?= $timeSpinner ?>
@@ -31,7 +36,6 @@
                     <button class="btn btn-md btn-danger font-weight-bold <?= $cancelBtn ?>" type="submit" name="cancelBtn" value="student">Cancel by student</button>
                 </form>
             </div>
-
         </div>
         <div class="admin-calendar">
             <form class="calendar-form" method="GET">
@@ -54,7 +58,7 @@
                     </tbody>
                 </table>
                 <div>
-                    <button class="btn btn-lg btn-info btn-block font-weight-bold mt-5" type="submit" name="button" value="copyBtn">Copy open hours to next day</button>
+                    <button class="btn btn-lg btn-info btn-block font-weight-bold mt-5" type="submit" name="copyBtn" value="copy">Copy open hours to next day</button>
                 </div>
             </form>
             <form method="GET">

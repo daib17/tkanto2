@@ -55,6 +55,11 @@
             </div>
         </div>
         <div class="student-day <?= $hidePanelB ?>">
+            <?php if ($exception != ""): ?>
+                <div class="alert alert-info" role="alert">
+                    <?= $exception ?>
+                </div>
+            <?php endif; ?>
             <table class="table table-bordered">
                 <thead>
                     <tr>

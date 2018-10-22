@@ -190,18 +190,27 @@ function getDayCalendar($db, $student, $date, $selHour)
 * Make reservation for student at date/time.
 */
 function doBooking($db, $date, $time, $student) {
-    // Get details for available hour from database
-    $sql = "SELECT * FROM calendar WHERE date = ? AND time = ? AND student = ?;";
-    $res = $db->executeFetch($sql, [$date, $time, "admin"]);
-
-    // Update first slot
-    $now = date("Y-m-d H:i:s");
-    $sql = "UPDATE calendar SET student = ?, bookdate = ? WHERE date = ? AND time = ? AND student = ?;";
-    $db->execute($sql, [$student, $now, $date, $time, "admin"]);
-    // Update second slot
-    if ($res->duration == 60) {
-        $time2 = ($time % 100 == 0) ? $time + 30 : $time + 70;
-        $db->execute($sql, [$student, $now, $date, $time2, "admin"]);
+    try {
+        $db->beginTransaction();
+        // Get details for available hour from database
+        $sql = "SELECT * FROM calendar WHERE date = ? AND time = ? AND student = ?;";
+        $res = $db->executeFetch($sql, [$date, $time, "admin"]);
+        if (!$res) {
+            throw new Exception();
+        }
+        // Update first slot
+        $now = date("Y-m-d H:i:s");
+        $sql = "UPDATE calendar SET student = ?, bookdate = ? WHERE date = ? AND time = ? AND student = ?;";
+        $db->execute($sql, [$student, $now, $date, $time, "admin"]);
+        // Update second slot
+        if ($res->duration == 60) {
+            $time2 = ($time % 100 == 0) ? $time + 30 : $time + 70;
+            $db->execute($sql, [$student, $now, $date, $time2, "admin"]);
+        }
+        $db->commit();
+    } catch (Exception $ex) {
+        $db->rollBack();
+        throw new Exception("Booking failed: time no longer available.");
     }
 }
 
@@ -209,17 +218,27 @@ function doBooking($db, $date, $time, $student) {
 * Cancel booking.
 */
 function cancelBooking($db, $date, $time, $student) {
-    // Get booking from db
-    $sql = "SELECT * FROM calendar WHERE date = ? AND time = ? AND student = ? AND canceldate IS NULL;";
-    $res = $db->executeFetch($sql, [$date, $time, $student]);
-    // Update first slot
-    $now = date("Y-m-d H:i:s");
-    $sql = "UPDATE calendar SET canceldate = ?, cancelby = ?, flag = ? WHERE date = ? AND time = ? AND student = ? AND canceldate IS NULL;";
-    $db->execute($sql, [$now, $student, 1, $date, $time, $student]);
-    // Update second slot
-    if ($res->duration == 60) {
-        $time2 = ($time % 100 == 0) ? $time + 30 : $time + 70;
-        $db->execute($sql, [$now, $student, 1, $date, $time2, $student]);
+    try {
+        $db->beginTransaction();
+        // Get booking from db
+        $sql = "SELECT * FROM calendar WHERE date = ? AND time = ? AND student = ? AND canceldate IS NULL;";
+        $res = $db->executeFetch($sql, [$date, $time, $student]);
+        if (!$res) {
+            throw new Exception();
+        }
+        // Update first slot
+        $now = date("Y-m-d H:i:s");
+        $sql = "UPDATE calendar SET canceldate = ?, cancelby = ?, flag = ? WHERE date = ? AND time = ? AND student = ? AND canceldate IS NULL;";
+        $db->execute($sql, [$now, $student, 1, $date, $time, $student]);
+        // Update second slot
+        if ($res->duration == 60) {
+            $time2 = ($time % 100 == 0) ? $time + 30 : $time + 70;
+            $db->execute($sql, [$now, $student, 1, $date, $time2, $student]);
+        }
+        $db->commit();
+    } catch (Exception $ex) {
+        $db->rollBack();
+        throw new Exception("Cancel operation failed.");
     }
 }
 
@@ -235,7 +254,7 @@ function getBookingsList($db, $student, $page, $selDate, $selTime) {
     // Get bookings from db
     $table = "";
     for ($i = 0; $i < $items_page; $i++) {
-        if ($i < count($res)) {
+        if ($res && $i < count($res)) {
             // Date
             $date = $res[$i]->date;
             $time = $res[$i]->time;
@@ -316,6 +335,14 @@ function getRecentActivity($db, $student) {
     = ? AND duration > ?) ORDER BY d DESC LIMIT 15;";
     $res = $db->executeFetchAll($sql, [$student, 0, $student, 0]);
     $table = "";
+    // Empty log
+    if (!$res) {
+        $table .= "<tr>";
+        $table .= "<td colspan=3 class='empty-cell'>Log is empty.</td>";
+        $table .= "</tr>";
+        return $table;
+    }
+
     foreach ($res as $row) {
         $table .= "<tr>";
         // From
@@ -336,13 +363,6 @@ function getRecentActivity($db, $student) {
         $table .= "<td class='text'>$action</td>";
         $table .= "<td class='text'>$booking</td>";
         $table .= "<td class='text'>$log</td>";
-        $table .= "</tr>";
-    }
-
-    // Empty log
-    if (!$res) {
-        $table .= "<tr>";
-        $table .= "<td colspan=5 class='empty-cell'>Log is empty.</td>";
         $table .= "</tr>";
     }
 

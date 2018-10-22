@@ -123,4 +123,25 @@ class Database
     {
         return $this->pdo->lastInsertId();
     }
+
+    /**
+    * Begin transaction.
+    */
+    public function beginTransaction() {
+        $this->pdo->beginTransaction();
+    }
+
+    /**
+    * Commit transaction.
+    */
+    public function commit() {
+        $this->pdo->commit();
+    }
+
+    /**
+    * Rollback transaction.
+    */
+    public function rollBack() {
+        $this->pdo->rollBack();
+    }
 }
