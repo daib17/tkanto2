@@ -2,7 +2,7 @@
 require_once("src/admin_functions.php");
 
 if (isset($_GET['selDate'])) {
-    $date = $_GET['selDate'];
+    $date = esc($_GET['selDate']);
 }
 
 // Copy template to next day?
@@ -65,8 +65,10 @@ if (isset($_GET['button']) && $_GET['button'] == "copy") {
 // Parameter sent by admin.js via URL parameters means spinner changed
 if (isset($_GET['spinTime'])) {
     $spin = $_GET['spinTime'];
-    $student = "admin";
-    updateCalendarDB($db, $hourArr, $date, $student, $hourStr, $spin);
+    if (is_numeric($spin) && in_array($spin, [0, 30, 60])) {
+        $student = "admin";
+        updateCalendarDB($db, $hourArr, $date, $student, $hourStr, $spin);
+    }
 }
 
 // Parameter sent by admin.js via URL parameters means spinner changed

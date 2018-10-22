@@ -17,7 +17,7 @@
         <div class="admin-calendar">
             <table class="table table-only-header table-bordered">
                 <thead>
-                    <form class="calendar-form" method="GET">
+                    <form class="calendar-form">
                         <input type="hidden" name="route" value="admin_calendar_1">
                         <input type="hidden" name="date" value=<?= $date ?>>
                         <tr>

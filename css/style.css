@@ -15,7 +15,7 @@ table {
 }
 
 .table .empty-cell {
-    padding: 16px 0;
+    padding: 1rem 0;
 }
 
 thead {
@@ -89,8 +89,8 @@ a {
 }
 
 .main-container-inner {
-    margin-top: 16px;
-    padding: 16px;
+    margin-top: 1rem;
+    padding: 1rem;
 }
 
 .student-calendar {
@@ -104,7 +104,7 @@ a {
     height: 100%;
     border-style: none;
     border-color: white;
-    padding: 16px 0;
+    padding: 1rem 0;
 }
 
 .student-calendar .button:disabled:hover {
@@ -146,6 +146,12 @@ a {
     background-color: #81c784;
 }
 
+.student-calendar .selected.canceled,
+.student-calendar .canceled:hover {
+    border: 1px solid #000;
+    background-color: #e57373;
+}
+
 .student-calendar .selected.weekend,
 .student-calendar .weekend:hover {
     border: 1px solid #000;
@@ -160,6 +166,11 @@ a {
 .student-calendar .booked {
     border: 1px solid #81c784;
     background-color: #81c784;
+}
+
+.student-calendar .canceled {
+    border: 1px solid #e57373;
+    background-color: #e57373;
 }
 
 .student-calendar .weekend {
@@ -193,7 +204,7 @@ a {
     height: 100%;
     border-style: none;
     border-color: white;
-    padding: 16px 0;
+    padding: 1rem 0;
 }
 
 .student-day .button:hover {
@@ -280,6 +291,24 @@ a {
     color: red;
 }
 
+.non-button {
+    display: block;
+    width: 100%;
+    height: 100%;
+    border: 1px solid #fff;
+    padding: 1rem;
+    text-align: center;
+}
+
+.non-button-left {
+    display: block;
+    width: 100%;
+    height: 100%;
+    border: 1px solid #fff;
+    padding: 1rem;
+    text-align: left;
+}
+
 /* ADMIN - Students -------------------------------------------- */
 
 .spinner {
@@ -287,7 +316,7 @@ a {
 }
 
 .pagination {
-    margin: 16px;
+    margin: 1rem;
 }
 
 .pagination .page-link {

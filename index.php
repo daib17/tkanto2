@@ -14,7 +14,7 @@ $db->connect($databaseConfig);
 // $resultset = null;
 
 // Route
-$route = getGet("route", "");
+$route = getPost("route") ?? getGet("route");
 
 switch ($route) {
     case "":
@@ -23,11 +23,6 @@ switch ($route) {
         // TODO
         // Validate username and password
         // If login ok view/student_cal.php or view/admin_students.php
-        $controller = ["controller/login.php"];
-        $view = ["incl/header.php", "view/login.php"];
-        break;
-    case "logout":
-        $title = "Tk | Login";
         $controller = ["controller/login.php"];
         $view = ["incl/header.php", "view/login.php"];
         break;
@@ -64,7 +59,7 @@ switch ($route) {
         $view = ["incl/header_logout.php", "view/student_recent.php"];
         break;
     case "admin_students_1":
-        if (!($_SESSION["user"] ?? null)) {
+        if (!$_SESSION["user"] || $_SESSION["user"] != "admin") {
             header("Location: ?route=login");
             exit();
         }
@@ -73,7 +68,7 @@ switch ($route) {
         $view = ["incl/header_logout.php", "view/admin_students_1.php"];
         break;
     case "admin_students_2":
-        if (!($_SESSION["user"] ?? null)) {
+        if (!$_SESSION["user"] || $_SESSION["user"] != "admin") {
             header("Location: ?route=login");
             exit();
         }
@@ -82,7 +77,7 @@ switch ($route) {
         $view = ["incl/header_logout.php", "view/admin_students_2.php"];
         break;
     case "admin_recent":
-        if (!($_SESSION["user"] ?? null)) {
+        if (!$_SESSION["user"] || $_SESSION["user"] != "admin") {
             header("Location: ?route=login");
             exit();
         }
@@ -91,7 +86,7 @@ switch ($route) {
         $view = ["incl/header_logout.php", "view/admin_recent.php"];
         break;
     case "admin_calendar_1":
-        if (!($_SESSION["user"] ?? null)) {
+        if (!$_SESSION["user"] || $_SESSION["user"] != "admin") {
             header("Location: ?route=login");
             exit();
         }
@@ -100,7 +95,7 @@ switch ($route) {
         $view = ["incl/header_logout.php", "view/admin_calendar_1.php"];
         break;
     case "admin_calendar_2":
-        if (!($_SESSION["user"] ?? null)) {
+        if (!$_SESSION["user"] || $_SESSION["user"] != "admin") {
             header("Location: ?route=login");
             exit();
         }
@@ -109,13 +104,18 @@ switch ($route) {
         $view = ["incl/header_logout.php", "view/admin_calendar_2.php"];
         break;
     case "admin_stats":
-        if (!($_SESSION["user"] ?? null)) {
+        if (!$_SESSION["user"] || $_SESSION["user"] != "admin") {
             header("Location: ?route=login");
             exit();
         }
         $title = "Tk | Admin";
         $controller = ["controller/admin_stats.php"];
         $view = ["incl/header_logout.php", "view/admin_stats.php"];
+        break;
+    case "pass_recovery":
+        $title = "Tk | Recovery";
+        $controller = ["controller/pass_recovery.php"];
+        $view = ["incl/header.php", "view/pass_recovery.php"];
         break;
 }
 

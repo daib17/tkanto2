@@ -89,7 +89,7 @@ function getAdminMonthlyCalendar($db, $date, $selDate)
         $freeEmpty = ($free[$i] == 0) ? "free-empty" : "";
         $bookedEmpty = ($booked[$i] == 0) ? "booked-empty" : "";
 
-        $table .= "<td><form method='get'><div class='day-label'><input type='hidden' name='route' value='admin_calendar_2'>
+        $table .= "<td><form><div class='day-label'><input type='hidden' name='route' value='admin_calendar_2'>
         <input type='hidden' name='selDate' value={$date}><input type='submit' class='button {$selector}' name='day' value={$i}><div class='free-mini {$freeEmpty}'>{$free[$i]}</div><div class='booked {$bookedEmpty}'>{$booked[$i]}</div></div></form></td>";
         if ($weekDay == 0) {
             $table .= "</tr>";
@@ -394,10 +394,8 @@ function getSpinnerForSelectedHour($db, $arr, $hourStr) {
 */
 function getStudentSpinner($db) {
     // Get all active students from database
-    $sql = "SELECT * FROM student WHERE status LIKE ?;";
-    $res = $db->executeFetchAll($sql, [2]);
-    // print_r($res);
-    // exit();
+    $sql = "SELECT * FROM student WHERE status LIKE ? AND username != ?;";
+    $res = $db->executeFetchAll($sql, [2, "admin"]);
     $spinHTML = "<select id='studentSpinner' class='form-control'>";
     $spinHTML .= "<option value='noStudent'>Select student</option>";
     foreach ($res as $row) {
@@ -671,8 +669,8 @@ function copyTemplate($db, $date, $arr)
 *
 */
 function getRecentActivity($db) {
-    $sql = "SELECT * FROM calendar WHERE duration > ? ORDER BY updated DESC LIMIT 10;";
-    $res = $db->executeFetchAll($sql, [0]);
+    $sql = "(SELECT *, bookdate AS d, 'book' AS action FROM calendar WHERE student != 'admin' AND duration > ?) UNION ALL (SELECT *, canceldate AS d, 'cancel' AS action FROM calendar WHERE student != 'admin' AND duration > ?) ORDER BY d DESC LIMIT 15;";
+    $res = $db->executeFetchAll($sql, [0, 0]);
     $table = "";
     foreach ($res as $row) {
         $table .= "<tr>";
@@ -680,32 +678,22 @@ function getRecentActivity($db) {
         $from = sprintf("%04d", $row->time);
         $from = substr_replace($from, ":", 2, 0);
         $from = ltrim($from, "0");
-        // // To
-        // $time = $row->time;
-        // if ($row->duration == 60) {
-        //     $time += 100;
-        // } else {
-        //     $time = ($time % 100 == 0) ? $time + 30 : $time + 70;
-        // }
-        // $to = sprintf("%04d", $time);
-        // $to = substr_replace($to, ":", 2, 0);
-        // $to = ltrim($to, "0");
-        // // Time (800 to 8:00)
         $timeLabel = $from;
-        // Action
-        $action = ($row->cancelby == null) ? "book" : "cancel";
-        if ($row->cancelby) {
-            $action = "cancel";
-        }
         // Format dates
         $date = date('j M', strtotime($row->date));
-        $updated = date('j M H:i', strtotime($row->updated));
+        // Entries with no cancel date get null 'd' column after select
+        if (!$row->d) {
+            continue;
+        }
+
+        $action = ($row->action == "cancel") ? "cancel (" . $row->cancelby . ")" : "book";
+        $booking =  $date . " (" . $timeLabel . ")";
+        $log = date('j M H:i', strtotime($row->d));
 
         $table .= "<td class='text'>$row->student</td>";
         $table .= "<td class='text'>$action</td>";
-        $table .= "<td class='text'>$date</td>";
-        $table .= "<td class='text'>$timeLabel</td>";
-        $table .= "<td class='text'>$updated</td>";
+        $table .= "<td class='text'>$booking</td>";
+        $table .= "<td class='text'>$log</td>";
         $table .= "</tr>";
     }
 

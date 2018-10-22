@@ -7,8 +7,8 @@ $student = (isset($_SESSION['user'])) ? $_SESSION['user'] : null;
 // Toggle between panels A and B
 $hidePanelA = "";
 $hidePanelB = "hidden";
-if (isset($_GET["hidePanel"])) {
-    if ($_GET["hidePanel"] == "A") {
+if (isset($_POST["hidePanel"])) {
+    if ($_POST["hidePanel"] == "A") {
         $hidePanelA = "hidden";
         $hidePanelB = "";
     }
@@ -21,36 +21,36 @@ $selHour = "";
 $selDate = "";
 $buttonLabel = "";
 $buttonType = "hidden";
-if (isset($_GET['selDate'])) {
-    $selDate = $_GET['selDate'];
+if (isset($_POST['selDate'])) {
+    $selDate = $_POST['selDate'];
     $date = $selDate;
-    if (isset($_GET['selHour'])) {
-        $selHour = $_GET['selHour'];
-        if (isset($_GET['statusLabel']) && $selDate >= $today) {
-            if ($_GET['statusLabel'] == "booked") {
+    if (isset($_POST['selHour'])) {
+        $selHour = $_POST['selHour'];
+        if (isset($_POST['statusLabel']) && $selDate >= $today) {
+            if ($_POST['statusLabel'] == "booked") {
                 $buttonLabel = "Cancel";
                 $buttonType = "btn-danger";
-            } elseif ($_GET['statusLabel'] == "available") {
+            } elseif ($_POST['statusLabel'] == "available") {
                 $buttonLabel = "Book";
                 $buttonType = "btn-info";
             }
         }
     }
-    $selHour = (isset($_GET['selHour'])) ? $_GET['selHour'] : "";
-} elseif (isset($_GET['date'])) {
-    $date = $_GET['date'];
+    $selHour = (isset($_POST['selHour'])) ? $_POST['selHour'] : "";
+} elseif (isset($_POST['date'])) {
+    $date = $_POST['date'];
 } else {
     $date = date('Y-m-d');   // today
     $selDate = $date;
 }
 
 // Book selected time?
-if (isset($_GET['button']) && $_GET['button'] == "Book") {
+if (isset($_POST['button']) && $_POST['button'] == "Book") {
     doBooking($db, $selDate, $selHour, $student);
 }
 
 // Cancel a booking?
-if (isset($_GET['button']) && $_GET['button'] == "Cancel") {
+if (isset($_POST['button']) && $_POST['button'] == "Cancel") {
     cancelBooking($db, $selDate, $selHour, $student);
 }
 
@@ -62,8 +62,8 @@ $headYear = date("Y", strtotime($date));
 $headMonth = date("n", strtotime($date));
 $headYear = date("Y", strtotime($date));
 
-if (isset($_GET['changeMonth'])) {
-    if ($_GET['changeMonth'] == ">>") {
+if (isset($_POST['changeMonth'])) {
+    if ($_POST['changeMonth'] == ">>") {
         if ($headMonth == 12) {
             $headMonth = 1;
             $headYear++;

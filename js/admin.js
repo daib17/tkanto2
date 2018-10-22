@@ -2,7 +2,7 @@
     'use strict';
 
     /**
-    * Admin - Student
+    * Admin - Student - Status filter
     */
     var showFilter = document.getElementById("showFilter");
     if (showFilter != null) {

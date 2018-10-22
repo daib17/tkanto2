@@ -22,7 +22,7 @@
                 <?= $studentSpinner ?>
             </div>
             <div class="float-right mb-4">
-                <form  method="get">
+                <form method="GET">
                     <input type="hidden" name="route" value="admin_calendar_2">
                     <input type="hidden" name="selDate" value="<?= $date ?>">
                     <input type="hidden" name="hourStr" value=<?= $hourStr ?>>
@@ -54,11 +54,10 @@
                     </tbody>
                 </table>
                 <div>
-                    <input type="hidden" name="route" value="admin_calendar_2">
                     <button class="btn btn-lg btn-info btn-block font-weight-bold mt-5" type="submit" name="button" value="copyBtn">Copy open hours to next day</button>
                 </div>
             </form>
-            <form method="get">
+            <form method="GET">
                 <input type="hidden" name="route" value="admin_calendar_1">
                 <input type="hidden" name="selDate" value="<?= $date ?>">
                 <button class="btn btn-lg btn-secondary btn-block font-weight-bold my-3" type="submit">Back</button>

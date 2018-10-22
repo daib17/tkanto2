@@ -37,16 +37,19 @@ function getMonthCalendar($db, $date, $selDate, $student)
     // Get all entry for given month
     $dateFrom = $year . "-" . $month . "-01";
     $dateTo = $year . "-" . $month . "-" . $numDays;
-    $sql = "SELECT * FROM calendar WHERE (student = ? OR student = ?) AND duration > 0 AND date BETWEEN ? AND ?;";
-    $res = $db->executeFetchAll($sql, [$student, "admin", $dateFrom, $dateTo]);
+    $sql = "SELECT * FROM calendar WHERE (student = ? OR student = ?) AND duration > ? AND date BETWEEN ? AND ?;";
+    $res = $db->executeFetchAll($sql, [$student, "admin", 0, $dateFrom, $dateTo]);
     // Extract dates with booked and available times
     $bookedDates = [];
     $availDates = [];
+    $canceledDates = [];
     foreach ($res as $booking) {
         if ($booking->student == "admin") {
             array_push($availDates, $booking->date);
-        } else {
+        } elseif (!$booking->cancelby) {
             array_push($bookedDates, $booking->date);
+        } else {
+            array_push($canceledDates, $booking->date);
         }
     }
 
@@ -71,6 +74,10 @@ function getMonthCalendar($db, $date, $selDate, $student)
             $selector = "selected ";
         }
 
+        if (in_array($date, $canceledDates)) {
+            $selector .= "canceled ";
+        }
+        // One single book makes color green
         if (in_array($date, $bookedDates)) {
             $selector .= "booked";
         } elseif ($weekDay == 6 || $weekDay == 0) {
@@ -89,7 +96,7 @@ function getMonthCalendar($db, $date, $selDate, $student)
             $asterisk = "";
         }
 
-        $table .= "<td><div><form method='get'><input type='hidden' name='hidePanel' value='A'><input type='hidden' name='route' value='student_calendar'><input type='hidden' name='selDate' value={$date}><input type='submit' class='button {$selector}' name='day' value={$i}{$asterisk}></form></div></td>";
+        $table .= "<td><div><form method='POST'><input type='hidden' name='hidePanel' value='A'><input type='hidden' name='route' value='student_calendar'><input type='hidden' name='selDate' value={$date}><input type='submit' class='button {$selector}' name='day' value={$i}{$asterisk}></form></div></td>";
         if ($weekDay == 0) {
             $table .= "</tr>";
         }
@@ -142,8 +149,18 @@ function getDayCalendar($db, $student, $date, $selHour)
             if ($row->duration == 30) {
                 $timeLabel .= " *";
             }
+
+            $selected = ($row->time == $selHour && !$row->cancelby) ? "selected" : "non-selected";
+
+            $submit = "";
+            if ($row->cancelby == null) {
+                $submit="<input type='submit' class='button {$selected}' name='' value='{$timeLabel}'>";
+            } else {
+                $submit="<div class='non-button'>{$timeLabel}</div>";
+            }
+
             // Show canceled only by admin and when no open alternative
-            if ($row->cancelby != "") {
+            if ($row->cancelby) {
                 $statusLabel = "canceled by " . $row->cancelby;
                 $color = "canceled";
             } else {
@@ -151,9 +168,8 @@ function getDayCalendar($db, $student, $date, $selHour)
                 $color = ($row->student == $student) ? "booked" : "available";
             }
 
-            $selected = ($row->time == $selHour && $row->cancelby == "") ? "selected" : "non-selected";
             // Time td
-            $table .= "<td><form method='get'><input type='hidden' name='route' value='student_calendar'><input type='hidden' name='hidePanel' value='A'><input type='hidden' name='selDate' value={$date}><input type='hidden' name='selHour' value={$row->time}><input type='hidden' name='statusLabel' value={$statusLabel}><input type='submit' class='button {$selected}' name='' value='{$timeLabel}'></form></td>";
+            $table .= "<td><form method='POST'><input type='hidden' name='route' value='student_calendar'><input type='hidden' name='hidePanel' value='A'><input type='hidden' name='selDate' value={$date}><input type='hidden' name='selHour' value={$row->time}><input type='hidden' name='statusLabel' value={$statusLabel}>{$submit}</form></td>";
             // Status td
             $table .= "<td class='{$color}'>{$statusLabel}</td>";
             $table .= "</tr>";
@@ -232,11 +248,13 @@ function getBookingsList($db, $student, $page, $selDate, $selTime) {
             // Duration
             $duration = $res[$i]->duration;
 
-            // Highlight selection
-            if ($date == $selDate && $time == $selTime && $res[$i]->cancelby == "") {
-                $selected = "selected";
+            $selected = ($date == $selDate && $time == $selTime && !$res[$i]->cancelby) ? "selected" : "non-selected";
+
+            $submit = "";
+            if ($res[$i]->cancelby == null) {
+                $submit="<input type='submit' class='{$selected}' name='selDate' value={$date}>";
             } else {
-                $selected = "";
+                $submit="<div class='non-button-left'>{$date}</div>";
             }
 
             // Add cancelation note
@@ -247,7 +265,7 @@ function getBookingsList($db, $student, $page, $selDate, $selTime) {
             }
 
             $table .= "<tr>";
-            $table .= "<td colspan=2><form method='GET'><input type='hidden' name='route' value='student_bookings'>{$cancel}<input type='hidden' name='selTime' value={$time}><input type='hidden' name='page' value={$page} /><input type='submit' class='{$selected}' name='selDate' value={$date}></form></td>";
+            $table .= "<td colspan=2><form method='POST'><input type='hidden' name='route' value='student_bookings'>{$cancel}<input type='hidden' name='selTime' value={$time}><input type='hidden' name='page' value={$page} />{$submit}</form></td>";
             $table .= "<td>{$timeLabel}</td>";
             $table .= "<td>{$duration}</td>";
             $table .= "</tr>";
@@ -281,7 +299,7 @@ function createPageNavigation($db, $student, $actualPage) {
 
     for ($id = 1; $id < $pages + 1; $id++) {
         $active = ($id == $actualPage) ? "active" : "";
-        $table .= "<form method='GET'><input type='hidden' name='route' value='student_bookings'><li class='page-item " . $active . "'><input type='submit' class='page-link' name='page' value=" . $id . "></li></form>";
+        $table .= "<form method='POST'><input type='hidden' name='route' value='student_bookings'><li class='page-item " . $active . "'><input type='submit' class='page-link' name='page' value=" . $id . "></li></form>";
     }
 
     $table .= "</ul>";
@@ -293,8 +311,10 @@ function createPageNavigation($db, $student, $actualPage) {
 *
 */
 function getRecentActivity($db, $student) {
-    $sql = "SELECT * FROM calendar WHERE student = ? AND duration > ? ORDER BY updated DESC LIMIT 10;";
-    $res = $db->executeFetchAll($sql, [$student, 0]);
+    $sql = "(SELECT *, bookdate AS d, 'book' AS action FROM calendar WHERE student
+    = ? AND duration > ?) UNION ALL (SELECT *, canceldate AS d, 'cancel' AS action FROM calendar WHERE student
+    = ? AND duration > ?) ORDER BY d DESC LIMIT 15;";
+    $res = $db->executeFetchAll($sql, [$student, 0, $student, 0]);
     $table = "";
     foreach ($res as $row) {
         $table .= "<tr>";
@@ -302,32 +322,20 @@ function getRecentActivity($db, $student) {
         $from = sprintf("%04d", $row->time);
         $from = substr_replace($from, ":", 2, 0);
         $from = ltrim($from, "0");
-        // // To
-        // $time = $row->time;
-        // if ($row->duration == 60) {
-        //     $time += 100;
-        // } else {
-        //     $time = ($time % 100 == 0) ? $time + 30 : $time + 70;
-        // }
-        // $to = sprintf("%04d", $time);
-        // $to = substr_replace($to, ":", 2, 0);
-        // $to = ltrim($to, "0");
-        // // Time (800 to 8:00)
         $timeLabel = $from;
-        // Action
-        $action = ($row->cancelby == null) ? "book" : "cancel";
-        if ($row->cancelby) {
-            $action = "cancel";
-        }
         // Format dates
         $date = date('j M', strtotime($row->date));
-        $updated = date('j M H:i', strtotime($row->updated));
+        // Entries with no cancel date get null 'd' column after select
+        if (!$row->d) {
+            continue;
+        }
+        $action = ($row->action == "cancel") ? "cancel (" . $row->cancelby . ")" : "book";
+        $booking =  $date . " (" . $timeLabel . ")";
+        $log = date('j M H:i', strtotime($row->d));
 
-        $table .= "<td class='text'>$row->student</td>";
         $table .= "<td class='text'>$action</td>";
-        $table .= "<td class='text'>$date</td>";
-        $table .= "<td class='text'>$timeLabel</td>";
-        $table .= "<td class='text'>$updated</td>";
+        $table .= "<td class='text'>$booking</td>";
+        $table .= "<td class='text'>$log</td>";
         $table .= "</tr>";
     }
 

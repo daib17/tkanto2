@@ -7,7 +7,7 @@
             <a class="nav-link" href="?route=admin_students_1">Students</a>
         </li>
         <li class="nav-item">
-            <a class="nav-link" href="?route=admin_bookings">Recent</a>
+            <a class="nav-link active" href="?route=admin_recent">Recent</a>
         </li>
         <li class="nav-item">
             <a class="nav-link" href="?route=admin_stats">Statistics</a>
@@ -19,8 +19,7 @@
                 <tr>
                     <th scope="col">Student</th>
                     <th scope="col">Action</th>
-                    <th scope="col">Date</th>
-                    <th scope="col">Time</th>
+                    <th scope="col">Booking</th>
                     <th scope="col">Log</th>
                 </tr>
             </thead>

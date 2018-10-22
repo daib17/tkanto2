@@ -5,21 +5,22 @@ require_once("src/student_functions.php");
 $student = (isset($_SESSION['user'])) ? $_SESSION['user'] : null;
 
 // Actual page
-$page = isset($_GET['page']) ? $_GET['page'] : 1;
+$page = isset($_POST['page']) ? $_POST['page'] : 1;
+$page = is_numeric($page) ? $page : 1;
 
 // Date and time from selected item
-$selDate = isset($_GET['selDate']) ? $_GET['selDate'] : "";
-$selTime = isset($_GET['selTime']) ? $_GET['selTime'] : "";
+$selDate = isset($_POST['selDate']) ? $_POST['selDate'] : "";
+$selTime = isset($_POST['selTime']) ? $_POST['selTime'] : "";
 
 // Default UI
 $cancelButton = "hidden";
 
 // Cancel booking?
-if (isset($_GET['button']) && $_GET['button'] == "cancel") {
+if (isset($_POST['button']) && $_POST['button'] == "cancel") {
     cancelBooking($db, $selDate, $selTime, $student);
     $selDate = "";
     $selTime = "";
-} elseif (isset($_GET['selDate']) && !isset($_GET['isCanceled'])) {
+} elseif (isset($_POST['selDate']) && !isset($_POST['isCanceled'])) {
     $cancelButton = "";
 }
 

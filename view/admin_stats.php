@@ -18,4 +18,3 @@
 
     </div>
 </div>
-<script type="text/javascript" src="js/teacher.js"></script>
