@@ -13,10 +13,9 @@
 
     <div class="container main-container-inner">
         <div class="student-calendar <?= $hidePanelA ?>">
-            <h5>
+            <h5 class="mb-4">
                 Select a date to see available times
             </h5>
-            <br>
             <table class="table table-only-header table-bordered">
                 <form class="calendar-form" method="GET">
                     <input type="hidden" name="route" value="student_calendar">
@@ -55,6 +54,7 @@
             </div>
         </div>
         <div class="student-day <?= $hidePanelB ?>">
+            <h5 class="mb-4">Select a time to book or cancel</h5>
             <?php if ($exception != ""): ?>
                 <div class="alert alert-info" role="alert">
                     <?= $exception ?>

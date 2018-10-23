@@ -29,7 +29,7 @@ switch ($route) {
     case "register":
         $title = "Tk | Register";
         $controller = ["controller/register.php"];
-        $view = ["incl/header_login.php", "view/register.php"];
+        $view = ["incl/header.php", "view/register.php"];
         break;
     case "student_calendar":
         if (!($_SESSION["user"] ?? null)) {

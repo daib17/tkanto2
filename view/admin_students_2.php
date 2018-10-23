@@ -14,6 +14,7 @@
         </li>
     </ul>
     <div class="container main-container-inner">
+        <h5 class="mb-4">Edit details</h5>
         <form method="get">
             <input type="hidden" name="route" value="admin_students_2">
             <input type="hidden" name="studentID" value="<?= $studentID ?>">

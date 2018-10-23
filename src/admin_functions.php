@@ -90,7 +90,7 @@ function getAdminMonthlyCalendar($db, $date, $selDate)
         $bookedEmpty = ($booked[$i] == 0) ? "booked-empty" : "";
 
         $table .= "<td><form><div class='day-label'><input type='hidden' name='route' value='admin_calendar_2'>
-        <input type='hidden' name='selDate' value={$date}><input type='submit' class='button {$selector}' name='day' value={$i}><div class='free-mini {$freeEmpty}'>{$free[$i]}</div><div class='booked {$bookedEmpty}'>{$booked[$i]}</div></div></form></td>";
+        <input type='hidden' name='selDate' value='{$date}'><input type='submit' class='button {$selector}' name='day' value={$i}><div class='free-mini {$freeEmpty}'>{$free[$i]}</div><div class='booked {$bookedEmpty}'>{$booked[$i]}</div></div></form></td>";
         if ($weekDay == 0) {
             $table .= "</tr>";
         }
@@ -158,7 +158,7 @@ function getStudentListAsTable($db, $filterId = 3, $page, $selectedID, $search)
     $statusStr = ["Disabled", "Pending", "Active"];
     if ($search != "") {
         $res = doSearch($db, $search);
-        $searchInput = "<input type='hidden' name='search' value={$search} />";
+        $searchInput = "<input type='hidden' name='search' value='{$search}' />";
     } else {
         $res = getStudentsByStatus($db, $filterId);
         $searchInput = "";
@@ -179,7 +179,7 @@ function getStudentListAsTable($db, $filterId = 3, $page, $selectedID, $search)
                     $selected = "";
                 }
 
-                $table .= "<td colspan=2><form method='GET'><input type='hidden' name='route' value='admin_students_1'>{$searchInput}<input type='submit' class='{$selected}' name='name' value={$name}><input type='hidden' name='studentID' value={$studentID} /><input type='hidden' name='filter' value={$filterId} /><input type='hidden' name='page' value={$page} /></form></td>";
+                $table .= "<td colspan=2><form method='GET'><input type='hidden' name='route' value='admin_students_1'>{$searchInput}<input type='submit' class='{$selected}' name='name' value='{$name}'><input type='hidden' name='studentID' value={$studentID} /><input type='hidden' name='filter' value={$filterId} /><input type='hidden' name='page' value={$page} /></form></td>";
                 $table .= "<td>" . $statusStr[$res[$id]->status] . "</td>";
             } else {
                 $table .= "<td colspan=2>&nbsp;</td>";
@@ -206,7 +206,7 @@ function getPagination($db, $filterId, $actualPage, $search)
 {
     if ($search != "") {
         $res = doSearch($db, $search);
-        $searchInput = "<input type='hidden' name='search' value={$search} />";
+        $searchInput = "<input type='hidden' name='search' value='{$search}' />";
     } else {
         $res = getStudentsByStatus($db, $filterId);
         $searchInput = "";
@@ -224,7 +224,7 @@ function getPagination($db, $filterId, $actualPage, $search)
 
     for ($id = 1; $id < $pages + 1; $id++) {
         $active = $id == $actualPage ? "active" : "";
-        $table .= "<form method='GET'><input type='hidden' name='route' value='admin_students_1'>{$searchInput}<input type='hidden' name='filter' value=" . $filterId . " /><li class='page-item " . $active . "'><input type='submit' class='page-link' name='page' value=" . $id . "></li></form>";
+        $table .= "<form method='GET'><input type='hidden' name='route' value='admin_students_1'>{$searchInput}<input type='hidden' name='filter' value={$filterId}/><li class='page-item {$active}'><input type='submit' class='page-link' name='page' value={$id}></li></form>";
     }
 
     $table .= "</ul>";
@@ -243,9 +243,9 @@ function getSpinnerFilter($status) {
     $select = "<select id='showFilter' class='form-control w-25'>";
     foreach ($filterType as $key => $value) {
         if ($key == $status) {
-            $select .= "<option value='" . $key . "'selected='selected'>" . $value . "</option>";
+            $select .= "<option value='{$key}' selected='selected'>" . $value . "</option>";
         } else {
-            $select .= "<option value='" . $key . "'>" . $value . "</option>";
+            $select .= "<option value='{$key}'>{$value}</option>";
         }
     }
     $select .= "</select>";
@@ -264,9 +264,9 @@ function getSpinnerStatus($status) {
     $select = "<select name='status' class='form-control w-50'>";
     foreach ($filterType as $key => $value) {
         if ($key == $status) {
-            $select .= "<option value='" . $key . "'selected='selected'>" . $value . "</option>";
+            $select .= "<option value='{$key}'selected='selected'>" . $value . "</option>";
         } else {
-            $select .= "<option value='" . $key . "'>" . $value . "</option>";
+            $select .= "<option value='{$key}'>{$value}</option>";
         }
     }
     $select .= "</select>";

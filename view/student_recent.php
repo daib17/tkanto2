@@ -12,6 +12,7 @@
     </ul>
 
     <div class="container main-container-inner">
+        <h5 class="mb-4">Recent activity</h5>
         <table class="table table-bordered table-selectable">
             <thead>
                 <tr>

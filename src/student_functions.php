@@ -96,7 +96,7 @@ function getMonthCalendar($db, $date, $selDate, $student)
             $asterisk = "";
         }
 
-        $table .= "<td><div><form method='POST'><input type='hidden' name='hidePanel' value='A'><input type='hidden' name='route' value='student_calendar'><input type='hidden' name='selDate' value={$date}><input type='submit' class='button {$selector}' name='day' value={$i}{$asterisk}></form></div></td>";
+        $table .= "<td><div><form method='POST'><input type='hidden' name='hidePanel' value='A'><input type='hidden' name='route' value='student_calendar'><input type='hidden' name='selDate' value='{$date}'><input type='submit' class='button {$selector}' name='day' value='{$i}{$asterisk}'></form></div></td>";
         if ($weekDay == 0) {
             $table .= "</tr>";
         }
@@ -169,7 +169,7 @@ function getDayCalendar($db, $student, $date, $selHour)
             }
 
             // Time td
-            $table .= "<td><form method='POST'><input type='hidden' name='route' value='student_calendar'><input type='hidden' name='hidePanel' value='A'><input type='hidden' name='selDate' value={$date}><input type='hidden' name='selHour' value={$row->time}><input type='hidden' name='statusLabel' value={$statusLabel}>{$submit}</form></td>";
+            $table .= "<td><form method='POST'><input type='hidden' name='route' value='student_calendar'><input type='hidden' name='hidePanel' value='A'><input type='hidden' name='selDate' value='{$date}'><input type='hidden' name='selHour' value={$row->time}><input type='hidden' name='statusLabel' value='{$statusLabel}'>{$submit}</form></td>";
             // Status td
             $table .= "<td class='{$color}'>{$statusLabel}</td>";
             $table .= "</tr>";
@@ -271,7 +271,7 @@ function getBookingsList($db, $student, $page, $selDate, $selTime) {
 
             $submit = "";
             if ($res[$i]->cancelby == null) {
-                $submit="<input type='submit' class='{$selected}' name='selDate' value={$date}>";
+                $submit="<input type='submit' class='{$selected}' name='selDate' value='{$date}'>";
             } else {
                 $submit="<div class='non-button-left'>{$date}</div>";
             }
@@ -318,7 +318,7 @@ function createPageNavigation($db, $student, $actualPage) {
 
     for ($id = 1; $id < $pages + 1; $id++) {
         $active = ($id == $actualPage) ? "active" : "";
-        $table .= "<form method='POST'><input type='hidden' name='route' value='student_bookings'><li class='page-item " . $active . "'><input type='submit' class='page-link' name='page' value=" . $id . "></li></form>";
+        $table .= "<form method='POST'><input type='hidden' name='route' value='student_bookings'><li class='page-item {$active}'><input type='submit' class='page-link' name='page' value={$id}></li></form>";
     }
 
     $table .= "</ul>";
