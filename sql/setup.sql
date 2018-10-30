@@ -1,27 +1,12 @@
--- MySQL dump 10.13  Distrib 5.7.23, for Linux (x86_64)
 --
--- Host: localhost    Database: tecnikanto
--- ------------------------------------------------------
--- Server version	5.7.23
-
-/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
-/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
-/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
-/*!40101 SET NAMES utf8 */;
-/*!40103 SET @OLD_TIME_ZONE=@@TIME_ZONE */;
-/*!40103 SET TIME_ZONE='+00:00' */;
-/*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */;
-/*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
-/*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
-/*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
+-- Ensure UTF8 as character encoding within connection.
+--
+SET NAMES utf8;
 
 --
 -- Table structure for table `calendar`
 --
-
 DROP TABLE IF EXISTS `calendar`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `calendar` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `student` varchar(12) COLLATE latin1_spanish_ci NOT NULL,
@@ -35,25 +20,13 @@ CREATE TABLE `calendar` (
   `updated` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=328 DEFAULT CHARSET=latin1 COLLATE=latin1_spanish_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
 
---
--- Dumping data for table `calendar`
---
 
-LOCK TABLES `calendar` WRITE;
-/*!40000 ALTER TABLE `calendar` DISABLE KEYS */;
-INSERT INTO `calendar` VALUES (320,'ninas','2018-10-01',800,30,'2018-10-20 12:02:30',NULL,NULL,0,'2018-10-20 12:02:30'),(321,'ninas','2018-10-22',1400,60,'2018-10-20 12:13:34','2018-10-20 12:56:35','ninas',1,'2018-10-20 12:56:35'),(322,'ninas','2018-10-22',1430,0,'2018-10-20 12:13:34','2018-10-20 12:56:35','ninas',1,'2018-10-20 12:56:35'),(323,'ninas','2018-10-22',1800,30,'2018-10-20 15:00:20','2018-10-20 15:00:37','ninas',1,'2018-10-20 15:00:37'),(324,'danieli','2018-10-20',800,60,'2018-10-20 14:00:51',NULL,NULL,0,'2018-10-20 14:00:51'),(325,'danieli','2018-10-20',830,0,'2018-10-20 14:00:51',NULL,NULL,0,'2018-10-20 14:00:51'),(326,'admin','2018-10-20',2100,60,NULL,NULL,NULL,0,'2018-10-20 12:14:07'),(327,'admin','2018-10-20',2130,0,NULL,NULL,NULL,0,'2018-10-20 12:14:07');
-/*!40000 ALTER TABLE `calendar` ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Table structure for table `student`
 --
-
 DROP TABLE IF EXISTS `student`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `student` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `firstname` varchar(50) COLLATE latin1_spanish_ci NOT NULL,
@@ -65,8 +38,23 @@ CREATE TABLE `student` (
   `status` int(11) NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=25 DEFAULT CHARSET=latin1 COLLATE=latin1_spanish_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
 
 
 
--- Dump completed on 2018-10-20 16:53:13
+--
+-- Insert admin account.
+--
+-- INSERT INTO `student` (`firstname`, `lastname`, `username`, `email`, `phone`, `password`, `status`) VALUES("niko", "kanto", "admin", "niko@kanto.com", "654987345", ENCRYPT("admin"), 2);
+
+
+--
+-- Insert dummy students
+--
+INSERT INTO `student` (`id`, `firstname`, `lastname`, `username`, `email`, `phone`, `password`, `status`, `updated`) VALUES
+(1, 'niko', 'kanto', 'admin', 'niko@kanto.com', 654987345, 'wRmFwpc.GvGsk', 2, '2018-10-28 10:47:57'),
+(53, 'Javier', 'Aranda', 'javi1', 'javier@aranda.com', 650456786, '$2y$10$O95LT7aKB0R5vxkfYcyvyORELDZDpgegD.RwgTA3NRQTc22NJjJxS', 2, '2018-10-28 10:32:06'),
+(54, 'Manuel', 'Romero', 'manu1', 'manuel@romero.com', 645678654, '$2y$10$res/eP98CsQp3JOuhTbMDOr2yF2S4XlaOCWLi6.VIrLaOkvfE.WQm', 2, '2018-10-28 10:32:13'),
+(55, 'Marta', 'Delgado', 'mart1', 'marta@delgado.com', 657879345, '$2y$10$ZfXCMEmq9oO8OMBL6A6nsOHPncKl.IRKWyKCLLW0fy32mYZMRS/Wq', 2, '2018-10-28 10:32:21'),
+(56, 'Gorka', 'Lorenzo', 'gork1', 'gorka@lorenzo.com', 643455668, '$2y$10$MYxMJbq/EvtGYLSC1viiAupHCM/Ui81CsXn4En6y8/B27NjX0mGuO', 2, '2018-10-28 10:32:29'),
+(57, 'Sara', 'Cobos', 'sara1', 'sara@cobos.com', 657765678, '$2y$10$Rnm2NJ2eTVAFhlL6s2/XquR0PR4xbCdxbB/wjutvT15S2bpW.r6jG', 2, '2018-10-28 10:32:38'),
+(58, 'Noelia', 'Blanes', 'noel1', 'noelia@blanes.com', 656789234, '$2y$10$44hVdv1gUI6A8Xqj3vvyc.C4Ax8JkSRCHzq2NSu9o5F7HLY0h6TMO', 2, '2018-10-28 10:32:47');

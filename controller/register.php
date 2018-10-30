@@ -41,11 +41,11 @@ if (getPost("registerBtn")) {
     }
 
     if (strlen($pass) < 6) {
-        $passError = "A minimum of length of 6 characters";
+        $passError = "A minimum length of 6 characters";
         $isValid = false;
     } else {
         if (strlen($pass2) < 6) {
-            $pass2Error = "A minimum of length of 6 characters";
+            $pass2Error = "A minimum length of 6 characters";
             $isValid = false;
         } elseif ($pass != $pass2) {
             $pass2Error = "Confirm password and password do not match";

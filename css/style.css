@@ -64,8 +64,8 @@ a {
 /* STUDENT - Login -------------------------------------------- */
 
 .login-content {
-    min-height: 750px;
-    /* padding: 30px 0; */
+    /* min-height: 750px; */
+    padding: 20px 0;
 }
 
 .register-content {
@@ -273,6 +273,7 @@ a {
 }
 
 .table-selectable .empty {
+    border: 1px solid #fff;
     padding: 1rem;
     visibility: hidden;
 }
@@ -316,8 +317,12 @@ a {
     margin-bottom: 2rem;
 }
 
+.spinner-large {
+    background-color: #fff;
+}
+
 .pagination {
-    margin: 1rem;
+    margin: 1.2rem;
 }
 
 .pagination .page-link {
@@ -333,9 +338,9 @@ a {
     border-radius: 0;
 }
 
-.top-buffer {
+/* .top-buffer {
     margin-top: 32px;
-}
+} */
 
 
 
@@ -522,8 +527,8 @@ a {
 }
 
 /* Extra large devices (large desktops, 1200px and up) */
-@media (min-width: 1200px) {
+/* @media (min-width: 1200px) {
     * {
         font-size: 18px;
     }
-}
+} */

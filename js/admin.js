@@ -27,20 +27,23 @@
     if (timeSpinner != null) {
         timeSpinner.addEventListener("change", function () {
             var time = timeSpinner.options[timeSpinner.selectedIndex].value;
-            // for (var i = 0; i < 28 ; i++) {
-            //     if (document.getElementById("h" + i)
-            //     .classList.contains("selected")) {
-            //         var hour = i;
-            //         var length = value;
-            //     }
-            // }
+            for (var i = 0; i < 28 ; i++) {
+                var elem = document.getElementById("h" + i);
+                if (elem.classList.contains("selected")) {
+                    var hour = elem.value;
+                    break;
+                }
+            }
+
             // Redirect with parameter
+            var label = document.getElementById("headerLabel").innerHTML;
+            var date = label.substr(label.indexOf('2'));
             var url = window.location.href;
-            var index = url.indexOf("&spinTime");
+            var index = url.indexOf("admin_calendar_1");
             if (index > 0) {
-                window.location.href = url.substr(0, index) + "&spinTime=" + time;
+                window.location.href = url.substr(0, index) + "admin_calendar_2&selDate=" + date + "&hourLabel=" + hour + "&spinTime=" + time;
             } else {
-                window.location.href = url + "&spinTime=" + time;
+                window.location.href = url + "admin_calendar_2&selDate=" + date + "&hourLabel=" + hour + "&spinTime=" + time;
             }
         });
     }
@@ -52,12 +55,23 @@
     if (studentSpinner != null) {
         studentSpinner.addEventListener("change", function () {
             var student = studentSpinner.options[studentSpinner.selectedIndex].value;
+            for (var i = 0; i < 28 ; i++) {
+                var elem = document.getElementById("h" + i);
+                if (elem.classList.contains("selected")) {
+                    var hour = elem.value;
+                    break;
+                }
+            }
+
+            // Redirect with parameter
+            var label = document.getElementById("headerLabel").innerHTML;
+            var date = label.substr(label.indexOf('2'));
             var url = window.location.href;
-            var index = url.indexOf("&spinStudent");
+            var index = url.indexOf("admin_calendar_1");
             if (index > 0) {
-                window.location.href = url.substr(0, index) + "&spinStudent=" + student;
+                window.location.href = url.substr(0, index) + "admin_calendar_2&selDate=" + date + "&hourLabel=" + hour + "&spinStudent=" + student;
             } else {
-                window.location.href = url + "&spinStudent=" + student;
+                window.location.href = url + "admin_calendar_2&selDate=" + date + "&hourLabel=" + hour + "&spinStudent=" + student;
             }
         });
     }

@@ -4,11 +4,11 @@ require_once("src/admin_functions.php");
 // selDate is the selected date in the calendar
 // date is the month/year being show (day is irrelevant here)
 $selDate = "";
-if (isset($_GET['selDate'])) {
-    $selDate = $_GET['selDate'];
+if (isset($_POST['selDate'])) {
+    $selDate = $_POST['selDate'];
     $date = $selDate;
-} elseif (isset($_GET['date'])) {
-    $date = $_GET['date'];
+} elseif (isset($_POST['date'])) {
+    $date = $_POST['date'];
 } else {
     $date = date('Y-m-d');   // today
 }
@@ -17,8 +17,8 @@ if (isset($_GET['selDate'])) {
 $headMonth = date("n", strtotime($date));
 $headYear = date("Y", strtotime($date));
 
-if (isset($_GET['changeMonth'])) {
-    if ($_GET['changeMonth'] == ">>") {
+if (isset($_POST['changeMonth'])) {
+    if ($_POST['changeMonth'] == ">>") {
         if ($headMonth == 12) {
             $headMonth = 1;
             $headYear++;

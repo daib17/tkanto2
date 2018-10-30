@@ -4,14 +4,16 @@ require_once("src/admin_functions.php");
 // Exception messages
 $exception = "";
 
-if (isset($_GET['selDate'])) {
+if (isset($_POST['selDate'])) {
+    $date = esc($_POST['selDate']);
+} elseif (isset($_GET['selDate'])) {
     $date = esc($_GET['selDate']);
 }
 
 // Prev and Next arrow buttons on header
-if (isset($_GET['changeDate'])) {
+if (isset($_POST['changeDate'])) {
     $date = new DateTime($date);
-    if ($_GET['changeDate'] == ">>") {
+    if ($_POST['changeDate'] == ">>") {
         $date->modify("+1 day");
     } else {
         $date->modify("-1 day");
@@ -23,7 +25,10 @@ if (isset($_GET['changeDate'])) {
 $dayOfWeek = date("l", strtotime($date));
 
 // Selected hour label from table
-if (isset($_GET['hourLabel']) && $_GET['hourLabel'] != "") {
+if (isset($_POST['hourLabel']) && $_POST['hourLabel'] != "") {
+    $hourStr = explode(" ", $_POST['hourLabel'])[0];     // hour
+    $bookedBy = explode(" ", $_POST['hourLabel'])[1];    // name
+} elseif (isset($_GET['hourLabel']) && $_GET['hourLabel'] != "") {
     $hourStr = explode(" ", $_GET['hourLabel'])[0];     // hour
     $bookedBy = explode(" ", $_GET['hourLabel'])[1];    // name
 } else {
@@ -56,7 +61,7 @@ if ($bookedBy == "admin") {
 $hourArr = generateHourArrayFromDB($db, $date);
 
 // Copy template to next day?
-if (isset($_GET['copyBtn'])) {
+if (isset($_POST['copyBtn'])) {
     try {
         copyTemplate($db, $date, $hourArr);
     } catch(Exception $ex) {
@@ -88,18 +93,18 @@ if (isset($_GET['spinStudent'])) {
 }
 
 // Cancel booking
-if (isset($_GET['cancelBtn'])) {
+if (isset($_POST['cancelBtn'])) {
     try {
-        cancelBooking($db, $date, $_GET['hourStr'], $_GET['cancelBtn']);
+        cancelBooking($db, $date, $_POST['hourStr'], $_POST['cancelBtn']);
     } catch(Exception $ex) {
         $exception = $ex->getMessage();
     }
 }
 
 // Clear flag
-if (isset($_GET['clearBtn'])) {
+if (isset($_POST['clearBtn'])) {
     try {
-        clearFlag($db, $date, $_GET['hourStr']);
+        clearFlag($db, $date, $_POST['hourStr']);
     } catch(Exception $ex) {
         $exception = $ex->getMessage();
     }

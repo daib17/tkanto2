@@ -1,4 +1,4 @@
-<div class="main-container">
+<div class="container main-container">
     <ul class="nav nav-tabs">
         <li class="nav-item">
             <a class="nav-link" href="?route=admin_calendar_1">Calendar</a>
@@ -9,12 +9,12 @@
         <li class="nav-item">
             <a class="nav-link" href="?route=admin_recent">Recent</a>
         </li>
-        <li class="nav-item">
+        <li class="nav-item hidden">
             <a class="nav-link" href="?route=admin_stats">Statistics</a>
         </li>
     </ul>
     <div class="container main-container-inner">
-        <form>
+        <form method="POST">
             <div class="float-right input-group w-50 mb-3">
                 <input class="form-control" type="text" placeholder="Search" name="search">
                 <div class="input-group-append">
@@ -46,7 +46,7 @@
                 Select student to edit details.
             </div>
         </div>
-        <form class="top-buffer" method="get">
+        <form class="top-buffer" method="POST">
             <input type='hidden' name='route' value='admin_students_2'>
             <input type="hidden" name="studentID" value="<?= $studentID ?>">
             <button class="btn btn-lg btn-info btn-block font-weight-bold <?= $editButton ?>" type="submit" name="button" value="edit">Edit</button>

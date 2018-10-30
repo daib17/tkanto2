@@ -89,7 +89,7 @@ function getAdminMonthlyCalendar($db, $date, $selDate)
         $freeEmpty = ($free[$i] == 0) ? "free-empty" : "";
         $bookedEmpty = ($booked[$i] == 0) ? "booked-empty" : "";
 
-        $table .= "<td><form><div class='day-label'><input type='hidden' name='route' value='admin_calendar_2'>
+        $table .= "<td><form method='POST'><div class='day-label'><input type='hidden' name='route' value='admin_calendar_2'>
         <input type='hidden' name='selDate' value='{$date}'><input type='submit' class='button {$selector}' name='day' value={$i}><div class='free-mini {$freeEmpty}'>{$free[$i]}</div><div class='booked {$bookedEmpty}'>{$booked[$i]}</div></div></form></td>";
         if ($weekDay == 0) {
             $table .= "</tr>";
@@ -118,10 +118,10 @@ function getAdminMonthlyCalendar($db, $date, $selDate)
 function getStudentsByStatus($db, $status = 2)
 {
     if ($status == 3) {
-        $sql = "SELECT * FROM student WHERE username NOT LIKE 'admin';";
+        $sql = "SELECT * FROM student WHERE username NOT LIKE 'admin' ORDER BY lastname, firstname;";
         $res = $db->executeFetchAll($sql);
     } else {
-        $sql = "SELECT * FROM student WHERE username NOT LIKE 'admin' AND status = ?;";
+        $sql = "SELECT * FROM student WHERE username NOT LIKE 'admin' AND status = ? ORDER BY lastname, firstname;";
         $res = $db->executeFetchAll($sql, [$status]);
     }
     return $res;
@@ -179,7 +179,7 @@ function getStudentListAsTable($db, $filterId = 3, $page, $selectedID, $search)
                     $selected = "";
                 }
 
-                $table .= "<td colspan=2><form method='GET'><input type='hidden' name='route' value='admin_students_1'>{$searchInput}<input type='submit' class='{$selected}' name='name' value='{$name}'><input type='hidden' name='studentID' value={$studentID} /><input type='hidden' name='filter' value={$filterId} /><input type='hidden' name='page' value={$page} /></form></td>";
+                $table .= "<td colspan=2><form method='POST'><input type='hidden' name='route' value='admin_students_1'>{$searchInput}<input type='submit' class='{$selected}' name='name' value='{$name}'><input type='hidden' name='studentID' value={$studentID} /><input type='hidden' name='filter' value={$filterId} /><input type='hidden' name='page' value={$page} /></form></td>";
                 $table .= "<td>" . $statusStr[$res[$id]->status] . "</td>";
             } else {
                 $table .= "<td colspan=2>&nbsp;</td>";
@@ -224,7 +224,7 @@ function getPagination($db, $filterId, $actualPage, $search)
 
     for ($id = 1; $id < $pages + 1; $id++) {
         $active = $id == $actualPage ? "active" : "";
-        $table .= "<form method='GET'><input type='hidden' name='route' value='admin_students_1'>{$searchInput}<input type='hidden' name='filter' value={$filterId}/><li class='page-item {$active}'><input type='submit' class='page-link' name='page' value={$id}></li></form>";
+        $table .= "<form method='POST'><input type='hidden' name='route' value='admin_students_1'>{$searchInput}<input type='hidden' name='filter' value={$filterId}/><li class='page-item {$active}'><input type='submit' class='page-link' name='page' value={$id}></li></form>";
     }
 
     $table .= "</ul>";
@@ -237,7 +237,7 @@ function getPagination($db, $filterId, $actualPage, $search)
 /**
 *
 */
-function getSpinnerFilter($status) {
+function getSpinnerFilter($status, $search) {
     $filterType = ["Disabled", "Pending", "Active", "All"];
     // Generate select spinner
     $select = "<select id='showFilter' class='form-control w-25'>";
@@ -248,6 +248,11 @@ function getSpinnerFilter($status) {
             $select .= "<option value='{$key}'>{$value}</option>";
         }
     }
+
+    if ($search != "") {
+        $select .= "<option selected='selected'></option>";
+    }
+
     $select .= "</select>";
     return $select;
 }
@@ -261,7 +266,7 @@ function getSpinnerStatus($status) {
     $status;    // status 0 does not exist in panel B
     $filterType = ["Disabled", "Pending", "Active"];
     // Generate select spinner
-    $select = "<select name='status' class='form-control w-50'>";
+    $select = "<select name='status' class='spinner-large form-control-lg w-50'>";
     foreach ($filterType as $key => $value) {
         if ($key == $status) {
             $select .= "<option value='{$key}'selected='selected'>" . $value . "</option>";
@@ -394,7 +399,7 @@ function getSpinnerForSelectedHour($db, $arr, $hourStr) {
 */
 function getStudentSpinner($db) {
     // Get all active students from database
-    $sql = "SELECT * FROM student WHERE status LIKE ? AND username != ?;";
+    $sql = "SELECT * FROM student WHERE status LIKE ? AND username != ? ORDER BY lastname, firstname;";
     $res = $db->executeFetchAll($sql, [2, "admin"]);
     $spinHTML = "<select id='studentSpinner' class='form-control'>";
     $spinHTML .= "<option value='noStudent'>Select student</option>";

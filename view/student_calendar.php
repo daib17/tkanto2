@@ -1,4 +1,4 @@
-<div class="main-container">
+<div class="container main-container">
     <ul class="nav nav-tabs">
         <li class="nav-item">
             <a class="nav-link active" href="?route=student_calendar">Calendar</a>
@@ -17,7 +17,7 @@
                 Select a date to see available times
             </h5>
             <table class="table table-only-header table-bordered">
-                <form class="calendar-form" method="GET">
+                <form class="calendar-form" method="POST">
                     <input type="hidden" name="route" value="student_calendar">
                     <input type="hidden" name="date" value=<?= $date ?>>
                     <thead>

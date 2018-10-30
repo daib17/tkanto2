@@ -1,4 +1,4 @@
-<div class="main-container">
+<div class="container main-container">
     <ul class="nav nav-tabs">
         <li class="nav-item">
             <a class="nav-link active" href="?route=admin_calendar_1">Calendar</a>
@@ -9,7 +9,7 @@
         <li class="nav-item">
             <a class="nav-link" href="?route=admin_recent">Recent</a>
         </li>
-        <li class="nav-item">
+        <li class="nav-item hidden">
             <a class="nav-link" href="?route=admin_stats">Statistics</a>
         </li>
     </ul>
@@ -27,7 +27,7 @@
                 <?= $studentSpinner ?>
             </div>
             <div class="float-right mb-4">
-                <form method="GET">
+                <form method="POST">
                     <input type="hidden" name="route" value="admin_calendar_2">
                     <input type="hidden" name="selDate" value="<?= $date ?>">
                     <input type="hidden" name="hourStr" value=<?= $hourStr ?>>
@@ -38,7 +38,7 @@
             </div>
         </div>
         <div class="admin-calendar">
-            <form class="calendar-form" method="GET">
+            <form class="calendar-form" method="POST">
                 <input type="hidden" name="route" value="admin_calendar_2">
                 <input type="hidden" name="selDate" value="<?= $date ?>">
                 <table class="table table-bordered">
@@ -47,7 +47,7 @@
                             <th scope="col" colspan="1">
                                 <input type="submit" class="btn btn-arrow btn-block font-weight-bold" name="changeDate" value="<<">
                             </th>
-                            <th scope="col" colspan="2" class="title"><?= $dayOfWeek ?> / <?= $date ?></th>
+                            <th id="headerLabel" scope="col" colspan="2" class="title"><?= $dayOfWeek ?> / <?= $date ?></th>
                             <th scope="col" colspan="1">
                                 <input type="submit" class="btn btn-arrow btn-block font-weight-bold" name="changeDate" value=">>">
                             </th>
@@ -61,7 +61,7 @@
                     <button class="btn btn-lg btn-info btn-block font-weight-bold mt-5" type="submit" name="copyBtn" value="copy">Copy open hours to next day</button>
                 </div>
             </form>
-            <form method="GET">
+            <form method="POST">
                 <input type="hidden" name="route" value="admin_calendar_1">
                 <input type="hidden" name="selDate" value="<?= $date ?>">
                 <button class="btn btn-lg btn-secondary btn-block font-weight-bold my-3" type="submit">Back</button>

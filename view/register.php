@@ -1,6 +1,5 @@
 <div class="main-container">
-    <div class="register-content text-center col-10 offset-1 col-md-8 offset-md-2 col-lg-4 offset-lg-4">
-        <!-- <img src="img/bootstrap-icon.png" alt=""> -->
+    <div class="register-content text-center col-10 offset-1 col-sm-8 offset-sm-2 col-md-6 offset-md-3 col-xl-4 offset-xl-4">
         <h3>Create new account</h3>
         <br>
         <form method="POST">
@@ -29,7 +28,7 @@
                 <small class="text-left form-text error-message"><?= $pass2Error ?></small>
             </div>
             <?php if (!$isValid): ?>
-                <button class="btn btn-lg btn-primary btn-block font-weight-bold mt-5 mb-3" type="submit" name="registerBtn" value="register">Register</button>
+                <button class="btn btn-lg btn-info btn-block font-weight-bold mt-5 mb-3" type="submit" name="registerBtn" value="register">Register</button>
             <?php endif; ?>
         </form>
         <?php if ($isValid): ?>
@@ -39,12 +38,12 @@
                 <div class="alert alert-success mt-3">
                     Account created. Username: <b><?= $uname ?></b>
                 </div>
-                <button class="btn btn-lg btn-primary btn-block font-weight-bold mt-4 mb-3" type="submit">Back to login</button>
+                <button class="btn btn-lg btn-secondary btn-block font-weight-bold mt-4 mb-3" type="submit">Back to login</button>
             </form>
         <?php else: ?>
             <form>
                 <input type="hidden" name="route" value="login">
-                <button class="btn btn-lg btn-link mt-3 font-weight-bold mb-3" type="submit">Already registered? Log me in.</button>
+                <button class="btn btn-lg btn-light btn-block mt-5 mb-3" type="submit">Already registered? Log me in</button>
             </form>
         <?php endif; ?>
     </div>

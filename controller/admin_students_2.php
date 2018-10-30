@@ -1,28 +1,28 @@
 <?php
 require_once("src/admin_functions.php");
 
-if (isset($_GET['studentID'])) {
-    $studentID = $_GET['studentID'];
+if (isset($_POST['studentID'])) {
+    $studentID = $_POST['studentID'];
 } else {
     $studentID = -1;
 }
 
-if (isset($_GET['button']) && $_GET['button'] == 'edit') {
+if (isset($_POST['button']) && $_POST['button'] == 'edit') {
     // Get student details from database
     $student = getStudentByID($db, $studentID);
     // Generate select spinner
     $select = getSpinnerStatus($student->status);
-} elseif (isset($_GET['button']) && $_GET['button'] == 'save') {
+} elseif (isset($_POST['button']) && $_POST['button'] == 'save') {
     // Update database
-    $id = htmlspecialchars($_GET['studentID']);
-    $fname = htmlspecialchars($_GET['fname']);
-    $lname = htmlspecialchars($_GET['lname']);
-    $email = htmlspecialchars($_GET['email']);
-    $phone = htmlspecialchars($_GET['phone']);
-    $status = htmlspecialchars($_GET['status']);
+    $id = htmlspecialchars($_POST['studentID']);
+    $fname = htmlspecialchars($_POST['fname']);
+    $lname = htmlspecialchars($_POST['lname']);
+    $email = htmlspecialchars($_POST['email']);
+    $phone = htmlspecialchars($_POST['phone']);
+    $status = htmlspecialchars($_POST['status']);
     $sql = "UPDATE student SET firstname = ?, lastname = ?, email = ?, phone = ?, status = ? WHERE id = ?;";
     $db->execute($sql, [$fname, $lname, $email, $phone, $status, $id]);
     header("Location: ?route=admin_students_1");
-} elseif (isset($_GET['button']) && $_GET['button'] == 'cancel') {
+} elseif (isset($_POST['button']) && $_POST['button'] == 'cancel') {
     header("Location: ?route=admin_students_1");
 }

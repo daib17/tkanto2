@@ -1,4 +1,4 @@
-<div class="main-container">
+<div class="container main-container">
     <ul class="nav nav-tabs">
         <li class="nav-item">
             <a class="nav-link" href="?route=student_calendar">Calendar</a>

@@ -74,12 +74,12 @@ function getMonthCalendar($db, $date, $selDate, $student)
             $selector = "selected ";
         }
 
-        if (in_array($date, $canceledDates)) {
-            $selector .= "canceled ";
-        }
+
         // One single book makes color green
         if (in_array($date, $bookedDates)) {
             $selector .= "booked";
+        } elseif (in_array($date, $canceledDates)) {
+            $selector .= "canceled ";
         } elseif ($weekDay == 6 || $weekDay == 0) {
             $selector .= "weekend";
         } else {
