@@ -729,9 +729,15 @@ function copyTemplate($db, $date, $arr)
 /**
 *
 */
-function getRecentActivity($db) {
-    $sql = "(SELECT *, bookdate AS d, 'book' AS action FROM calendar WHERE student != 'admin' AND duration > ?) UNION ALL (SELECT *, canceldate AS d, 'cancel' AS action FROM calendar WHERE student != 'admin' AND duration > ?) ORDER BY d DESC LIMIT 15;";
-    $res = $db->executeFetchAll($sql, [0, 0]);
+function getRecentActivity($db, $student = null, $limit = 15) {
+    if ($student == null) {
+        $sql = "(SELECT *, bookdate AS d, 'book' AS action FROM calendar WHERE student != 'admin' AND duration > ?) UNION ALL (SELECT *, canceldate AS d, 'cancel' AS action FROM calendar WHERE student != 'admin' AND duration > ?) ORDER BY d DESC LIMIT {$limit};";
+        $res = $db->executeFetchAll($sql, [0, 0]);
+    } else {
+        $sql = "(SELECT *, bookdate AS d, 'book' AS action FROM calendar WHERE student = ? AND duration > ?) UNION ALL (SELECT *, canceldate AS d, 'cancel' AS action FROM calendar WHERE student = ? AND duration > ?) ORDER BY d DESC LIMIT {$limit};";
+        $res = $db->executeFetchAll($sql, [$student, 0, $student, 0]);
+    }
+
     $table = "";
     // Empty log
     if (!$res) {
@@ -801,4 +807,147 @@ function saveNotes($db, $date, $text) {
     } catch (Exception $ex) {
         throw new Exception("Database update failed.");
     }
+}
+
+
+/**
+* Generate spinner 31 days
+*/
+function getDayListSpinner($selDay) {
+    $options = "";
+    for ($i = 1; $i < 32; $i++) {
+        $selected = ($i == $selDay) ? "selected" : "";
+        $options .= "<option value='{$i}' {$selected}>$i</option>";
+    }
+    return $options;
+}
+
+
+/**
+* Generate spinner 12 months
+*/
+function getMonthListSpinner($selMonth) {
+    $months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dec"];
+    $options = "";
+    for ($i = 0; $i < 12; $i++) {
+        $value = $i + 1;
+        $selected = ($value == $selMonth) ? "selected" : "";
+        $options .= "<option value='{$value}' {$selected}>$months[$i]</option>";
+    }
+    return $options;
+}
+
+
+/**
+* Get spinner list of years
+*/
+function getYearListSpinner($db, $selYear) {
+    $options = "";
+    for ($i = 2018; $i < 2029; $i++) {
+        $selected = ($i == $selYear) ? "selected" : "";
+        $options .= "<option value='{$i}' {$selected}>{$i}</option>";
+    }
+    return $options;
+}
+
+
+/**
+* Get spinner list of active students
+*/
+function getStudentListSpinner($db, $selStudent) {
+    $sql = "SELECT * FROM student WHERE status=? AND username <> ?;";
+    $res = $db->executeFetchAll($sql, [2, "admin"]);
+    $options = "<option value='0'>All</options>";
+    foreach ($res as $row) {
+        $selected = ($row->id == $selStudent) ? "selected" : "";
+        $options .= "<option value='{$row->id}' {$selected}>{$row->firstname} {$row->lastname} ({$row->username})</option>";
+    }
+    return $options;
+}
+
+
+/**
+* Get table as accumulated stats
+*/
+function getStatAcc($db, $fromDate, $toDate, $student, $limit) {
+    $table = "<table class='table table-bordered table-selectable stats'>
+    <thead>
+    <tr>
+    <th scope='col'>Student</th>
+    <th scope='col'>Booked</th>
+    <th scope='col'>Canceled</th>
+    </tr>
+    </thead>
+    <tbody>";
+
+    if ($student == 0) {
+        $sql = "SELECT student,
+        SUM(CASE WHEN (bookdate >= ? AND bookdate <= ? AND duration > ?) THEN 1 ELSE 0 END) booked,
+        SUM(CASE WHEN (canceldate >= ? AND canceldate <= ? AND duration > ?) THEN 1 ELSE 0 END) canceled
+        FROM calendar WHERE student <> ?
+        GROUP BY student ORDER BY student LIMIT {$limit};";
+        $res = $db->executeFetchAll($sql, [$fromDate, $toDate, 0, $fromDate, $toDate, 0, "admin"]);
+
+    } else {
+        // Get username
+        $sql = "SELECT * FROM student WHERE id=?;";
+        $res = $db->executeFetch($sql, [$student]);
+        $uname = $res->username;
+        // Get all entries for username
+        $sql = "SELECT student,
+        SUM(CASE WHEN (bookdate >= ? AND bookdate <= ? AND duration > ?) THEN 1 ELSE 0 END) booked,
+        SUM(CASE WHEN (canceldate >= ? AND canceldate <= ? AND duration > ?) THEN 1 ELSE 0 END) canceled
+        FROM calendar WHERE student = ?
+        GROUP BY student ORDER BY student LIMIT {$limit};";
+        $res = $db->executeFetchAll($sql, [$fromDate, $toDate, 0, $fromDate, $toDate, 0, $uname]);
+    }
+
+    // Empty log
+    if (!$res) {
+        $table .= "<tr>";
+        $table .= "<td colspan=3 class='empty-cell'>Log is empty</td>";
+        $table .= "</tr>";
+        $table .= "</tbody></table>";
+        return $table;
+    }
+
+    foreach ($res as $row) {
+        $table .= "<tr>";
+        $table .= "<td class='text'>$row->student</td>";
+        $table .= "<td class='text'>$row->booked</td>";
+        $table .= "<td class='text'>$row->canceled</td>";
+        $table .= "</tr>";
+    }
+
+    $table .= "</tbody></table>";
+    return $table;
+}
+
+
+/**
+* Get table as list stats
+*/
+function getStatList($db, $dateFrom, $dateTo, $student, $limit) {
+    $table = "<table class='table table-bordered table-selectable stats'>
+    <thead>
+    <tr>
+    <th scope='col'>Student</th>
+    <th scope='col'>Action</th>
+    <th scope='col'>Booking</th>
+    <th scope='col'>Log</th>
+    </tr>
+    </thead>
+    <tbody>";
+
+    if ($student == 0) {
+        $table .= getRecentActivity($db, null, $limit);
+    } else {
+        // Get username
+        $sql = "SELECT * FROM student WHERE id=? LIMIT {$limit};";
+        $res = $db->executeFetch($sql, [$student]);
+        $table .= getRecentActivity($db, $res->username);
+    }
+
+    $table .= "</tbody></table>";
+    return $table;
 }

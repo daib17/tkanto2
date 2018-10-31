@@ -66,8 +66,13 @@ a {
 }
 
 .nav-tabs i {
-    padding: 0 12px;
+    /* padding-top: 10px; */
+    margin: 0 8px;
 }
+
+/* .nav-tabs .fa-text {
+    margin-left: 6px;
+} */
 
 /* STUDENT - Login -------------------------------------------- */
 
@@ -436,6 +441,7 @@ a {
 /* ADMIN - Planning 2 Timetable day ----------------------------------- */
 
 .admin-calendar textarea {
+    padding: 1rem;
     background-color: #eee;
 }
 
@@ -492,6 +498,14 @@ a {
     border: 1px solid #fdd835;
     background-color: #fdd835;
 }
+
+/* ADMIN - Stats --------------------------------------------- */
+
+.table.stats th {
+    padding: 0.4rem;
+}
+
+
 
 
 

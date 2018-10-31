@@ -1,21 +1,74 @@
-<script type="text/javascript" src="js/query.js"></script>
-<div class="main-container">
+<div class="container main-container">
     <ul class="nav nav-tabs">
         <li class="nav-item">
-            <a class="nav-link" href="?route=admin_calendar_1">Calendar</a>
+            <a class="nav-link" href="?route=admin_calendar_1"><i class="far fa-calendar-alt"></i></a>
         </li>
         <li class="nav-item">
-            <a class="nav-link" href="?route=admin_students_1">Students</a>
+            <a class="nav-link" href="?route=admin_students_1"><i class="fas fa-users"></i></a>
         </li>
         <li class="nav-item">
-            <a class="nav-link" href="?route=admin_recent">Recent</a>
+            <a class="nav-link" href="?route=admin_recent"><i class="fas fa-database"></i></a>
         </li>
         <li class="nav-item">
-            <a class="nav-link active" href="?route=admin_stats">Statistics</a>
+            <a class="nav-link active" href="?route=admin_stats"><span class="fa-text">Stats</span></a>
         </li>
     </ul>
     <div class="container main-container-inner">
-        COMING SOON.
+        <form method="GET">
+            <input type="hidden" name="route" value="admin_stats">
+            <div class="input-group">
+                <select class="form-control" name="fromDay">
+                    <?= $spinnerDayFrom ?>
+                </select>
+                <select class="form-control" name="fromMonth">
+                    <?= $spinnerMonthFrom ?>
+                </select>
+                <select class="form-control" name="fromYear">
+                    <?= $spinnerYearFrom ?>
+                </select>
+            </div>
+            <div class="input-group mt-2">
+                <select class="form-control" name="toDay">
+                    <?= $spinnerDayTo ?>
+                </select>
+                <select class="form-control" name="toMonth">
+                    <?= $spinnerMonthTo ?>
+                </select>
+                <select class="form-control" name="toYear">
+                    <?= $spinnerYearTo ?>
+                </select>
+            </div>
+            <div class="input-group">
+                <div class="input-group-prepend mt-2">
+                    <span class="input-group-text">Student</span>
+                </div>
+                <select class="form-control mt-2" name="student">
+                    <?= $spinnerStudents ?>
+                </select>
+            </div>
+            <div class="float-left input-group mt-2 mb-4 w-50">
+                <div class="input-group-prepend">
+                    <span class="input-group-text">Type</span>
+                </div>
+                <select class="form-control" name="type">
+                    <option value="acc">Accumulated</option>
+                    <option value="list" <?= $selList ?>>List</option>
+                </select>
+            </div>
+            <div class="float-right input-group mt-2 pl-5 w-50">
+                <div class="input-group-prepend">
+                    <span class="input-group-text">Limit</span>
+                </div>
+                <select class="form-control" name="limit">
+                    <option value="10">10</option>
+                    <option value="20" <?= $selLimit20 ?>>20</option>
+                    <option value="30" <?= $selLimit30 ?>>30</option>
+                </select>
+            </div>
+            <div class="clearfix">
+                <button class="btn btn-md btn-info btn-block w-100 font-weight-bold my-4" type="submit" name="button" value="run">Run</button>
+            </div>
+        </form>
+        <?= $table ?>
     </div>
 </div>
-<script type="text/javascript" src="js/admin_stats.js"></script>

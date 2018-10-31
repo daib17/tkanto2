@@ -1,7 +1,7 @@
 <div class="container main-container">
     <ul class="nav nav-tabs">
         <li class="nav-item">
-            <a class="nav-link active" href="?route=admin_calendar_1"><i class="far fa-calendar-alt"></i></a>
+            <a class="nav-link active" href="?route=admin_calendar_1"><span class="fa-text"> Calendar</span></a>
         </li>
         <li class="nav-item">
             <a class="nav-link" href="?route=admin_students_1"><i class="fas fa-users"></i></a>
