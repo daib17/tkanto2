@@ -1,6 +1,9 @@
 <?php
 require_once("src/student_functions.php");
 
+// Exception messages
+$exception = "";
+
 // Get login name from session
 $student = (isset($_SESSION['user'])) ? $_SESSION['user'] : null;
 
@@ -17,7 +20,11 @@ $cancelButton = "hidden";
 
 // Cancel booking?
 if (isset($_POST['button']) && $_POST['button'] == "cancel") {
-    cancelBooking($db, $selDate, $selTime, $student);
+    try {
+        cancelBooking($db, $selDate, $selHour, $student);
+    } catch(Exception $ex) {
+        $exception = $ex->getMessage();
+    }
     $selDate = "";
     $selTime = "";
 } elseif (isset($_POST['selDate']) && !isset($_POST['isCanceled'])) {

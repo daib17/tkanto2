@@ -75,4 +75,18 @@
             }
         });
     }
+
+    /**
+    * Admin - Calendar 2 - TextArea
+    */
+    var textArea = document.getElementById("text-area");
+    if (textArea != null) {
+        textArea.addEventListener("input", function() {
+            if (!textArea.classList.contains("error-message")) {
+                textArea.className += " error-message";
+                console.log("add");
+            }
+        });
+    }
+
 })();

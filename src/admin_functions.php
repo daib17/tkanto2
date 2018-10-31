@@ -190,7 +190,7 @@ function getStudentListAsTable($db, $filterId = 3, $page, $selectedID, $search)
     } else {
         $table = "";
         $table .= "<tr>";
-        $table .= "<td colspan=3 class='no-found-text'>" . "No students found in database." . "</td>";
+        $table .= "<td colspan=3 class='no-found-text'>" . "No students found in database" . "</td>";
         $table .= "</tr>";
     }
 
@@ -736,7 +736,7 @@ function getRecentActivity($db) {
     // Empty log
     if (!$res) {
         $table .= "<tr>";
-        $table .= "<td colspan=4 class='empty-cell'>Log is empty.</td>";
+        $table .= "<td colspan=4 class='empty-cell'>Log is empty</td>";
         $table .= "</tr>";
         return $table;
     }
@@ -767,4 +767,38 @@ function getRecentActivity($db) {
     }
 
     return $table;
+}
+
+
+/**
+* Get notes
+*/
+function getNotes($db, $date) {
+    $notes = "";
+    $sql = "SELECT * FROM note WHERE date=?;";
+    $res = $db->executeFetch($sql, [$date]);
+    if ($res) {
+        $notes = $res->text;
+    }
+    return $notes;
+}
+
+
+/**
+* Save notes
+*/
+function saveNotes($db, $date, $text) {
+    try {
+        $sql = "SELECT * FROM note WHERE date=?;";
+        $res = $db->executeFetch($sql, [$date]);
+        if ($res) {
+            $sql = "UPDATE note SET text = ? WHERE date = ?;";
+            $db->execute($sql, [$text, $date]);
+        } else {
+            $sql = "INSERT INTO note (date, text) VALUES (?, ?);";
+            $db->execute($sql, [$date, $text]);
+        }
+    } catch (Exception $ex) {
+        throw new Exception("Database update failed.");
+    }
 }

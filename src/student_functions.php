@@ -179,7 +179,7 @@ function getDayCalendar($db, $student, $date, $selHour)
     // Empty res or only canceled bookings?
     if ($table == "") {
         $table .= "<tr>";
-        $table .= "<td colspan=2 class='empty-cell'>There are not available times today.</td>";
+        $table .= "<td colspan=2 class='empty-cell'>No available times on this date</td>";
         $table .= "</tr>";
     }
 
@@ -338,7 +338,7 @@ function getRecentActivity($db, $student) {
     // Empty log
     if (!$res) {
         $table .= "<tr>";
-        $table .= "<td colspan=3 class='empty-cell'>Log is empty.</td>";
+        $table .= "<td colspan=3 class='empty-cell'>Log is empty</td>";
         $table .= "</tr>";
         return $table;
     }

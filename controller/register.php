@@ -1,6 +1,9 @@
 <?php
 require_once("src/helper_functions.php");
 
+// Exception message
+$msg = "";
+
 // Sanitation
 $fname = clean(getPost("fname"));
 $lname = clean(getPost("lname"));
@@ -43,14 +46,26 @@ if (getPost("registerBtn")) {
     if (strlen($pass) < 6) {
         $passError = "A minimum length of 6 characters";
         $isValid = false;
-    } else {
-        if (strlen($pass2) < 6) {
-            $pass2Error = "A minimum length of 6 characters";
-            $isValid = false;
-        } elseif ($pass != $pass2) {
-            $pass2Error = "Confirm password and password do not match";
-            $isValid = false;
-        }
+    }
+
+    if (strlen($pass2) < 6) {
+        $pass2Error = "A minimum length of 6 characters";
+        $isValid = false;
+    }
+
+    if ($isValid && !ctype_alnum($pass)) {
+        $passError = "Only number and letters are allowed";
+        $isValid = false;
+    }
+
+    if ($isValid && !ctype_alnum($pass2)) {
+        $pass2Error = "Only number and letters are allowed";
+        $isValid = false;
+    }
+
+    if ($isValid && $pass != $pass2) {
+        $pass2Error = "Confirm password and password do not match";
+        $isValid = false;
     }
 }
 
@@ -88,5 +103,6 @@ if ($isValid) {
         $db->execute($sql, [$fname, $lname, $uname, $email, $phone, $hashed, 1]);
     } catch (Exception $ex) {
         $isValid = false;
+        $msg = "Registration failed";
     }
 }

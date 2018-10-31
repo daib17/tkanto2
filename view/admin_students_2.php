@@ -16,9 +16,10 @@
     <div class="container main-container-inner">
         <div class="edit-content col-10 offset-1 col-lg-8 offset-lg-2">
             <br>
-            <h4>Edit details</h4>
+            <h4 class="float-left">Edit details</h4>
             <br>
             <form method="POST">
+                <button class="float-right btn btn-md btn-danger btn-block font-weight-bold w-50 mb-4" type="submit" name="button" value="reset">Reset Password</button>
                 <input type="hidden" name="route" value="admin_students_2">
                 <input type="hidden" name="studentID" value="<?= $studentID ?>">
                 <div class="form-group">
@@ -41,7 +42,6 @@
                 </div>
                 <div class="mt-5">
                     <button class="btn btn-lg btn-info btn-block w-100 font-weight-bold" type="submit" name="button" value="save">Save</button>
-
                     <button class="btn btn-lg btn-secondary btn-block w-100 font-weight-bold mt-4" type="submit" name="button" value="cancel">Cancel</button>
                 </div>
             </form>

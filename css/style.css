@@ -61,6 +61,14 @@ a {
     vertical-align: sub;
 }
 
+.clearfix {
+    clear: both;
+}
+
+.nav-tabs i {
+    padding: 0 12px;
+}
+
 /* STUDENT - Login -------------------------------------------- */
 
 .login-content {
@@ -426,6 +434,10 @@ a {
 
 
 /* ADMIN - Planning 2 Timetable day ----------------------------------- */
+
+.admin-calendar textarea {
+    background-color: #eee;
+}
 
 .admin-calendar .selected.empty,
 .admin-calendar .empty:hover {

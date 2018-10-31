@@ -2,6 +2,7 @@
 -- Ensure UTF8 as character encoding within connection.
 --
 SET NAMES utf8;
+SET time_zone = "+00:00";
 
 --
 -- Table structure for table `calendar`
@@ -38,6 +39,19 @@ CREATE TABLE `student` (
   `status` int(11) NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=25 DEFAULT CHARSET=latin1 COLLATE=latin1_spanish_ci;
+
+
+
+--
+-- Table structure for table `note`
+--
+DROP TABLE IF EXISTS `note`;
+CREATE TABLE `note` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `date` date NOT NULL,
+  `text` text COLLATE latin1_spanish_ci NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_spanish_ci;
 
 
 

@@ -58,6 +58,15 @@ switch ($route) {
         $controller = ["controller/student_recent.php"];
         $view = ["incl/header_logout.php", "view/student_recent.php"];
         break;
+    case "student_account":
+        if (!($_SESSION["user"] ?? null)) {
+            header("Location: ?route=login");
+            exit();
+        }
+        $title = "Tk | Student";
+        $controller = ["controller/student_account.php"];
+        $view = ["incl/header_logout.php", "view/student_account.php"];
+        break;
     case "admin_students_1":
         if (!$_SESSION["user"] || $_SESSION["user"] != "admin") {
             header("Location: ?route=login");
@@ -75,6 +84,15 @@ switch ($route) {
         $title = "Tk | Admin";
         $controller = ["controller/admin_students_2.php"];
         $view = ["incl/header_logout.php", "view/admin_students_2.php"];
+        break;
+    case "admin_reset_password":
+        if (!$_SESSION["user"] || $_SESSION["user"] != "admin") {
+            header("Location: ?route=login");
+            exit();
+        }
+        $title = "Tk | Admin";
+        $controller = ["controller/admin_reset_password.php"];
+        $view = ["incl/header_logout.php", "view/admin_reset_password.php"];
         break;
     case "admin_recent":
         if (!$_SESSION["user"] || $_SESSION["user"] != "admin") {

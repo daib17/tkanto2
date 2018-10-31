@@ -22,7 +22,7 @@ if (isset($_POST['changeDate'])) {
 }
 
 // Day of the week
-$dayOfWeek = date("l", strtotime($date));
+$dayOfWeek = date("D", strtotime($date));
 
 // Selected hour label from table
 if (isset($_POST['hourLabel']) && $_POST['hourLabel'] != "") {
@@ -36,15 +36,18 @@ if (isset($_POST['hourLabel']) && $_POST['hourLabel'] != "") {
     $bookedBy = "";
 }
 
-// Clear flag button UI
+// Toggle buttons visible/hidden flags in the UI
+$copyBtn = "";
 $cancelBtn = "hidden";
 if (substr($bookedBy, -1) == "*") {
     $clearFlagBtn = "";
+    $copyBtn = "hidden";
 } else {
     $clearFlagBtn = "hidden";
     // Cancel button UI
     if ($bookedBy != "" && $bookedBy !="admin") {
         $cancelBtn = "";
+        $copyBtn = "hidden";
     }
 }
 
@@ -52,6 +55,7 @@ if (substr($bookedBy, -1) == "*") {
 if ($bookedBy == "admin") {
     $studentSpinner = getStudentSpinner($db);
     $hideSpinner = "";
+    $copyBtn = "hidden";
 } else {
     $studentSpinner = "";
     $hideSpinner = "hidden";
@@ -110,8 +114,20 @@ if (isset($_POST['clearBtn'])) {
     }
 }
 
+// Save notes
+if (isset($_POST['saveBtn'])) {
+    try {
+        saveNotes($db, $date, $_POST['notes']);
+    } catch(Exception $ex) {
+        $exception = $ex->getMessage();
+    }
+}
+
 // Get spinner for the selected hour
 $timeSpinner = getSpinnerForSelectedHour($db, $hourArr, $hourStr);
 
 // Get table
 $hoursTable = getHoursTable($db, $date, $hourArr, $hourStr);
+
+// Get notes
+$notes = getNotes($db, $date);

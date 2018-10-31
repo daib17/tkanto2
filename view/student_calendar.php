@@ -9,6 +9,9 @@
         <li class="nav-item">
             <a class="nav-link" href="?route=student_recent">Recent</a>
         </li>
+        <li class="nav-item">
+            <a class="nav-link" href="?route=student_account">Account</a>
+        </li>
     </ul>
 
     <div class="container main-container-inner">
@@ -56,7 +59,7 @@
         <div class="student-day <?= $hidePanelB ?>">
             <h5 class="mb-4">Select a time to book or cancel</h5>
             <?php if ($exception != ""): ?>
-                <div class="alert alert-info" role="alert">
+                <div class="alert alert-danger" role="alert">
                     <?= $exception ?>
                 </div>
             <?php endif; ?>

@@ -55,9 +55,9 @@ if ($user && $pass) {
                 }
             }
         } else {
-            $msg = "The username/email or password you entered are incorrect";
+            $msg = "Username/email or password are incorrect";
         }
     } else {
-        $msg = "The username/email or password you entered are incorrect";
+        $msg = "Username/email or password are incorrect";
     }
 }

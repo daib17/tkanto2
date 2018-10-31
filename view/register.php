@@ -31,6 +31,11 @@
                 <button class="btn btn-lg btn-info btn-block font-weight-bold mt-5 mb-3" type="submit" name="registerBtn" value="register">Register</button>
             <?php endif; ?>
         </form>
+        <?php if ($msg != ""): ?>
+            <div class="alert alert-danger mt-3">
+                <?= $msg ?>
+            </div>
+        <?php endif; ?>
         <?php if ($isValid): ?>
             <form>
                 <input type="hidden" name="route" value="login">

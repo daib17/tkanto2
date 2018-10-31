@@ -15,7 +15,7 @@
     </ul>
     <div class="container main-container-inner">
         <?php if ($exception != ""): ?>
-            <div class="alert alert-info" role="alert">
+            <div class="alert alert-danger" role="alert">
                 <?= $exception ?>
             </div>
         <?php endif; ?>
@@ -31,6 +31,7 @@
                     <input type="hidden" name="route" value="admin_calendar_2">
                     <input type="hidden" name="selDate" value="<?= $date ?>">
                     <input type="hidden" name="hourStr" value=<?= $hourStr ?>>
+                    <button class="btn btn-md btn-info font-weight-bold <?= $copyBtn ?>" type="submit" name="copyBtn" value="copy">Copy open hours to next day</button>
                     <button class="btn btn-md btn-warning font-weight-bold  <?= $clearFlagBtn ?>" type="submit" name="clearBtn" value="admin">Confirm cancelation</button>
                     <button class="btn btn-md btn-danger font-weight-bold  <?= $cancelBtn ?>" type="submit" name="cancelBtn" value="admin">Cancel</button>
                     <button class="btn btn-md btn-danger font-weight-bold <?= $cancelBtn ?>" type="submit" name="cancelBtn" value="student">Cancel by student</button>
@@ -57,14 +58,19 @@
                         <?= $hoursTable ?>
                     </tbody>
                 </table>
-                <div>
-                    <button class="btn btn-lg btn-info btn-block font-weight-bold mt-5" type="submit" name="copyBtn" value="copy">Copy open hours to next day</button>
-                </div>
             </form>
             <form method="POST">
                 <input type="hidden" name="route" value="admin_calendar_1">
                 <input type="hidden" name="selDate" value="<?= $date ?>">
-                <button class="btn btn-lg btn-secondary btn-block font-weight-bold my-3" type="submit">Back</button>
+                <button class="float-right btn btn-md btn-secondary btn-block font-weight-bold my-4 w-25" type="submit">Back</button>
+            </form>
+            <form method="POST">
+                <input type="hidden" name="route" value="admin_calendar_2">
+                <input type="hidden" name="selDate" value="<?= $date ?>">
+                <button class="float-left btn btn-md btn-danger btn-block font-weight-bold my-4 w-50" type="submit" name="saveBtn">Save notes</button>
+                <div class="form-group clearfix">
+                    <textarea id="text-area" style="width: 100%;" name="notes" rows="6"><?= $notes ?></textarea>
+                </div>
             </form>
         </div>
     </div>

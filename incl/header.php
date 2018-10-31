@@ -14,6 +14,6 @@
 <body>
     <nav class="navbar navbar-expand-sm bg-dark navbar-dark fixed-top">
     <div class="container">
-        <a href="index.php" class="navbar-brand">TecniKanto</a>
+        <span class="navbar-brand">TecniKanto</span>
     </div>
     </nav>
