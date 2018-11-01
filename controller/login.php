@@ -49,7 +49,7 @@ if ($user && $pass) {
                     header("Location: ?route=student_calendar");
                     exit();
                 } elseif ($res->status == 1) {
-                    $msg = "<b>{$user}</b> is pending of activation";
+                    $msg = "<b>{$user}</b> account is pending of activation";
                 } else {
                     $msg = "<b>{$user}</b> has been disabled";
                 }

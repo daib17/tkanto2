@@ -9,6 +9,9 @@
         <li class="nav-item">
             <a class="nav-link active" href="?route=student_recent">Recent</a>
         </li>
+        <li class="nav-item">
+            <a class="nav-link" href="?route=student_account">Account</a>
+        </li>
     </ul>
 
     <div class="container main-container-inner">

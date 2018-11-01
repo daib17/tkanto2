@@ -1,5 +1,5 @@
 <div class="main-container">
-    <div class="col-10 offset-1 col-sm-8 offset-sm-2 col-md-6 offset-md-3 col-xl-4 offset-xl-4">
+    <div class="col-12 offset-1 col-sm-8 offset-sm-2 col-md-6 offset-md-3 col-xl-4 offset-xl-4">
         <br><br>
         <h3>Password Recovery</h3>
         <br>
@@ -21,7 +21,11 @@
             <?php endif; ?>
             <?php if ($button == "send" && $isValid): ?>
                 <div class="alert alert-success" role="alert">
-                    An email has been sent to <b><?= $email ?></b>.
+                    An email has been sent to <b><?= $email ?></b>
+                </div>
+            <?php elseif ($button == "send" && !$isValid): ?>
+                <div class="alert alert-danger" role="alert">
+                    An error has occurred.
                 </div>
             <?php endif; ?>
         </form>

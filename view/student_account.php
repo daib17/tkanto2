@@ -14,7 +14,7 @@
         </li>
     </ul>
     <div class="container main-container-inner">
-        <div class="edit-content col-10 offset-1 col-lg-8 offset-lg-2">
+        <div class="edit-content col-12 col-lg-8 offset-lg-2">
             <h5>Student: <?= $student ?></h5>
             <br>
             <?php if ($msg != ""): ?>

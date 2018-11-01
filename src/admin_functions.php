@@ -951,3 +951,27 @@ function getStatList($db, $dateFrom, $dateTo, $student, $limit) {
     $table .= "</tbody></table>";
     return $table;
 }
+
+
+/**
+* Reset password (with random) for student with given email.
+*/
+function resetStudentPassword($db, $email) {
+    // Generate random password
+    $char = "123456789abcdefghijkmnprstuvwxyzABCDEFGHJKLMNPRSTVWXYZ";
+    $str = "";
+    for ($i = 0; $i < 6; $i++) {
+        $str .= $char[rand(0, strlen($char) - 1)];
+    }
+
+    // Hash and update
+    $password = password_hash($str, PASSWORD_DEFAULT);
+    try {
+        $sql = "UPDATE student SET password=? WHERE email=?;";
+        $db->execute($sql, [$password, $email]);
+    } catch (Exception $ex) {
+        throw new Exception("Database update failed.");
+    }
+
+    return $str;
+}
