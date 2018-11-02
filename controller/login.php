@@ -49,15 +49,15 @@ if ($user && $pass) {
                     header("Location: ?route=student_calendar");
                     exit();
                 } elseif ($res->status == 1) {
-                    $msg = "<b>{$user}</b> account is pending of activation";
+                    $msg = "La cuenta <b>{$user}</b> está pendiente de activación";
                 } else {
-                    $msg = "<b>{$user}</b> has been disabled";
+                    $msg = "La cuenta <b>{$user}</b> ha sido desactivada";
                 }
             }
         } else {
-            $msg = "Username/email or password are incorrect";
+            $msg = "El usuario/email o contraseña son incorrectos";
         }
     } else {
-        $msg = "Username/email or password are incorrect";
+        $msg = "El usuario/email o contraseña son incorrectos";
     }
 }

@@ -20,50 +20,50 @@ if (isset($_POST['button']) && $_POST['button'] == 'save') {
     $uname = $student;
 
     if (!preg_match("/^[a-zA-Z ]*$/", $fname)) {
-        $fnameError = "Only letters and white space allowed";
+        $fnameError = "Solo números y letras permitidos";
         $isValid = false;
     }
 
     if (!preg_match("/^[a-zA-Z ]*$/", $lname)) {
-        $lnameError = "Only letters and white space allowed";
+        $lnameError = "Solo números y letras permitidos";
         $isValid = false;
     }
 
     $email = filter_var($email, FILTER_SANITIZE_EMAIL);
     if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-        $emailError = "Invalid email format";
+        $emailError = "Formato no es válido";
         $isValid = false;
     }
 
     if (!filter_var($phone, FILTER_SANITIZE_NUMBER_INT)) {
-        $phoneError = "Only numbers allowed";
+        $phoneError = "Solo números y letras permitidos";
         $isValid = false;
     }
 
     if ($newpass != "" && strlen($newpass) < 6) {
-        $newpassError = "A minimum length of 6 characters";
+        $newpassError = "Al menos 6 caracteres";
         $isValid = false;
     }
 
     if ($newpass2 != "" && strlen($newpass2) < 6) {
-        $newpass2Error = "A minimum length of 6 characters";
+        $newpass2Error = "Al menos 6 caracteres";
         $isValid = false;
     }
 
     if ($isValid && $newpass != "" && !ctype_alnum($newpass)) {
-        $newpassError = "Only number and letters are allowed";
+        $newpassError = "Solo números y letras permitidos";
         $isValid = false;
     }
 
     if ($isValid && $newpass2 != "" && !ctype_alnum($newpass2)) {
-        $newpass2Error = "Only number and letters are allowed";
+        $newpass2Error = "Solo números y letras permitidos";
         $isValid = false;
     }
 
     $changePass = false;
     if ($isValid && ($newpass != "" || $newpass2 != "")) {
         if ($newpass != $newpass2) {
-            $newpass2Error = "New password and confirmation do not match";
+            $newpass2Error = "La contraseña y su confirmación no coinciden";
             $isValid = false;
         } else {
             $changePass = true;
@@ -73,13 +73,13 @@ if (isset($_POST['button']) && $_POST['button'] == 'save') {
     // Verify old password
     if ($changePass == true) {
         if ($pass == "") {
-            $passError = "Enter your old password";
+            $passError = "Introduce tu contraseña actual";
             $changePass = false;
         } else {
             $sql = "SELECT * FROM student WHERE username = ?;";
             $res = $db->executeFetch($sql, [$student]);
             if (!password_verify($pass, $res->password)) {
-                $passError = "Old password is incorrect";
+                $passError = "Contraseña incorrecta";
                 $changePass = false;
             }
         }
@@ -90,7 +90,7 @@ if (isset($_POST['button']) && $_POST['button'] == 'save') {
         $sql = "SELECT * FROM student WHERE email = ? AND username <> ?;";
         $res = $db->executeFetch($sql, [$email, $student]);
         if ($res) {
-            $emailError = "Email already in use by another student";
+            $emailError = "El correo electrónico ya está registrado";
             $isValid = false;
         }
     }
@@ -102,17 +102,17 @@ if (isset($_POST['button']) && $_POST['button'] == 'save') {
             $sql = "UPDATE student SET firstname=?, lastname=?, email=?, phone=?, password=? WHERE username=?;";
             try {
                 $db->execute($sql, [$fname, $lname, $email, $phone, $hashed, $student]);
-                $msg = "Account and password updated";
+                $msg = "La cuenta (+contraseña) han sido actualizada";
             } catch (Exception $ex) {
-                $msg = "Error updating database.";
+                $msg = "Error actualizando base de datos";
             }
         } else {
             $sql = "UPDATE student SET firstname=?, lastname=?, email=?, phone=? WHERE username=?;";
             try {
                 $db->execute($sql, [$fname, $lname, $email, $phone, $student]);
-                $msg = "Account details updated";
+                $msg = "La cuenta ha sido actualizada";
             } catch (Exception $ex) {
-                $msg = "Error updating database.";
+                $msg = "Error actualizando base de datos";
             }
         }
     }

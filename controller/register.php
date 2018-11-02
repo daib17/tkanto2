@@ -23,48 +23,48 @@ if (getPost("registerBtn")) {
     $isValid = true;
 
     if (!preg_match("/^[a-zA-Z ]*$/", $fname)) {
-        $fnameError = "Only letters and white space allowed";
+        $fnameError = "Solo números y letras permitidos";
         $isValid = false;
     }
 
     if (!preg_match("/^[a-zA-Z ]*$/", $lname)) {
-        $lnameError = "Only letters and white space allowed";
+        $lnameError = "Solo números y letras permitidos";
         $isValid = false;
     }
 
     $email = filter_var($email, FILTER_SANITIZE_EMAIL);
     if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-        $emailError = "Invalid email format";
+        $emailError = "Formato incorrecto";
         $isValid = false;
     }
 
     if (!filter_var($phone, FILTER_SANITIZE_NUMBER_INT)) {
-        $phoneError = "Only numbers allowed";
+        $phoneError = "Solo números permitidos";
         $isValid = false;
     }
 
     if (strlen($pass) < 6) {
-        $passError = "A minimum length of 6 characters";
+        $passError = "Al menos 6 caracteres";
         $isValid = false;
     }
 
     if (strlen($pass2) < 6) {
-        $pass2Error = "A minimum length of 6 characters";
+        $pass2Error = "Al menos 6 caracteres";
         $isValid = false;
     }
 
     if ($isValid && !ctype_alnum($pass)) {
-        $passError = "Only number and letters are allowed";
+        $passError = "Solo números y letras permitidos";
         $isValid = false;
     }
 
     if ($isValid && !ctype_alnum($pass2)) {
-        $pass2Error = "Only number and letters are allowed";
+        $pass2Error = "Solo números y letras permitidos";
         $isValid = false;
     }
 
     if ($isValid && $pass != $pass2) {
-        $pass2Error = "Confirm password and password do not match";
+        $pass2Error = "Password y confirmación no coindiden";
         $isValid = false;
     }
 }
@@ -75,7 +75,7 @@ if ($isValid) {
     $sql = "SELECT * FROM student WHERE email = ?";
     $res = $db->executeFetch($sql, [$email]);
     if ($res) {
-        $emailError = "Email address already in use by another account";
+        $emailError = "El correo electrónico ya esta registrado";
         $isValid = false;
     }
 }
@@ -103,6 +103,6 @@ if ($isValid) {
         $db->execute($sql, [$fname, $lname, $uname, $email, $phone, $hashed, 1]);
     } catch (Exception $ex) {
         $isValid = false;
-        $msg = "Registration failed";
+        $msg = "El registro no se ha podido completar";
     }
 }
