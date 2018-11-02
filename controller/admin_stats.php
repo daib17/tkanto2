@@ -4,24 +4,24 @@ require_once("src/admin_functions.php");
 $actualMonth = date('n');
 $actualYear = date('o');
 
-$fromDay = (isset($_GET["fromDay"])) ? $_GET["fromDay"] : 1;
-$toDay = (isset($_GET["toDay"])) ? $_GET["toDay"] : 31;
-$fromMonth = (isset($_GET["fromMonth"])) ? $_GET["fromMonth"] : $actualMonth;
-$fromYear = (isset($_GET["fromYear"])) ? $_GET["fromYear"] : $actualYear;
-$toMonth = (isset($_GET["toMonth"])) ? $_GET["toMonth"] : $actualMonth;
-$toYear = (isset($_GET["toYear"])) ? $_GET["toYear"] : $actualYear;
-$student = (isset($_GET["student"])) ? $_GET["student"] : "all";
-$limit = (isset($_GET["limit"])) ? $_GET["limit"] : 10;
+$fromDay = (isset($_POST["fromDay"])) ? $_POST["fromDay"] : 1;
+$toDay = (isset($_POST["toDay"])) ? $_POST["toDay"] : 31;
+$fromMonth = (isset($_POST["fromMonth"])) ? $_POST["fromMonth"] : $actualMonth;
+$fromYear = (isset($_POST["fromYear"])) ? $_POST["fromYear"] : $actualYear;
+$toMonth = (isset($_POST["toMonth"])) ? $_POST["toMonth"] : $actualMonth;
+$toYear = (isset($_POST["toYear"])) ? $_POST["toYear"] : $actualYear;
+$student = (isset($_POST["student"])) ? $_POST["student"] : "all";
+$limit = (isset($_POST["limit"])) ? $_POST["limit"] : 10;
 
 $selList = $selLimit20 = $selLimit30 = "";
-if (isset($_GET["type"])) {
-    $type = $_GET["type"];
+if (isset($_POST["type"])) {
+    $type = $_POST["type"];
     $selList = ($type == "list") ? "selected" : "";
 }
 
-if (isset($_GET["limit"])) {
-    $selLimit20 = ($_GET["limit"] == 20) ? "selected" : "";
-    $selLimit30 = ($_GET["limit"] == 30) ? "selected" : "";
+if (isset($_POST["limit"])) {
+    $selLimit20 = ($_POST["limit"] == 20) ? "selected" : "";
+    $selLimit30 = ($_POST["limit"] == 30) ? "selected" : "";
 }
 
 $spinnerDayFrom = getDayListSpinner($fromDay);
@@ -37,7 +37,7 @@ $fromDate = (new DateTime($fromYear . "-" . $fromMonth . "-" . $fromDay))->forma
 $toDate = (new DateTime($toYear . "-" . $toMonth . "-" . $toDay))->format("Y-m-d 23:59:59");
 
 $table = "";
-if (isset($_GET["button"]) && $_GET["button"] == "run") {
+if (isset($_POST["button"]) && $_POST["button"] == "run") {
     if ($type == "acc") {
         $table = getStatAcc($db, $fromDate, $toDate, $student, $limit);
     } else {

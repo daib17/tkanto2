@@ -729,13 +729,13 @@ function copyTemplate($db, $date, $arr)
 /**
 *
 */
-function getRecentActivity($db, $student = null, $limit = 15) {
+function getRecentActivity($db, $fromDate = null, $toDate = null, $student = null, $limit = 15) {
     if ($student == null) {
-        $sql = "(SELECT *, bookdate AS d, 'book' AS action FROM calendar WHERE student != 'admin' AND duration > ?) UNION ALL (SELECT *, canceldate AS d, 'cancel' AS action FROM calendar WHERE student != 'admin' AND duration > ?) ORDER BY d DESC LIMIT {$limit};";
-        $res = $db->executeFetchAll($sql, [0, 0]);
+        $sql = "(SELECT *, bookdate AS d, 'book' AS action FROM calendar WHERE student != 'admin' AND duration > ? AND bookdate >= ? AND bookdate <= ?) UNION ALL (SELECT *, canceldate AS d, 'cancel' AS action FROM calendar WHERE student != 'admin' AND duration > ? AND canceldate >= ? AND canceldate <= ?) ORDER BY d DESC LIMIT {$limit};";
+        $res = $db->executeFetchAll($sql, [0, $fromDate, $toDate, 0, $fromDate, $toDate]);
     } else {
-        $sql = "(SELECT *, bookdate AS d, 'book' AS action FROM calendar WHERE student = ? AND duration > ?) UNION ALL (SELECT *, canceldate AS d, 'cancel' AS action FROM calendar WHERE student = ? AND duration > ?) ORDER BY d DESC LIMIT {$limit};";
-        $res = $db->executeFetchAll($sql, [$student, 0, $student, 0]);
+        $sql = "(SELECT *, bookdate AS d, 'book' AS action FROM calendar WHERE student = ? AND duration > ? AND bookdate >= ? AND bookdate <= ?) UNION ALL (SELECT *, canceldate AS d, 'cancel' AS action FROM calendar WHERE student = ? AND duration > ? AND canceldate >= ? AND canceldate <= ?) ORDER BY d DESC LIMIT {$limit};";
+        $res = $db->executeFetchAll($sql, [$student, 0, $fromDate, $toDate, $student, 0, $fromDate, $toDate]);
     }
 
     $table = "";
@@ -927,7 +927,7 @@ function getStatAcc($db, $fromDate, $toDate, $student, $limit) {
 /**
 * Get table as list stats
 */
-function getStatList($db, $dateFrom, $dateTo, $student, $limit) {
+function getStatList($db, $fromDate, $toDate, $student, $limit) {
     $table = "<table class='table table-bordered table-selectable stats'>
     <thead>
     <tr>
@@ -940,12 +940,12 @@ function getStatList($db, $dateFrom, $dateTo, $student, $limit) {
     <tbody>";
 
     if ($student == 0) {
-        $table .= getRecentActivity($db, null, $limit);
+        $table .= getRecentActivity($db, $fromDate, $toDate, null, $limit);
     } else {
         // Get username
         $sql = "SELECT * FROM student WHERE id=? LIMIT {$limit};";
         $res = $db->executeFetch($sql, [$student]);
-        $table .= getRecentActivity($db, $res->username);
+        $table .= getRecentActivity($db, $fromDate, $toDate, $res->username, $limit);
     }
 
     $table .= "</tbody></table>";

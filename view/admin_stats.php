@@ -14,7 +14,7 @@
         </li>
     </ul>
     <div class="container main-container-inner">
-        <form method="GET">
+        <form method="POST">
             <input type="hidden" name="route" value="admin_stats">
             <div class="input-group">
                 <select class="form-control" name="fromDay">
