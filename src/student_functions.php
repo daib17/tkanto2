@@ -161,10 +161,10 @@ function getDayCalendar($db, $student, $date, $selHour)
 
             // Show canceled only by admin and when no open alternative
             if ($row->cancelby) {
-                $statusLabel = "canceled by " . $row->cancelby;
+                $statusLabel = "cancelada por " . $row->cancelby;
                 $color = "canceled";
             } else {
-                $statusLabel = ($row->student == $student) ? "booked" : "available";
+                $statusLabel = ($row->student == $student) ? "reservada" : "disponible";
                 $color = ($row->student == $student) ? "booked" : "available";
             }
 
@@ -210,7 +210,7 @@ function doBooking($db, $date, $time, $student) {
         $db->commit();
     } catch (Exception $ex) {
         $db->rollBack();
-        throw new Exception("Booking failed: time no longer available.");
+        throw new Exception("Error: La reserva ya no está disponible.");
     }
 }
 
@@ -238,7 +238,7 @@ function cancelBooking($db, $date, $time, $student) {
         $db->commit();
     } catch (Exception $ex) {
         $db->rollBack();
-        throw new Exception("Cancel operation failed.");
+        throw new Exception("Error: operación cancelada.");
     }
 }
 
@@ -270,16 +270,17 @@ function getBookingsList($db, $student, $page, $selDate, $selTime) {
             $selected = ($date == $selDate && $time == $selTime && !$res[$i]->cancelby) ? "selected" : "non-selected";
 
             $submit = "";
+            $dateSpa = strftime('%e-%m-%Y', strtotime($date));
             if ($res[$i]->cancelby == null) {
-                $submit="<input type='submit' class='{$selected}' name='selDate' value='{$date}'>";
+                $submit="<input type='submit' class='{$selected}' name='selDate' value='{$dateSpa}'>";
             } else {
-                $submit="<div class='non-button-left'>{$date}</div>";
+                $submit="<div class='non-button-left'>{$dateSpa}</div>";
             }
 
             // Add cancelation note
             $cancel = "";
             if ($res[$i]->cancelby) {
-                $duration = "<span class='canceled'>Canceled</span>";
+                $duration = "<span class='canceled'>Cancelada</span>";
                 $cancel = "<input type='hidden' name='isCanceled' value='true'>";
             }
 
@@ -338,27 +339,26 @@ function getRecentActivity($db, $student) {
     // Empty log
     if (!$res) {
         $table .= "<tr>";
-        $table .= "<td colspan=3 class='empty-cell'>Log is empty</td>";
+        $table .= "<td colspan=3 class='empty-cell'>No hay actividad registrada</td>";
         $table .= "</tr>";
         return $table;
     }
 
     foreach ($res as $row) {
         $table .= "<tr>";
-        // From
-        $from = sprintf("%04d", $row->time);
-        $from = substr_replace($from, ":", 2, 0);
-        $from = ltrim($from, "0");
-        $timeLabel = $from;
+        // Hour
+        $hour = sprintf("%04d", $row->time);
+        $hour = substr_replace($hour, ":", 2, 0);
+        $hour = ltrim($hour, "0");
         // Format dates
-        $date = date('j M', strtotime($row->date));
+        $date = strftime('%e %h', strtotime($row->date));
         // Entries with no cancel date get null 'd' column after select
         if (!$row->d) {
             continue;
         }
-        $action = ($row->action == "cancel") ? "cancel (" . $row->cancelby . ")" : "book";
-        $booking =  $date . " (" . $timeLabel . ")";
-        $log = date('j M H:i', strtotime($row->d));
+        $action = ($row->action == "cancel") ? "cancel (" . $row->cancelby . ")" : "reserva";
+        $booking =  $date . " (" . $hour . ")";
+        $log = strftime('%e %h (%H:%M)', strtotime($row->d));
 
         $table .= "<td class='text'>$action</td>";
         $table .= "<td class='text'>$booking</td>";

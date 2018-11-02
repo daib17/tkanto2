@@ -30,11 +30,11 @@ if (isset($_POST['selDate'])) {
     if (isset($_POST['selHour'])) {
         $selHour = $_POST['selHour'];
         if (isset($_POST['statusLabel']) && $selDate >= $today) {
-            if ($_POST['statusLabel'] == "booked") {
-                $buttonLabel = "Cancel";
+            if ($_POST['statusLabel'] == "reservada") {
+                $buttonLabel = "Cancelar";
                 $buttonType = "btn-danger";
-            } elseif ($_POST['statusLabel'] == "available") {
-                $buttonLabel = "Book";
+            } elseif ($_POST['statusLabel'] == "disponible") {
+                $buttonLabel = "Reservar";
                 $buttonType = "btn-info";
             }
         }
@@ -48,7 +48,7 @@ if (isset($_POST['selDate'])) {
 }
 
 // Book selected time?
-if (isset($_POST['button']) && $_POST['button'] == "Book") {
+if (isset($_POST['button']) && $_POST['button'] == "Reservar") {
     try {
         doBooking($db, $selDate, $selHour, $student);
     } catch(Exception $ex) {
@@ -57,7 +57,7 @@ if (isset($_POST['button']) && $_POST['button'] == "Book") {
 }
 
 // Cancel a booking?
-if (isset($_POST['button']) && $_POST['button'] == "Cancel") {
+if (isset($_POST['button']) && $_POST['button'] == "Cancelar") {
     try {
         cancelBooking($db, $selDate, $selHour, $student);
     } catch(Exception $ex) {
@@ -93,8 +93,11 @@ if (isset($_POST['changeMonth'])) {
     $date = $headYear . "-" . $headMonth . "-" . "01";
 }
 
+// IMPORTANT: date doesnt work with locate, to extract month
+// name in spanish use strftime instead.
+
 // Month name and year for table header
-$monthName = date("F", strtotime($date));
+$monthName = strftime("%B", strtotime($date));
 $year = date("Y", strtotime($date));
 
 $calendarTable = getMonthCalendar($db, $date, $selDate, $student);
@@ -102,5 +105,5 @@ $dayTable = getDayCalendar($db, $student, $selDate, $selHour);
 
 // Extract day, month and year from selected day for day table header
 $daySel = date("j", strtotime($selDate));
-$monthSel = date("M", strtotime($selDate));
+$monthSel = strftime("%h", strtotime($selDate));
 $yearSel = date("Y", strtotime($selDate));

@@ -21,6 +21,11 @@ ini_set("display_errors", 1);     // Display all errors
 date_default_timezone_set('Europe/Lisbon');
 
 /**
+* Locale. Check that locale install on server.
+*/
+setlocale(LC_TIME, "es_ES.utf8");
+
+/**
  * Default exception handler.
  */
 set_exception_handler(function ($e) {

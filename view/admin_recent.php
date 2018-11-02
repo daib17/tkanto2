@@ -7,7 +7,7 @@
             <a class="nav-link" href="?route=admin_students_1"><i class="fas fa-users"></i></a>
         </li>
         <li class="nav-item">
-            <a class="nav-link active" href="?route=admin_recent"><span class="fa-text">Log</span></a>
+            <a class="nav-link active" href="?route=admin_recent"><span class="fa-text">Registro</span></a>
         </li>
         <li class="nav-item">
             <a class="nav-link" href="?route=admin_stats"><i class="fas fa-chart-bar"></i></a>
@@ -18,10 +18,10 @@
         <table class="table table-bordered table-selectable">
             <thead>
                 <tr>
-                    <th scope="col">Student</th>
-                    <th scope="col">Action</th>
-                    <th scope="col">Booking</th>
-                    <th scope="col">Log</th>
+                    <th scope="col">Alumno</th>
+                    <th scope="col">Actividad</th>
+                    <th scope="col">Reserva</th>
+                    <th scope="col">Registro</th>
                 </tr>
             </thead>
             <tbody>

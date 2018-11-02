@@ -37,6 +37,7 @@ CREATE TABLE `student` (
   `phone` int(12) NOT NULL,
   `password` varchar(255) COLLATE latin1_spanish_ci NOT NULL,
   `status` int(11) NOT NULL,
+  `updated` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=25 DEFAULT CHARSET=latin1 COLLATE=latin1_spanish_ci;
 

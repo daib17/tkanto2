@@ -6,7 +6,8 @@ require_once("phpmailer/src/Exception.php");
 require_once("phpmailer/src/OAuth.php");
 require_once("phpmailer/src/POP3.php");
 
-$email = $emailError = "";
+$email = "";
+$msg = "";
 
 $button = getPost("button");
 
@@ -16,7 +17,7 @@ if ($button == "send") {
     $email = clean(getPost("email"));
     $email = filter_var($email, FILTER_SANITIZE_EMAIL);
     if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-        $emailError = "Invalid email format";
+        $msg = "El formato de correo electrónico no es válido";
         $isValid = false;
     }
 
@@ -25,6 +26,7 @@ if ($button == "send") {
         $sql = "SELECT * FROM student WHERE email = ?;";
         $res = $db->executeFetch($sql, [$email]);
         if (!$res) {
+            $msg = "El correo electrónico no está registrado";
             $isValid = false;
         } else {
             // Reset password
@@ -45,19 +47,19 @@ if ($button == "send") {
             // $mail->AddCC('user1@domain.com');
             $mail->Subject = "Password reset";
             // Message
-            $message = "<p>Your password has been reset.</p>";
-            $message .= "<p>New password: <b>{$newPass}</b></p>";
-            $message .= "<p>Remember that you can change your password accessing your account details at TecniKantos website.</p>";
+            $message = "<p>Tu contraseña se ha reiniciado.</p>";
+            $message .= "<p>Tu nueva contraseña es: <b>{$newPass}</b></p>";
+            $message .= "<p>Recuerda que puedes cambiar tu contraseña en los datos de tu cuenta en la web de TecniKanto.</p>";
             $mail->IsHTML (true);
             $mail->MsgHTML($message);
 
             // Send
             try {
                 $mail->send();
-            } catch (phpmailerException $e) {
-                // echo $e->getMessage();
+                $msg = "Se ha enviado un correo a <b>{$email}</b>";
             } catch (Exception $e) {
-                // echo $e->getMessage();
+                $msg = "No se ha podido enviar el correo electrónico";
+                $isValid = false;
             }
         }
     }

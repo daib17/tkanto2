@@ -155,7 +155,7 @@ function doSearch($db, $search)
 */
 function getStudentListAsTable($db, $filterId = 3, $page, $selectedID, $search)
 {
-    $statusStr = ["Disabled", "Pending", "Active"];
+    $statusStr = ["Inactivo", "Espera", "Activo"];
     if ($search != "") {
         $res = doSearch($db, $search);
         $searchInput = "<input type='hidden' name='search' value='{$search}' />";
@@ -238,9 +238,9 @@ function getPagination($db, $filterId, $actualPage, $search)
 *
 */
 function getSpinnerFilter($status, $search) {
-    $filterType = ["Disabled", "Pending", "Active", "All"];
+    $filterType = ["Inactivo", "Espera", "Activo", "Todos"];
     // Generate select spinner
-    $select = "<select id='showFilter' class='form-control w-25'>";
+    $select = "<select id='showFilter' class='form-control'>";
     foreach ($filterType as $key => $value) {
         if ($key == $status) {
             $select .= "<option value='{$key}' selected='selected'>" . $value . "</option>";
@@ -402,7 +402,7 @@ function getStudentSpinner($db) {
     $sql = "SELECT * FROM student WHERE status LIKE ? AND username != ? ORDER BY lastname, firstname;";
     $res = $db->executeFetchAll($sql, [2, "admin"]);
     $spinHTML = "<select id='studentSpinner' class='form-control'>";
-    $spinHTML .= "<option value='noStudent'>Select student</option>";
+    $spinHTML .= "<option value='noStudent'>Reserva</option>";
     foreach ($res as $row) {
         $spinHTML .= "<option value='{$row->username}'>{$row->firstname} {$row->lastname}</option>";
     }
@@ -727,13 +727,21 @@ function copyTemplate($db, $date, $arr)
 
 
 /**
+* Log tab uses not params (only db).
 *
+* Stats tab uses fromDate, toDate, student and limit.
 */
-function getRecentActivity($db, $fromDate = null, $toDate = null, $student = null, $limit = 15) {
-    if ($student == null) {
+function getRecentActivity($db, $fromDate = null, $toDate = null, $student = null, $limit = 10) {
+    if ($fromDate == null) {
+        // Log tab request
+        $sql = "(SELECT *, bookdate AS d, 'book' AS action FROM calendar WHERE student != 'admin' AND duration > ?) UNION ALL (SELECT *, canceldate AS d, 'cancel' AS action FROM calendar WHERE student != 'admin' AND duration > ?) ORDER BY d DESC LIMIT {$limit};";
+        $res = $db->executeFetchAll($sql, [0, 0]);
+    } elseif ($student == null) {
+        // Stats all students
         $sql = "(SELECT *, bookdate AS d, 'book' AS action FROM calendar WHERE student != 'admin' AND duration > ? AND bookdate >= ? AND bookdate <= ?) UNION ALL (SELECT *, canceldate AS d, 'cancel' AS action FROM calendar WHERE student != 'admin' AND duration > ? AND canceldate >= ? AND canceldate <= ?) ORDER BY d DESC LIMIT {$limit};";
         $res = $db->executeFetchAll($sql, [0, $fromDate, $toDate, 0, $fromDate, $toDate]);
     } else {
+        // Stats one student
         $sql = "(SELECT *, bookdate AS d, 'book' AS action FROM calendar WHERE student = ? AND duration > ? AND bookdate >= ? AND bookdate <= ?) UNION ALL (SELECT *, canceldate AS d, 'cancel' AS action FROM calendar WHERE student = ? AND duration > ? AND canceldate >= ? AND canceldate <= ?) ORDER BY d DESC LIMIT {$limit};";
         $res = $db->executeFetchAll($sql, [$student, 0, $fromDate, $toDate, $student, 0, $fromDate, $toDate]);
     }
@@ -742,7 +750,7 @@ function getRecentActivity($db, $fromDate = null, $toDate = null, $student = nul
     // Empty log
     if (!$res) {
         $table .= "<tr>";
-        $table .= "<td colspan=4 class='empty-cell'>Log is empty</td>";
+        $table .= "<td colspan=4 class='empty-cell'>No hay actividad registrada</td>";
         $table .= "</tr>";
         return $table;
     }
@@ -755,15 +763,15 @@ function getRecentActivity($db, $fromDate = null, $toDate = null, $student = nul
         $from = ltrim($from, "0");
         $timeLabel = $from;
         // Format dates
-        $date = date('j M', strtotime($row->date));
+        $date = strftime('%e %h', strtotime($row->date));
         // Entries with no cancel date get null 'd' column after select
         if (!$row->d) {
             continue;
         }
 
-        $action = ($row->action == "cancel") ? "cancel (" . $row->cancelby . ")" : "book";
+        $action = ($row->action == "cancel") ? "cancel (" . $row->cancelby . ")" : "reserva";
         $booking =  $date . " (" . $timeLabel . ")";
-        $log = date('j M H:i', strtotime($row->d));
+        $log = strftime('%e %h (%H:%M)', strtotime($row->d));
 
         $table .= "<td class='text'>$row->student</td>";
         $table .= "<td class='text'>$action</td>";
@@ -827,7 +835,7 @@ function getDayListSpinner($selDay) {
 * Generate spinner 12 months
 */
 function getMonthListSpinner($selMonth) {
-    $months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dec"];
+    $months = ["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"];
     $options = "";
     for ($i = 0; $i < 12; $i++) {
         $value = $i + 1;
@@ -857,7 +865,7 @@ function getYearListSpinner($db, $selYear) {
 function getStudentListSpinner($db, $selStudent) {
     $sql = "SELECT * FROM student WHERE status=? AND username <> ?;";
     $res = $db->executeFetchAll($sql, [2, "admin"]);
-    $options = "<option value='0'>All</options>";
+    $options = "<option value='0'>Todos</options>";
     foreach ($res as $row) {
         $selected = ($row->id == $selStudent) ? "selected" : "";
         $options .= "<option value='{$row->id}' {$selected}>{$row->firstname} {$row->lastname} ({$row->username})</option>";
@@ -873,9 +881,9 @@ function getStatAcc($db, $fromDate, $toDate, $student, $limit) {
     $table = "<table class='table table-bordered table-selectable stats'>
     <thead>
     <tr>
-    <th scope='col'>Student</th>
-    <th scope='col'>Booked</th>
-    <th scope='col'>Canceled</th>
+    <th scope='col'>Alumno</th>
+    <th scope='col'>Reservas</th>
+    <th scope='col'>Cancel</th>
     </tr>
     </thead>
     <tbody>";
@@ -931,10 +939,10 @@ function getStatList($db, $fromDate, $toDate, $student, $limit) {
     $table = "<table class='table table-bordered table-selectable stats'>
     <thead>
     <tr>
-    <th scope='col'>Student</th>
-    <th scope='col'>Action</th>
-    <th scope='col'>Booking</th>
-    <th scope='col'>Log</th>
+    <th scope='col'>Alumno</th>
+    <th scope='col'>Actividad</th>
+    <th scope='col'>Reserva</th>
+    <th scope='col'>Registro</th>
     </tr>
     </thead>
     <tbody>";

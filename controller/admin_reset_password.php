@@ -12,9 +12,9 @@ if (isset($_POST["confirmBtn"])) {
         $sql = "UPDATE student SET password=? WHERE id=?;";
         try {
         $db->execute($sql, [$hashed, $studentID]);
-        $msg = "Password succesfully reset";
+        $msg = "La contraseña se ha reseteado";
         } catch (Exception $ex) {
-            $msg = "Reset failed.";
+            $msg = "No se ha podido resetear";
         }
     } else  {
         header("Location: ?route=admin_students_2&studentID={$studentID}");

@@ -21,8 +21,9 @@ if (isset($_POST['changeDate'])) {
     $date = $date->format("Y-m-d");
 }
 
-// Day of the week
-$dayOfWeek = date("D", strtotime($date));
+// Header labels
+$dayOfWeek = strftime("%a", strtotime($date));
+$dateSpa = strftime('%e-%m-%Y', strtotime($date));
 
 // Selected hour label from table
 if (isset($_POST['hourLabel']) && $_POST['hourLabel'] != "") {
@@ -81,6 +82,9 @@ if (isset($_GET['spinTime'])) {
         try {
             updateCalendarDB($db, $hourArr, $date, $student, $hourStr, $spin);
         } catch(Exception $ex) {
+            print_r($date);
+            print_r($ex->getMessage());
+            exit;
             $exception = "Database operation failed.";
         }
     }

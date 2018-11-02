@@ -15,13 +15,16 @@ $page = is_numeric($page) ? $page : 1;
 $selDate = isset($_POST['selDate']) ? $_POST['selDate'] : "";
 $selTime = isset($_POST['selTime']) ? $_POST['selTime'] : "";
 
+$selDate = strftime('%Y-%m-%e', strtotime($selDate));
+
+
 // Default UI
 $cancelButton = "hidden";
 
 // Cancel booking?
 if (isset($_POST['button']) && $_POST['button'] == "cancel") {
     try {
-        cancelBooking($db, $selDate, $selHour, $student);
+        cancelBooking($db, $selDate, $selTime, $student);
     } catch(Exception $ex) {
         $exception = $ex->getMessage();
     }

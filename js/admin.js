@@ -37,7 +37,11 @@
 
             // Redirect with parameter
             var label = document.getElementById("headerLabel").innerHTML;
-            var date = label.substr(label.indexOf('2'));
+            // Convert label in spa format to eng
+            var dateSpa = label.split('/')[0].trim();
+            var spa = dateSpa.split('-');
+            var date = spa[2] + "-" + spa[1] + "-" + spa[0];
+
             var url = window.location.href;
             var index = url.indexOf("admin_calendar_1");
             if (index > 0) {
@@ -65,7 +69,11 @@
 
             // Redirect with parameter
             var label = document.getElementById("headerLabel").innerHTML;
-            var date = label.substr(label.indexOf('2'));
+            // Convert label from spa [d-m-y] to eng [y-m-d]
+            var dateSpa = label.split('/')[0].trim();
+            var spa = dateSpa.split('-');
+            var date = spa[2] + "-" + spa[1] + "-" + spa[0];
+
             var url = window.location.href;
             var index = url.indexOf("admin_calendar_1");
             if (index > 0) {

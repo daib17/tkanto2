@@ -1,7 +1,7 @@
 <div class="container main-container">
     <ul class="nav nav-tabs">
         <li class="nav-item">
-            <a class="nav-link active" href="?route=admin_calendar_1"><span class="fa-text"> Calendar</span></a>
+            <a class="nav-link active" href="?route=admin_calendar_1">Calendario</span></a>
         </li>
         <li class="nav-item">
             <a class="nav-link" href="?route=admin_students_1"><i class="fas fa-users"></i></a>
@@ -35,13 +35,13 @@
             <table class="table table-bordered">
                 <thead>
                     <tr>
-                        <th class="day-label">Mon</th>
-                        <th class="day-label">Tue</th>
-                        <th class="day-label">Wed</th>
-                        <th class="day-label">Thu</th>
-                        <th class="day-label">Fri</th>
-                        <th class="day-label">Sat</th>
-                        <th class="day-label">Sun</th>
+                        <th class="day-label">Lun</th>
+                        <th class="day-label">Mar</th>
+                        <th class="day-label">Mie</th>
+                        <th class="day-label">Jue</th>
+                        <th class="day-label">Vie</th>
+                        <th class="day-label">Sab</th>
+                        <th class="day-label">Dom</th>
                     </tr>
                 </thead>
                 <tbody>

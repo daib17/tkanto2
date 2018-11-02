@@ -38,7 +38,7 @@ if (isset($_POST['changeMonth'])) {
 }
 
 // Month name and year for table header
-$monthName = date("F", strtotime($date));
+$monthName = strftime("%B", strtotime($date));
 $year = date("Y", strtotime($date));
 
 // Generate calendar table

@@ -5,25 +5,25 @@
         <form method="POST">
             <!-- <input type="hidden" name="route" value="login"> -->
             <div class="form-group">
-                <input type="text" name="user" class="form-control-lg w-100" placeholder="Username or Email" value="<?= $user ?>" autocomplete="username">
+                <input type="text" name="user" class="form-control-lg w-100" placeholder="Email o Nombre de usuario" value="<?= $user ?>" autocomplete="username">
             </div>
             <div class="form-group">
-                <input type="password" name="pass" class="form-control-lg mt-2 w-100" placeholder="Password" value="<?= $pass ?>" autocomplete="new-password">
+                <input type="password" name="pass" class="form-control-lg mt-2 w-100" placeholder="Contraseña" value="<?= $pass ?>" autocomplete="new-password">
             </div>
             <div class="error-message">
                 <p><?= $msg ?></p>
             </div>
             <div class="pt-3">
-                <button class="btn btn-lg btn-info btn-block  font-weight-bold" type="submit">Log in</button>
+                <button class="btn btn-lg btn-info btn-block  font-weight-bold" type="submit">Entrar</button>
             </div>
         </form>
         <form>
             <input type="hidden" name="route" value="register">
-            <button class="btn btn-lg btn-light btn-block mt-5" type="submit">New student? Register here</button>
+            <button class="btn btn-lg btn-light btn-block mt-5" type="submit">Registrarme</button>
         </form>
         <form>
             <input type="hidden" name="route" value="pass_recovery">
-            <button class="btn btn-lg btn-light btn-block mt-3 mb-3" type="submit">Forgot password?</button>
+            <button class="btn btn-lg btn-light btn-block mt-3 mb-3" type="submit">He olvidado mi contraseña</button>
         </form>
     </div>
 </div>

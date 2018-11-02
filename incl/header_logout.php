@@ -17,7 +17,7 @@
             <span class="navbar-brand">TecniKanto (<?= $_SESSION['user'] ?>)</span>
             <ul class="navbar-nav ml-auto">
                 <li class="nav-item">
-                    <a href="?route=login" class="nav-link">Log out</a>
+                    <a href="?route=login" class="nav-link">Salir</a>
                 </li>
             </ul>
         </div>

@@ -10,7 +10,7 @@
             <a class="nav-link" href="?route=admin_recent"><i class="fas fa-database"></i></a>
         </li>
         <li class="nav-item">
-            <a class="nav-link active" href="?route=admin_stats"><span class="fa-text">Stats</span></a>
+            <a class="nav-link active" href="?route=admin_stats"><span class="fa-text">Datos</span></a>
         </li>
     </ul>
     <div class="container main-container-inner">
@@ -40,7 +40,7 @@
             </div>
             <div class="input-group">
                 <div class="input-group-prepend mt-2">
-                    <span class="input-group-text">Student</span>
+                    <span class="input-group-text"><i class="far fa-user"></i></span>
                 </div>
                 <select class="form-control mt-2" name="student">
                     <?= $spinnerStudents ?>
@@ -48,16 +48,16 @@
             </div>
             <div class="float-left input-group mt-2 mb-4 w-50">
                 <div class="input-group-prepend">
-                    <span class="input-group-text">Type</span>
+                    <span class="input-group-text">Tipo</span>
                 </div>
                 <select class="form-control" name="type">
-                    <option value="acc">Accumulated</option>
-                    <option value="list" <?= $selList ?>>List</option>
+                    <option value="acc">Total</option>
+                    <option value="list" <?= $selList ?>>Lista</option>
                 </select>
             </div>
             <div class="float-right input-group mt-2 pl-5 w-50">
                 <div class="input-group-prepend">
-                    <span class="input-group-text">Limit</span>
+                    <span class="input-group-text">#</span>
                 </div>
                 <select class="form-control" name="limit">
                     <option value="10">10</option>
@@ -66,7 +66,7 @@
                 </select>
             </div>
             <div class="clearfix">
-                <button class="btn btn-md btn-info btn-block w-100 font-weight-bold my-4" type="submit" name="button" value="run">Run</button>
+                <button class="btn btn-md btn-info btn-block w-100 font-weight-bold my-4" type="submit" name="button" value="run">Buscar</button>
             </div>
         </form>
         <?= $table ?>
